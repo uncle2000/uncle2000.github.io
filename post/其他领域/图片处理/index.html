@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>图片处理 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">图片处理</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/%E5%85%B6%E4%BB%96%E9%A2%86%E5%9F%9F/">其他领域</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="图片处理"><a href="#图片处理" class="headerlink" title="图片处理"></a>图片处理</h1><p>@(其他领域)</p>
+<p>[toc]</p>
+<h1 id="opencv"><a href="#opencv" class="headerlink" title="opencv"></a>opencv</h1><p>apk：OpenCV_3.2.0_Manager 可以说是一个服务 apk , 网上的所有代码都是基于 OpenCV_3.2.0_Manager，也就是说你必须运行这个 apk<br>samples：所有的与android相关的一些事例代码，基本全部都是 java 代码，封装了很多功能（图片转成灰度，高斯模糊，边缘检测），而且都是 Eclipse 版本，网上的例子（Java例子）<br>sdk：所有的资源，so库，头文件，源码（GitHub <a target="_blank" rel="noopener" href="https://github.com/opencv/opencv%EF%BC%89">https://github.com/opencv/opencv）</a> NDK 自己动手写</p>
+<h2 id="资料"><a href="#资料" class="headerlink" title="资料"></a>资料</h2><p>《计算机视觉 - 算法与应用》<br><a target="_blank" rel="noopener" href="http://openbiometrics.org/">http://openbiometrics.org/</a><br><a target="_blank" rel="noopener" href="https://msdn.microsoft.com/zh-cn/library/ca96yweh">https://msdn.microsoft.com/zh-cn/library/ca96yweh</a><br><a target="_blank" rel="noopener" href="https://gitee.com/easypr/EasyPR">https://gitee.com/easypr/EasyPR</a> </p>
+<h2 id="vs配置"><a href="#vs配置" class="headerlink" title="vs配置"></a>vs配置</h2><p>头文件 + dll动态库</p>
+<ol>
+<li>x 64</li>
+<li>环境变量：C:\Users\hcDarren\Desktop\android\opencv\build\x64\vc14\bin </li>
+<li>配置头文件包含目录： C:\Users\hcDarren\Desktop\android\opencv\build\include</li>
+<li>库目录：C:\Users\hcDarren\Desktop\android\opencv\build\x64\vc14\lib</li>
+<li>链接器：opencv_world340d.lib </li>
+<li>最后还有 dll 系统匹配</li>
+</ol>
+<h2 id="as配置"><a href="#as配置" class="headerlink" title="as配置"></a>as配置</h2><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/fe8dbb9f72ef">https://www.jianshu.com/p/fe8dbb9f72ef</a></p>
+<h2 id="mat"><a href="#mat" class="headerlink" title="mat"></a>mat</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//--------------------------------------------------</span></span><br><span class="line">Mat src = <span class="built_in">imread</span>();<span class="comment">//读文件</span></span><br><span class="line"><span class="built_in">imshow</span>(<span class="string">&quot;src&quot;</span>, src);显示图片</span><br><span class="line"><span class="comment">//--------------------------------------------------</span></span><br><span class="line"><span class="comment">// 获取信息</span></span><br><span class="line"><span class="type">int</span> cols = src.cols;<span class="comment">// 宽</span></span><br><span class="line"><span class="type">int</span> rows = src.rows;<span class="comment">// 高</span></span><br><span class="line"><span class="type">int</span> chnnales = src.<span class="built_in">channels</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------------------------------</span></span><br><span class="line"><span class="comment">//读写像素</span></span><br><span class="line">imageROI.<span class="built_in">at</span>&lt;Vec3b&gt;(i,j);</span><br><span class="line"><span class="comment">//修改像素</span></span><br><span class="line">bitwise_not</span><br><span class="line"><span class="comment">// 创建 CV_8UC1 一个颜色的通道 （0-255）</span></span><br><span class="line"><span class="comment">// CV_8UC2      2个颜色的通道   16位  RGB565</span></span><br><span class="line"><span class="comment">// CV_8UC3      3个颜色的通道   24位</span></span><br><span class="line"><span class="comment">// CV_8UC4      4个颜色的通道   32位  ARGB8888</span></span><br><span class="line"><span class="comment">// 匹配上 Java Bitmap 的颜色通道  RGB565   ARGB8888</span></span><br><span class="line"><span class="comment">// Scalar 指定颜色</span></span><br><span class="line"><span class="comment">// 第一个参数 rows 高，第二参数是 cols 宽</span></span><br><span class="line"><span class="comment">// Mat mat(3,3,CV_8UC1,Scalar(255));</span></span><br><span class="line"><span class="comment">// Size 第一个参数是 width ，第二个参数是 height</span></span><br><span class="line"><span class="comment">// Mat mat(Size(3,3), CV_8UC1, Scalar(255));</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 三颜色通道</span></span><br><span class="line"><span class="comment">// Mat test(Size(3, 3), CV_8UC3, Scalar(255,0,255));// BGR</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------------------------------</span></span><br><span class="line"><span class="comment">// 拷贝构造函数  不会去拷贝内容的</span></span><br><span class="line"><span class="comment">// Mat mat(src);</span></span><br><span class="line"><span class="comment">// Mat mat = src;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Mat mat;</span><br><span class="line"><span class="comment">// 会去拷贝内容</span></span><br><span class="line"><span class="comment">// src.copyTo(mat);</span></span><br><span class="line">mat = src.<span class="built_in">clone</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------------------------------</span></span><br><span class="line"><span class="comment">// 2.3 区域截取 (不涉及创建新的内容)</span></span><br><span class="line">Mat srcROI = <span class="built_in">src</span>(<span class="built_in">Rect</span>(<span class="number">20</span>,<span class="number">20</span>,<span class="number">400</span>,<span class="number">400</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不改变原图</span></span><br><span class="line">Mat dstROI = srcROI.<span class="built_in">clone</span>();</span><br><span class="line"><span class="comment">//--------------------------------------------------</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; rows; i++)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; cols; j++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="comment">// 获取像素 at  Vec3b 个参数</span></span><br><span class="line">		<span class="type">int</span> b = dstROI.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">0</span>];</span><br><span class="line">		<span class="type">int</span> g = dstROI.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">1</span>];</span><br><span class="line">		<span class="type">int</span> r = dstROI.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">		<span class="comment">// 修改像素 (底片效果)</span></span><br><span class="line">		dstROI.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">0</span>] = <span class="number">255</span> - b;</span><br><span class="line">		dstROI.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">1</span>] = <span class="number">255</span> - g;</span><br><span class="line">		dstROI.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">2</span>] = <span class="number">255</span> - r;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//--------------------------------------------------</span></span><br><span class="line">提取水平与垂直线</span><br><span class="line"><span class="built_in">adaptiveThreshold</span>();</span><br><span class="line"><span class="built_in">bitwise_not</span>();</span><br><span class="line"><span class="comment">//--------------------------------------------------</span></span><br><span class="line"><span class="comment">// 1. 降噪高斯</span></span><br><span class="line">Mat gaussian;</span><br><span class="line"><span class="built_in">GaussianBlur</span>(src, gaussian, <span class="built_in">Size</span>(<span class="number">3</span>, <span class="number">3</span>), <span class="number">0</span>);</span><br><span class="line"><span class="comment">// 2. 转灰度（计算速度）</span></span><br><span class="line">Mat gary;</span><br><span class="line"><span class="built_in">cvtColor</span>(gaussian, gary, COLOR_BGR2GRAY);</span><br><span class="line"><span class="comment">// 3. lpls</span></span><br><span class="line">Mat lpls;</span><br><span class="line"><span class="built_in">Laplacian</span>(gary, lpls, CV_16S, <span class="number">5</span>);</span><br><span class="line"><span class="comment">// 4. 求绝对值</span></span><br><span class="line"><span class="built_in">convertScaleAbs</span>(lpls, lpls);</span><br><span class="line"><span class="comment">// 5. 二值化</span></span><br><span class="line">Mat thresh;</span><br><span class="line"><span class="built_in">threshold</span>(lpls, thresh, <span class="number">0</span> , <span class="number">255</span> , THRESH_OTSU|THRESH_BINARY);</span><br><span class="line"><span class="comment">// thresh 100 大于 100 取最大值 255 ，小于 100 取最小值 0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------------------------------</span></span><br><span class="line"><span class="comment">// map1 x方向的重映射规律</span></span><br><span class="line"><span class="comment">// map2 y方向的重映射规律</span></span><br><span class="line"><span class="function">Mat <span class="title">map_x</span><span class="params">(src.size(), CV_32FC1)</span></span>;</span><br><span class="line"><span class="function">Mat <span class="title">map_y</span><span class="params">(src.size(), CV_32FC1)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="颜色通道"><a href="#颜色通道" class="headerlink" title="颜色通道"></a>颜色通道</h3><p>CV_8UC1      1个颜色的通道 （0-255）<br>CV_8UC2      2个颜色的通道   16位  RGB565<br>CV_8UC3      3个颜色的通道   24位<br>CV_8UC4      4个颜色的通道   32位  ARGB8888<br>匹配上 Java Bitmap 的颜色通道  RGB565   ARGB8888</p>
+<h3 id="图像混合"><a href="#图像混合" class="headerlink" title="图像混合"></a>图像混合</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/6f6b14b7-eb96-41f3-9c9d-e26719cc5b97.png" alt="6f6b14b7-eb96-41f3-9c9d-e26719cc5b97"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">addWeighted</span><span class="params">(InputArray src1, <span class="type">double</span> alpha, InputArray src2, <span class="type">double</span> beta, <span class="type">double</span> gamma, OutputArray dst, <span class="type">int</span> dtype=<span class="number">-1</span>)</span></span>; </span><br></pre></td></tr></table></figure>
+<p>第一个参数，InputArray类型的src1，表示需要加权的第一个数组，常常填一个Mat。<br>第二个参数，alpha，表示第一个数组的权重<br>第三个参数，src2，表示第二个数组，它需要和第一个数组拥有相同的尺寸和通道数。<br>第四个参数，beta，表示第二个数组的权重值。<br>第五个参数，dst，输出的数组，它和输入的两个数组拥有相同的尺寸和通道数。<br>第六个参数，gamma，一个加到权重总和上的标量值。<br>第七个参数，dtype，输出阵列的可选深度，有默认值-1。;当两个输入数组具有相同的深度时，这个参数设置为-1（默认值），即等同于src1.depth（）</p>
+<h3 id="绘制形状和文字"><a href="#绘制形状和文字" class="headerlink" title="绘制形状和文字"></a>绘制形状和文字</h3><p>线 line<br>椭圆 ellipse<br>矩形 rectangle<br>圆 cicle<br>填充 fillPloy<br>文字 putText </p>
+<h3 id="图像卷积和滤波操作"><a href="#图像卷积和滤波操作" class="headerlink" title="图像卷积和滤波操作"></a>图像卷积和滤波操作</h3><p>图像矩阵掩膜操作 （可以过滤图像信息）<br>filter2D</p>
+<p>概念：把kernel（卷积核）放到我们图像的矩阵之上，求锚点周围覆盖的像素乘积之和（包括锚点），用来计算锚点的像素值覆盖图片下面的像素值，称之为卷积操作。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Mat kernel = (<span class="built_in">Mat_</span>&lt;<span class="type">char</span>&gt;(<span class="number">3</span>, <span class="number">3</span>) &lt;&lt; <span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">5</span>, <span class="number">-1</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">filter2D</span>(src, dest, src.<span class="built_in">depth</span>(), kernel);</span><br></pre></td></tr></table></figure>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/6bff52d7-15ef-41f0-b330-3f23a2464d5b.png" alt="6bff52d7-15ef-41f0-b330-3f23a2464d5b"></p>
+<h4 id="处理边缘类型"><a href="#处理边缘类型" class="headerlink" title="处理边缘类型"></a>处理边缘类型</h4><p>BORDER_DEFAULT：用周边边缘区域来填充<br>BORDER_WRAP：对边来填充<br>BORDER_REPLICATE：用周边像素来填充<br>BORDER_CONSTANT：用一个指定的颜色来填充</p>
+<h4 id="自定义线性滤波与图像模糊"><a href="#自定义线性滤波与图像模糊" class="headerlink" title="自定义线性滤波与图像模糊"></a>自定义线性滤波与图像模糊</h4><p>Robert 算子：<br>Sobel 算子：<br>拉普拉斯算子：它的图片要求比较高</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/81cc7ded-c329-4dd9-9c8c-e771bfd9bd59.png" alt="81cc7ded-c329-4dd9-9c8c-e771bfd9bd59"></p>
+<h5 id="Sobel-算子"><a href="#Sobel-算子" class="headerlink" title="Sobel 算子"></a>Sobel 算子</h5><ol>
+<li>微积分求导</li>
+<li>卷积求边缘梯度<br> 是离散微分算子，用来计算图像的梯度。功能集合高斯模糊和一阶微分求导</li>
+</ol>
+<h5 id="Laplance-算子"><a href="#Laplance-算子" class="headerlink" title="Laplance 算子"></a>Laplance 算子</h5><ol>
+<li>二阶导数</li>
+<li>卷积求边缘梯度</li>
+</ol>
+<h5 id="Canny-边缘检测"><a href="#Canny-边缘检测" class="headerlink" title="Canny 边缘检测"></a>Canny 边缘检测</h5><p>银行卡识别选的是 Sobel 增强版 Scharr , 最强的。但是算法速度 最慢的，银行卡的识别区域不是很大</p>
+<p>depth: （opencv中的概念）<br>矩阵中元素的一个通道的数据类型，这个值和type是相关的。例如 type为 CV_16SC2，一个2通道的16位的有符号整数。那么，depth则是CV_16S。depth也是一系列的预定义值，<br>将type的预定义值去掉通道信息就是depth值: 0 - 6 , type 的精度的层度<br>CV_8U 0  CV_8S 1 CV_16U 2 CV_16S 3 CV_32S 4 CV_32F 5 CV_64F 6</p>
+<p>图像深度：像素的 bit 位数</p>
+<h3 id="模糊图像"><a href="#模糊图像" class="headerlink" title="模糊图像"></a>模糊图像</h3><p>根据周边的像素值来确定自己的像素值，平均值，最大值，最小值，正太分布值</p>
+<ol>
+<li>均值模糊 blur</li>
+<li>高斯模糊 GaussianBlur<br>如果要去写高斯模糊的效果或者说均值模糊的效果，Java 来写思路：根据半径计算出 权值，然后相乘 半径内的像素点，赋值给自己。</li>
+</ol>
+<h3 id="中值滤波与双边滤波"><a href="#中值滤波与双边滤波" class="headerlink" title="中值滤波与双边滤波"></a>中值滤波与双边滤波</h3><p>medianBlur 中值 对所有考虑点进行排序，去中间的那个值   1,2,3,4,5  去掉噪音<br>bilateralFilter 双边  可以用作美容 ，基于高斯，高斯保留的轮廓并不强，双边保留的轮廓信息会增强，基于高斯再增加像素差</p>
+<h3 id="腐蚀与膨胀"><a href="#腐蚀与膨胀" class="headerlink" title="腐蚀与膨胀"></a>腐蚀与膨胀</h3><p>数学形态学，与卷积操作类似，用的矩形 （E 求和），用的是任意形状，矩形，十字形，椭圆形，等等 最大值，最小值，中值，最大值-最小值</p>
+<p>morphologyEx<br>腐蚀：erode 取最小值<br>膨胀：dilate 取最大值</p>
+<p>CV_MOP_OPEN 开：先腐蚀后膨胀<br>CV_MOP_CLOSE 闭：先膨胀后腐蚀<br>CV_MOP_GRADIENT 梯度：膨胀 - 腐蚀<br>CV_MOP_TOPHAT 顶帽：原图像 - 开图像<br>CV_MOP_BLACKHAT 黑帽：闭图像 - 原图像</p>
+<h3 id="上采样与降采样"><a href="#上采样与降采样" class="headerlink" title="上采样与降采样"></a>上采样与降采样</h3><p>图片采样：采样（sampling）也称取样，指把时间域或空间域的连续量转化成离散量的过程。在数字图像处理领域中，定义为图像空间坐标的数字化操作。</p>
+<blockquote>
+<p>对风景采多少个点（像素点）</p>
+</blockquote>
+<h3 id="阈值（图像二值化）"><a href="#阈值（图像二值化）" class="headerlink" title="阈值（图像二值化）"></a>阈值（图像二值化）</h3><p>THRESH_BINARY<br>threshold(gary, dst, 100, 255, THRESH_BINARY); 当前像素点超过 thresh(100) ,当前像素取 maxValue(255) , 否则取最小值（0）<br>THRESH_BINARY_INV</p>
+<p>当前像素点超过 thresh(100) ,当前像素取最小值（0）, 否则取 maxValue(255)<br>THRESH_TRUNC<br>当前像素点超过 thresh(100) ,当前像素取 thresh(100), 否则取原来的值<br>THRESH_TOZERO<br>当前像素点超过 thresh(100) ,当前像素取原来的值, 否则取最小值（0）<br>THRESH_TOZERO_INV<br>当前像素点超过 thresh(100) ,当前像素取最小值（0）, 否则取原来的值<br>THRESH_OTSU</p>
+<p>自动阈值：取每个像素点（整个图像）计算一个 thresh 值<br>THRESH_TRIANGLE</p>
+<p>自动阈值：取每个像素点（整个图像）计算一个 thresh 值</p>
+<h3 id="reSize-图片缩放"><a href="#reSize-图片缩放" class="headerlink" title="reSize() 图片缩放"></a>reSize() 图片缩放</h3><p>INTER_NEAREST - 最近邻插值<br>INTER_LINEAR - 线性插值（默认值）<br>INTER_AREA - 区域插值（利用像素区域关系的重采样插值）<br>INTER_CUBIC –三次样条插值（超过4×4像素邻域内的双三次插值）<br>INTER_LANCZOS4 -Lanczos插值（超过8×8像素邻域的Lanczos插值）</p>
+<h2 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h2><h3 id="灰度处理"><a href="#灰度处理" class="headerlink" title="灰度处理"></a>灰度处理</h3><p>灰度图算法：java 里面把一张图片转成灰度图？<br>RGB： 0-255,0-255,0-255 (彩色图)<br>灰度：R+G+B &#x3D; 255 &#x3D; 0.33R+0.33G+0.33B &#x3D; 0.3R + 0.59G + 0.11B(适合人的眼睛)<br>灰度图所含有的信息量(取值范围 0-255)不高，而彩色图的取值范围比较高 （255<em>255</em>255）</p>
+<h3 id="饱和度、亮度和对比度"><a href="#饱和度、亮度和对比度" class="headerlink" title="饱和度、亮度和对比度"></a>饱和度、亮度和对比度</h3><ul>
+<li>饱和度：图片更加饱和是什么意思？ 红色，淡红，鲜红，红得发紫等等   R -&gt; 1.2R B -&gt; 1.2B G -&gt; 1.2G</li>
+<li>亮度：亮暗的程度</li>
+<li>对比度: 图像对比度指的是 [1]  一幅图像中明暗区域最亮的白和最暗的黑之间不同亮度层级的测量，即指一幅图像灰度反差的大小</li>
+</ul>
+<p>滤镜 UI设计师 再调亮一点 ，饱和一点，对比度再调高一点？ alpha 增大成比例去增 1:500  10:5000  beta增<br>    &gt;alpha 饱和度 , 对比度<br>    beta 亮度<br>    F(R) &#x3D; alpha<em>R + beta;<br>    F(G) &#x3D; alpha</em>G + beta;<br>    F(B) &#x3D; alpha*B + beta;</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (chnnales == <span class="number">3</span>)&#123;</span><br><span class="line"><span class="comment">// 获取像素 at  Vec3b 个参数</span></span><br><span class="line"><span class="type">int</span> b = src.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">0</span>];</span><br><span class="line"><span class="type">int</span> g = src.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">1</span>];</span><br><span class="line"><span class="type">int</span> r = src.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">src.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">0</span>] = <span class="built_in">saturate_cast</span>&lt;uchar&gt;(b*alpha + beta);</span><br><span class="line">src.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">1</span>] = <span class="built_in">saturate_cast</span>&lt;uchar&gt;(g*alpha + beta);</span><br><span class="line">src.<span class="built_in">at</span>&lt;Vec3b&gt;(i, j)[<span class="number">2</span>] = <span class="built_in">saturate_cast</span>&lt;uchar&gt;(r*alpha + beta);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="霍夫直线检测"><a href="#霍夫直线检测" class="headerlink" title="霍夫直线检测"></a>霍夫直线检测</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/fe6a294b-bdd0-4d6d-8657-f82bae2e4f63.png" alt="fe6a294b-bdd0-4d6d-8657-f82bae2e4f63"></p>
+<h3 id="霍夫圆检测"><a href="#霍夫圆检测" class="headerlink" title="霍夫圆检测"></a>霍夫圆检测</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/c0f0866e-aa61-4031-9add-38169305bb31.png" alt="c0f0866e-aa61-4031-9add-38169305bb31"></p>
+<h3 id="RGB-与-HSV"><a href="#RGB-与-HSV" class="headerlink" title="RGB 与 HSV"></a>RGB 与 HSV</h3><p> Y Cr Cb   HSV </p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/94699903-8320-4279-9a93-62c47a913cc4.jpeg" alt="94699903-8320-4279-9a93-62c47a913cc4"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/ac27d369-4c8e-4f5a-98dd-746998bad0b9.jpeg" alt="ac27d369-4c8e-4f5a-98dd-746998bad0b9"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/beac6ee6-309a-437e-ab35-72f4959b764f.jpeg" alt="beac6ee6-309a-437e-ab35-72f4959b764f"></p>
+<h3 id="直方图"><a href="#直方图" class="headerlink" title="直方图"></a>直方图</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/c9453f2f-ee6e-45df-ab19-bbd64473d890.jpeg" alt="c9453f2f-ee6e-45df-ab19-bbd64473d890"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/a5db2f17-6930-4e55-8485-f9bf66f0c99a.png" alt="a5db2f17-6930-4e55-8485-f9bf66f0c99a"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/89e10973-40a9-488e-a61c-1f4d081dd92e.jpeg" alt="89e10973-40a9-488e-a61c-1f4d081dd92e"></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 计算获得直方图的数据</span></span><br><span class="line"><span class="comment">// images 输入的图像</span></span><br><span class="line"><span class="comment">// nimages 输入图像的个数 </span></span><br><span class="line"><span class="comment">// channels 第几通道</span></span><br><span class="line"><span class="comment">// mask 掩模</span></span><br><span class="line"><span class="comment">// dims 需要统计的通道个数</span></span><br><span class="line"><span class="comment">// histSize 等级的个数  0-255</span></span><br><span class="line"><span class="comment">// ranges 数据的范围  0-255</span></span><br><span class="line"><span class="comment">// uniform true 是否对得到的图片进行归一化处理</span></span><br><span class="line"><span class="comment">// accumulate 在多个图像时，是否累计计算像素值的个数 false</span></span><br><span class="line"><span class="built_in">calcHist</span>(<span class="type">const</span> Mat* images, <span class="type">int</span> nimages,</span><br><span class="line">	<span class="type">const</span> <span class="type">int</span>* channels, InputArray mask,</span><br><span class="line">	OutputArray hist, <span class="type">int</span> dims, <span class="type">const</span> <span class="type">int</span>* histSize,</span><br><span class="line">	<span class="type">const</span> <span class="type">float</span>** ranges, <span class="type">bool</span> uniform = <span class="literal">true</span>, <span class="type">bool</span> accumulate = <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="直方图比较-（2组数据去对比）"><a href="#直方图比较-（2组数据去对比）" class="headerlink" title="直方图比较 （2组数据去对比）"></a>直方图比较 （2组数据去对比）</h4><ol>
+<li><p>相关性比较 CV_COMP_CORREL （多少的时候是最好的  1）  N bins  直方图的等级<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/6f6b14b7-eb96-41f3-9c9d-e26719cc5b97-16340088631871.png" alt="6f6b14b7-eb96-41f3-9c9d-e26719cc5b97"></p>
+</li>
+<li><p>卡方比较 CV_COMP_CHISQR    (多少的时候是最好的  0)<br>  <img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/ac0660af-c675-4e2b-87c5-1067097e2012.png" alt="ac0660af-c675-4e2b-87c5-1067097e2012"></p>
+</li>
+<li><p>十字交叉性 CV_COMP_INTERSECT</p>
+</li>
+</ol>
+<p>  <img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/15ae8856-091a-479d-9bac-97baab5581ad.png" alt="15ae8856-091a-479d-9bac-97baab5581ad"></p>
+<ol start="4">
+<li>巴氏距离 CV_COMP_BHATTACHARYYA  (多少的时候是最好的  0)</li>
+</ol>
+<p>  <img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/d83a583f-aa3c-4973-96ed-0bb34431929f.png" alt="d83a583f-aa3c-4973-96ed-0bb34431929f"></p>
+<p>  compareHist </p>
+<h5 id="直方图模板匹配"><a href="#直方图模板匹配" class="headerlink" title="直方图模板匹配"></a>直方图模板匹配</h5><p><a target="_blank" rel="noopener" href="http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/imgproc/histograms/template_matching/template_matching.html">http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/imgproc/histograms/template_matching/template_matching.html</a></p>
+<h3 id="轮廓查找"><a href="#轮廓查找" class="headerlink" title="轮廓查找"></a>轮廓查找</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/guduruyu/article/details/69220296">https://blog.csdn.net/guduruyu/article/details/69220296</a></p>
+<h3 id="美容"><a href="#美容" class="headerlink" title="美容"></a>美容</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/1a9ed148-5e7a-44f1-9ea2-9abf95121d9a.png" alt="1a9ed148-5e7a-44f1-9ea2-9abf95121d9a"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/a6cbbc15-475f-445e-99b2-6c7e9cab53bb.png" alt="a6cbbc15-475f-445e-99b2-6c7e9cab53bb"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/ecffc523-9d30-4ef1-b3f2-5db003b8f482.png" alt="ecffc523-9d30-4ef1-b3f2-5db003b8f482"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/54174d9a-5017-4565-a557-7ea52ee0db73.png" alt="54174d9a-5017-4565-a557-7ea52ee0db73"></p>
+<h3 id="特征检测"><a href="#特征检测" class="headerlink" title="特征检测"></a>特征检测</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/63cbcd14-a554-4131-b768-b994da7282be.png" alt="63cbcd14-a554-4131-b768-b994da7282be"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/4084e899-a521-4f21-8b7a-20a8cc21eb8f.png" alt="4084e899-a521-4f21-8b7a-20a8cc21eb8f"></p>
+<h4 id="HOG-特征检测的实现原理"><a href="#HOG-特征检测的实现原理" class="headerlink" title="HOG 特征检测的实现原理"></a>HOG 特征检测的实现原理</h4><p>特征提取：边缘，角点，点，线，平坦区<br>训练样本：正向样，负向样本 （xml文件）<br>特征匹配：DDM , detection (发现)  description (描述)  matching (匹配)<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/5fd52494-2fb2-46ec-8914-793800389503.png" alt="5fd52494-2fb2-46ec-8914-793800389503"></p>
+<h5 id="实现行人检测"><a href="#实现行人检测" class="headerlink" title="实现行人检测"></a>实现行人检测</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Mat bgr;    </span><br><span class="line"><span class="built_in">cvtColor</span>(src,bgr,COLOR_BGRA2BGR);    </span><br><span class="line">HOGDescriptor descriptor;    </span><br><span class="line">descriptor.<span class="built_in">setSVMDetector</span>(descriptor.<span class="built_in">getDefaultPeopleDetector</span>());    </span><br><span class="line">vector&lt;Rect&gt; foundLocations;    </span><br><span class="line">descriptor.<span class="built_in">detectMultiScale</span>(bgr, foundLocations, <span class="number">0</span>, <span class="built_in">Size</span>(<span class="number">14</span>, <span class="number">14</span>));    </span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; foundLocations.<span class="built_in">size</span>(); ++i) &#123;        </span><br><span class="line">	<span class="built_in">rectangle</span>(src, foundLocations[i], <span class="built_in">Scalar</span>(<span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>), <span class="number">2</span>, LINE_AA);    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="LBP-（Local-Binary-Patterns）特征介绍"><a href="#LBP-（Local-Binary-Patterns）特征介绍" class="headerlink" title="LBP （Local Binary Patterns）特征介绍"></a>LBP （Local Binary Patterns）特征介绍</h4><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/3839f46c-12a1-4572-af53-72e4f1387eac.png" alt="3839f46c-12a1-4572-af53-72e4f1387eac"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/7df7f8ac-a9d0-480d-b5fc-db10bb1d0729.png" alt="7df7f8ac-a9d0-480d-b5fc-db10bb1d0729"></p>
+<h4 id="haar-特征介绍"><a href="#haar-特征介绍" class="headerlink" title="haar 特征介绍"></a>haar 特征介绍</h4><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/777e830f-8d6b-4192-a406-3d8ae9e29ef8.png" alt="777e830f-8d6b-4192-a406-3d8ae9e29ef8"></p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><h3 id="人脸识别"><a href="#人脸识别" class="headerlink" title="人脸识别"></a>人脸识别</h3><ol>
+<li>脸要足够大</li>
+<li>确保只有一张脸</li>
+<li>特征检测</li>
+</ol>
+<h4 id="实时人脸检测"><a href="#实时人脸检测" class="headerlink" title="实时人脸检测"></a>实时人脸检测</h4><p>  级联分类器的使用<br>  代码：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/fe8dbb9f72ef">https://www.jianshu.com/p/fe8dbb9f72ef</a><br>  cascadeClassifier.detectMultiScale(grayMat, faces, 1.1, 3, 0, Size(width &#x2F; 2, height &#x2F; 2));级联分类：强分类和弱分类，好比之前检测二维码</p>
+<h5 id="均值，方差与协方差"><a href="#均值，方差与协方差" class="headerlink" title="均值，方差与协方差"></a>均值，方差与协方差</h5><p>  meanStdDev<br>  caclCovarMatrix</p>
+<h5 id="特征值与特征向量"><a href="#特征值与特征向量" class="headerlink" title="特征值与特征向量"></a>特征值与特征向量</h5><p>  <a target="_blank" rel="noopener" href="https://jingyan.baidu.com/article/27fa7326afb4c146f8271ff3.html">https://jingyan.baidu.com/article/27fa7326afb4c146f8271ff3.html</a><br>  eigen </p>
+<h5 id="PCA-原理与应用-（降维）"><a href="#PCA-原理与应用-（降维）" class="headerlink" title="PCA 原理与应用 （降维）"></a>PCA 原理与应用 （降维）</h5><p>人脸识别的步骤：<br>人脸检测 + 人脸识别<br>支付宝人脸检测，高铁刷脸，刷脸打卡<br>识别 &#x3D; 人脸样本数据采集 + 人脸匹配</p>
+<p>eigenFace 算法<br>FisherFace 算法<br>LBPH 算法<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/akenseren/article/details/80647276">https://blog.csdn.net/akenseren/article/details/80647276</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/little-monkey/p/8118938.html">https://www.cnblogs.com/little-monkey/p/8118938.html</a><br>自己回顾一下之前的知识点，PCA，LBP </p>
+<h3 id="银行卡识别"><a href="#银行卡识别" class="headerlink" title="银行卡识别"></a>银行卡识别</h3><ol>
+<li>截取到银行卡区域（扫描，可以不要这一步）      </li>
+<li>截取到银行卡号区域</li>
+<li>对银行卡号区域进行特征分析提取识别</li>
+<li>截取到银行卡区域（扫描，可以不要这一步）<br>4.1 轮廓增强（梯度增强）<br>4.2  进行二值化轮廓过滤<br>4.3 截取卡号区域<br> 4.3.1 找到银联区域（精度强，90%）<br> 4.3.2 可以直接截取卡号 （1&#x2F;2,3&#x2F;4）区域尽量大一些;</li>
+</ol>
+<p>银行卡数字识别</p>
+<ol>
+<li>如果后面是做扫描，截取银行卡区域就可以省略<blockquote>
+<p>有两种方式，一种是精确截取，找到银联区域通过大小比例精确的截取 （70%）<br>粗略的截取，截取高度 1&#x2F;2 - 3&#x2F;4 ， 宽度 1&#x2F;12  11&#x2F;12    90%  （采用）<br>万一找不到 ，可以手动的输入和修改2.2 获取到数字2.3 特征值获取分析比对2.4 字符粘连2.4.1 判断字符是不是粘连字符2. 识别数字匹配 ca 查一查资料 ，2 特征 ， 拿图片进行比较开发中碰到类似的问题</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="二维码识别"><a href="#二维码识别" class="headerlink" title="二维码识别"></a>二维码识别</h3><ol>
+<li>检测图片中是否包含二维码</li>
+<li>识别图中二维码</li>
+</ol>
+<p>zxing 和 zbar 如何加速识别？</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/%E5%85%B6%E4%BB%96%E9%A2%86%E5%9F%9F/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/">http://king-of-cement.gitee.io/blog/post/%E5%85%B6%E4%BB%96%E9%A2%86%E5%9F%9F/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/Android/IPC%20Binder/">IPC Binder</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/Android/%E4%BC%98%E5%8C%96/">优化</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

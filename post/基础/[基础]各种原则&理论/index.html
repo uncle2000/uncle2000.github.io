@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>各种原则&amp;理论 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">各种原则&amp;理论</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/%E5%9F%BA%E7%A1%80/">基础</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="基础-各种原则-amp-理论"><a href="#基础-各种原则-amp-理论" class="headerlink" title="[基础]各种原则&amp;理论"></a>[基础]各种原则&amp;理论</h1><p>@[基础]</p>
+<p>[toc]</p>
+<h2 id="oo基础"><a href="#oo基础" class="headerlink" title="oo基础"></a>oo基础</h2><ul>
+<li>抽象</li>
+<li>封装</li>
+<li>多态</li>
+<li>继承</li>
+</ul>
+<h2 id="六大oo原则"><a href="#六大oo原则" class="headerlink" title="六大oo原则"></a>六大oo原则</h2><h3 id="1-单一职责原则（Single-Responsibility-Principle）"><a href="#1-单一职责原则（Single-Responsibility-Principle）" class="headerlink" title="1 单一职责原则（Single Responsibility Principle）"></a>1 单一职责原则（Single Responsibility Principle）</h3><p>定义：就一个类而言，应该仅有一个引起它变化的原因。简单来说，一个类中应该是一组相关性很高的函数、数据的封装。</p>
+<h3 id="2-开闭原则（Open-Close-Principle）"><a href="#2-开闭原则（Open-Close-Principle）" class="headerlink" title="2 开闭原则（Open Close Principle）"></a>2 开闭原则（Open Close Principle）</h3><p>定义：软件中的对象（类、模块、函数等）应该对于扩展是开放的，但是，对于修改是封闭（关闭）的。当软件需要变化时，应该尽量通过扩展的方式来实现变化，而不是通过修改已有的代码来实现。</p>
+<h3 id="3-里氏替换原则（Liskov-Substitution-Principle）"><a href="#3-里氏替换原则（Liskov-Substitution-Principle）" class="headerlink" title="3 里氏替换原则（Liskov Substitution Principle）"></a>3 里氏替换原则（Liskov Substitution Principle）</h3><p>定义：只要父类能出现的地方子类就可以出现，主要体现就是实现和继承</p>
+<h3 id="4-依赖倒置原则（Dependence-Inversion-Principle）"><a href="#4-依赖倒置原则（Dependence-Inversion-Principle）" class="headerlink" title="4 依赖倒置原则（Dependence Inversion Principle）"></a>4 依赖倒置原则（Dependence Inversion Principle）</h3><p>定义：指代了一种特定的解耦形式，高层模块不依赖低层次模块的细节，说白了高层次就是不依赖细节而是依赖抽象。</p>
+<h3 id="5-接口隔离原则（Interface-Segregation-Principle）"><a href="#5-接口隔离原则（Interface-Segregation-Principle）" class="headerlink" title="5 接口隔离原则（Interface Segregation Principle）"></a>5 接口隔离原则（Interface Segregation Principle）</h3><p>定义：类间的依赖关系应该建立在最小的接口上。接口隔离原则将非常庞大、臃肿的接口拆分成为更小的和更具体的接口，这样客户将会只需要知道他们感兴趣的方法。接口隔离原则的目的是系统解开耦合，从而容易重构、更改和重新部署，让客户端依赖的接口尽可能地小。（接口拆分，单接口）</p>
+<h3 id="6-迪米特原则（Law-of-Demeter）"><a href="#6-迪米特原则（Law-of-Demeter）" class="headerlink" title="6 迪米特原则（Law of Demeter）"></a>6 迪米特原则（Law of Demeter）</h3><p>定义：一个对象应该对其他对象有最少的了解，调用者也是比较关注。</p>
+<h2 id="九大oo原则"><a href="#九大oo原则" class="headerlink" title="九大oo原则"></a>九大oo原则</h2><h3 id="类应该只有一个改变的理由（单一职责原则）"><a href="#类应该只有一个改变的理由（单一职责原则）" class="headerlink" title="类应该只有一个改变的理由（单一职责原则）"></a>类应该只有一个改变的理由（单一职责原则）</h3><h3 id="对拓展开放，对修改关闭（开闭原则）"><a href="#对拓展开放，对修改关闭（开闭原则）" class="headerlink" title="对拓展开放，对修改关闭（开闭原则）"></a>对拓展开放，对修改关闭（开闭原则）</h3><h3 id="依赖抽象，不依赖具体类（依赖倒置原则）"><a href="#依赖抽象，不依赖具体类（依赖倒置原则）" class="headerlink" title="依赖抽象，不依赖具体类（依赖倒置原则）"></a>依赖抽象，不依赖具体类（依赖倒置原则）</h3><h3 id="针对接口编程，不针对实现编程"><a href="#针对接口编程，不针对实现编程" class="headerlink" title="针对接口编程，不针对实现编程"></a>针对接口编程，不针对实现编程</h3><h3 id="封装变化"><a href="#封装变化" class="headerlink" title="封装变化"></a>封装变化</h3><h3 id="多用组合少用继承"><a href="#多用组合少用继承" class="headerlink" title="多用组合少用继承"></a>多用组合少用继承</h3><h3 id="弱耦合"><a href="#弱耦合" class="headerlink" title="弱耦合"></a>弱耦合</h3><h3 id="只和朋友交谈"><a href="#只和朋友交谈" class="headerlink" title="只和朋友交谈"></a>只和朋友交谈</h3><h3 id="别找我，我会找你（好莱坞原则）"><a href="#别找我，我会找你（好莱坞原则）" class="headerlink" title="别找我，我会找你（好莱坞原则）"></a>别找我，我会找你（好莱坞原则）</h3><h2 id="编程范式"><a href="#编程范式" class="headerlink" title="编程范式"></a>编程范式</h2><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%BC%96%E7%A8%8B%E8%8C%83%E5%9E%8B">维基</a></p>
+<blockquote>
+<p>编程范型、编程范式或程序设计法（英语：Programming paradigm），（范即模范、典范之意，范型即模式、方法），是一类典型的编程风格，是指从事软件工程的一类典型的风格（可以对照方法学）。如：函数式编程、过程式编程、面向对象编程、指令式编程等等为不同的编程范型。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%9F%BA%E7%A1%80/.1606188246929.png" alt="Alt text"></p>
+</blockquote>
+<h3 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h3><blockquote>
+<p>面向对象程序设计（英语：Object-oriented programming，缩写：OOP）是种具有对象概念的程序编程典范，同时也是一种程序开发的抽象方针。在面向对象程序编程里，计算机程序会被设计成彼此相关的对象<br>当我们提到面向对象的时候，它不仅指一种程序设计方法。它更多意义上是一种程序开发方式。在这一方面，我们必须了解更多关于面向对象系统分析和面向对象设计（Object Oriented Design，简称OOD）方面的知识。许多流行的编程语言是面向对象的,它们的风格就是会透由对象来创出实例。<br>重要的面向对象编程语言包含Common Lisp、Python、C++、Objective-C、Smalltalk、Delphi、Java、Swift、C#、Perl、Ruby 与 PHP等。</p>
+</blockquote>
+<h3 id="面向切面"><a href="#面向切面" class="headerlink" title="面向切面"></a>面向切面</h3><blockquote>
+<p>面向切面的程序设计（Aspect-oriented programming，AOP，又译作面向方面的程序设计、剖面导向程序设计）是计算机科学中的一种程序设计思想，旨在将横切关注点与业务主体进行进一步分离，以提高程序代码的模块化程度。</p>
+</blockquote>
+<h2 id="java中的泛型"><a href="#java中的泛型" class="headerlink" title="java中的泛型"></a>java中的泛型</h2><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/272185241/answer/366129174">引入</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/89515034">引入</a></p>
+<blockquote>
+<p>把类型明确的工作推迟到创建对象或调用方法的时候才去明确的特殊的类型<br>JDK5以前是没有泛型<br>泛型的本质是参数化类型</p>
+</blockquote>
+<p>Java泛型设计原则：只要在编译时期没有出现警告，那么运行时期就不会出现ClassCastException异常.</p>
+<h3 id="参数化类型"><a href="#参数化类型" class="headerlink" title="参数化类型"></a>参数化类型</h3><ul>
+<li>把类型当作是参数一样传递</li>
+<li>&lt;数据类型&gt;只能是引用类型</li>
+</ul>
+<h3 id="相关术语"><a href="#相关术语" class="headerlink" title="相关术语"></a>相关术语</h3><ul>
+<li>ArrayList<E>中的E称为类型参数变量</li>
+<li>ArrayList<Integer>中的Integer称为实际类型参数</li>
+<li>整个称为ArrayList<E>泛型类型</li>
+<li>整个ArrayList<Integer>称为参数化的类型ParameterizedType</li>
+</ul>
+<h3 id="相关知识"><a href="#相关知识" class="headerlink" title="相关知识"></a>相关知识</h3><ul>
+<li>自定义泛型接口   interface Observer<T></li>
+<li>泛型类           class ImplObserver<T> implements Observer<T></li>
+<li>泛型方法         <T> Observer<T> call(T t)  （泛型是先定义后使用的）<blockquote>
+<p>说一下泛型的作用域<br>如果将泛型声明放在泛型接口,泛型类上,则该泛型在该类中就是确定的了,如果将泛型声明放在了泛型方法上,则该泛型只在该方法中有效,如果泛型方法上声明的泛型类型和类或接口中声明的泛型一致,则会在该方法中隐藏类或接口上的泛型</p>
+</blockquote>
+</li>
+<li>子类明确泛型类的类型参数变量</li>
+<li>子类不明确泛型类的类型参数变量</li>
+<li>类上声明的泛形只对非静态成员有效</li>
+</ul>
+<ol start="4">
+<li>在泛型的上限和下限中有一个原则：PECS(Producer Extends Consumer Super)</li>
+</ol>
+<h3 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h3><p>？：表示类型不确定，只能用于声明变量或者形参上，不能用在创建泛型类，泛型方法和接口上</p>
+<h3 id="泛型的嵌套"><a href="#泛型的嵌套" class="headerlink" title="泛型的嵌套"></a>泛型的嵌套</h3><p>比如 List<code>&lt;People&lt;String&gt;&gt;</code></p>
+<h3 id="泛型的边界"><a href="#泛型的边界" class="headerlink" title="泛型的边界"></a>泛型的边界</h3><p>? extends E 是 泛型 的上边界 ， ? super T 是 泛型的下边界</p>
+<ul>
+<li><? extends Number>：元素只能是Number的子类或自身</li>
+<li><? super Type>：传递进来的只能是Type或Type的父类</li>
+</ul>
+<h3 id="RxJava中深入理解泛型"><a href="#RxJava中深入理解泛型" class="headerlink" title="RxJava中深入理解泛型"></a>RxJava中深入理解泛型</h3><h4 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h4><blockquote>
+<p>与我们传统编码(函数式编程)不一样,传统编码是做完这件事之后做另外一件事,给人的感觉都是单线程的,可能会开新线程去处理耗时操作,在处理完成之后通过回调去处理之后的事情<br>而响应式编程提供给我们的是一种不一样的思想,在响应式编程的世界中一切执行流程都是基于事件的,已事件为驱动</p>
+</blockquote>
+<h4 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h4><blockquote>
+<p>观察者模式是这样子的,我先举个例子看大家能不能理解<br>老师在讲台上讲课,而所有的学生都会观察着老师的一举一动,而老师每产生一个事件(比如说在黑板上写下一串公式),则对应着所有的学生都观察到了老师的这一举动,自己则在自己的笔记本中记录,大脑中进行思考.而老师却不关心自己的学生对这一举动做什么事.<br>好了,例子就是这样的,我们来分析一下这个例子跟观察者模式有个什么关系?<br>这个例子中,老师可以产生事件,学生观察着老师,而老师在产生事件之后咳嗽一下,通知所有的学生,我刚才做了什么事,你们应该也需要做点自己的事情<br>而这就产生了几个概念,观察者,被观察者,事件,事件的处理与消费<br>被观察者中存在观察者的引用,即教师知道自己要通知的学生都有谁<br>被观察者在产生事件之后通知观察者,即教师产生事件之后通知每一位观察着自己的学生</p>
+</blockquote>
+<h4 id="RxJava是对观察者模式的一种高级运用-或者说是一种升级-他把观察者模式具体化-更加明确了各个对象之间的关系"><a href="#RxJava是对观察者模式的一种高级运用-或者说是一种升级-他把观察者模式具体化-更加明确了各个对象之间的关系" class="headerlink" title="RxJava是对观察者模式的一种高级运用,或者说是一种升级,他把观察者模式具体化,更加明确了各个对象之间的关系"></a>RxJava是对观察者模式的一种高级运用,或者说是一种升级,他把观察者模式具体化,更加明确了各个对象之间的关系</h4><p>四个基本概念：</p>
+<ul>
+<li>Observable (可观察者，即被观察者)、</li>
+<li>Observer (观察者)、 </li>
+<li>subscribe (订阅)、事件。</li>
+<li>Observable 和 Observer 通过 subscribe() 方法实现订阅关系，从而 Observable 可以在需要的时候发出事件来通知 Observer。</li>
+</ul>
+<p>因为泛型的作用域</p>
+<blockquote>
+<p>如果将泛型声明放在泛型接口,泛型类上,则该泛型在该类中就是确定的了,如果将泛型声明放在了泛型方法上,则该泛型只在该方法中有效,如果泛型方法上声明的泛型类型和类或接口中声明的泛型一致,则会在该方法中隐藏类或接口上的泛型</p>
+</blockquote>
+<p>会出现下面这种问题</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">泛型声明在方法上,则除去该声明有T泛型的方法之外,其他方法不识别T类型</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ImplObservable2</span> <span class="keyword">implements</span> <span class="title class_">Observable2</span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">call</span><span class="params">(T t)</span> &#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果这么做</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ImplObservable</span>&lt;T&gt; <span class="keyword">implements</span> <span class="title class_">Observable</span>&lt;T&gt;&#123;</span><br><span class="line">    T t;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ImplObservable</span><span class="params">(T t)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.t = t;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ImplObservable&lt;\Student&gt; observer &#x3D; new ImplObservable&lt;&gt;(new Student());<br>如果我把&lt;&gt;删除掉,则编译器会给我们这样一个警告<br>Type safety: The expression of type ImplObservable needs unchecked conversion to conform to ImplObservable<Student><br>类型不安全?怎么会不安全?并没有报错啊..<br>事情是这样的,在ImplObserver中,我们将泛型声明放在了类上,在该类中都可以识别T类型了,但是,构造方法接受一个T类型,如果你在创建该对象的时候,没有向该类声明T类型究竟属于哪种类型,就直接传递了一个实际类型过去,问题就像这样,教室接受所有类型过来,可能是教师,也可能是学生,但是,你在创建该教室的时候,你对教室接受的类型进行了限制,但是你又没有通知教室说教室准确的要接受哪种类型的对象,这就会造成泛型不安全</p>
+</blockquote>
+<p>Rxjava的做法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ImplObservable</span>&lt;T&gt; <span class="keyword">implements</span> <span class="title class_">Observable</span>&lt;T&gt;&#123;</span><br><span class="line">    T t;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">ImplObservable</span><span class="params">(T t)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.t = t;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; Observable&lt;T&gt; <span class="title function_">create</span><span class="params">(T t)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ImplObservable</span>&lt;T&gt;(t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Observable&lt;Student&gt; create = ImplObservable.create(<span class="keyword">new</span> <span class="title class_">Student</span>());</span><br></pre></td></tr></table></figure>
+<p>这样我们在使用ImplObserver的时候就没有对这个类的泛型进行明确说明,而是在create方法中进行了声明,怎么声明的? 这里面还有点门道,我们将create方法定义成了静态方法,并且在该方法上声明了T类型,这样该方法的T类型就会隐藏掉类上的T类型,但是,我们的create方法做了这么一件事,将静态方法的泛型,传递给了ImplObservable类上的泛型,并且返回创建好的ImplObservable泛型对象,此处的泛型类型为create方法声明的泛型类型</p>
+<h2 id="常见名词"><a href="#常见名词" class="headerlink" title="常见名词"></a>常见名词</h2><ul>
+<li>面向对象：是一种变成思想，以对象为核心，注重的是解决问题的方法</li>
+<li>解释型：程序编写完毕后没有一个预先编译的过程，直接运行，逐行编译逐行运行，如果出错，终止解释，修改错误，重新运行</li>
+<li>编译型：程序要预先编译成机器码，然后再统一运行 java c++</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/%E5%9F%BA%E7%A1%80/[%E5%9F%BA%E7%A1%80]%E5%90%84%E7%A7%8D%E5%8E%9F%E5%88%99&%E7%90%86%E8%AE%BA/">http://king-of-cement.gitee.io/blog/post/%E5%9F%BA%E7%A1%80/[%E5%9F%BA%E7%A1%80]%E5%90%84%E7%A7%8D%E5%8E%9F%E5%88%99&%E7%90%86%E8%AE%BA/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/Android/JetPack/">JetPack</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/%E5%85%B6%E4%BB%96/hexo%E6%90%AD%E5%BB%BA%E9%85%8D%E7%BD%AE/">hexo搭建配置</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

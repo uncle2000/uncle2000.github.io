@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>Android VM | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Android VM</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/Android/">Android</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Android-VM"><a href="#Android-VM" class="headerlink" title="Android VM"></a>Android VM</h1><p>[toc]</p>
+<h2 id="Android-中的Dalvik和ART"><a href="#Android-中的Dalvik和ART" class="headerlink" title="Android 中的Dalvik和ART"></a>Android 中的Dalvik和ART</h2><h3 id="Dalvik"><a href="#Dalvik" class="headerlink" title="Dalvik"></a>Dalvik</h3><p>Dalvik留下的很多机制在现在的Android系统是一样适用的，例如Dalvik指令，dex文件<br>Dalvik是Google专门为Android操作系统开发的虚拟机。它支持.dex（即“Dalvik Executable”）格式的Java应用程序的运行。.dex格式是专为Dalvik设计的一种压缩格式，适合内存和处理器速度有限的系统。</p>
+<blockquote>
+<p>Dalvik由Dan Bornstein编写，名字来源于他的祖先曾经居住过的小渔村达尔维克（Dalvík），位于冰岛。</p>
+</blockquote>
+<p>Dalvik 经过优化，允许在有限的内存中同时运行多个虚拟机的实例，并且每一个Dalvik 应用作为一个独立的Linux 进程执行。独立的进程可以防止在虚拟机崩溃的时候所有程序都被关闭。<br>很长时间以来，Dalvik虚拟机一直被用户指责为拖慢安卓系统运行速度不如IOS的根源。<br>2014年6月25日，Android L 正式亮相于召开的谷歌I&#x2F;O大会，Android L 改动幅度较大，谷歌将直接删除Dalvik，代替它的是传闻已久的ART。</p>
+<h4 id="Dalvik和JVM有啥关系？"><a href="#Dalvik和JVM有啥关系？" class="headerlink" title="Dalvik和JVM有啥关系？"></a>Dalvik和JVM有啥关系？</h4><p>主要区别：</p>
+<ul>
+<li>Dalvik是基于寄存器的，而JVM是基于栈的。</li>
+<li>Dalvik运行dex文件，而JVM运行java字节码</li>
+<li>自Android 2.2开始，Dalvik支持JIT（just-in-time，即时编译技术）。</li>
+</ul>
+<p>优化后的Dalvik较其他标准虚拟机存在一些不同特性:　<br>1.占用更少空间　<br>2.为简化翻译，常量池只使用32位索引　　<br>3.标准Java字节码实行8位堆栈指令,Dalvik使用16位指令集直接作用于局部变量。局部变量通常来自4位的“虚拟寄存器”区。这样减少了Dalvik的指令计数，提高了翻译速度。　</p>
+<p>　当Android启动时，Dalvik VM 监视所有的程序（APK），并且创建依存关系树，为每个程序优化代码并存储在Dalvik缓存中。Dalvik第一次加载后会生成Cache文件，以提供下次快速加载，<code>所以第一次会很慢</code>。<br>　Dalvik解释器采用预先算好的Goto地址，每个指令对内存的访问都在64字节边界上对齐。这样可以节省一个指令后进行查表的时间。为了强化功能, Dalvik还提供了快速翻译器（Fast Interpreter）。</p>
+<p>一般来说,基于堆栈的机器必须使用指令才能从堆栈上的加载和操作数据,因此,相对基于寄存器的机器，它们<code>需要更多的指令才能实现相同的性能</code>。但是基于寄存器机器上的指令必须经过编码,因此,它们的<code>指令往往更大</code>。</p>
+<p>Dalvik虚拟机既不支持Java SE 也不支持Java ME类库(如：Java类,AWT和Swing都不支持)。 相反,它使用自己建立的类库（Apache Harmony Java的一个子集）。</p>
+<h4 id="栈-VS-寄存器"><a href="#栈-VS-寄存器" class="headerlink" title="栈 VS 寄存器"></a>栈 VS 寄存器</h4><blockquote>
+<p>大多数虚拟机都是基于堆栈架构的，例如前面提到的HotSpot JVM。然而Dalvik虚拟机却恰好不是，它是基于寄存器架构的虚拟机。<br>对于基于栈的虚拟机来说，每一个运行时的线程，都有一个独立的栈。栈中记录了方法调用的历史，每有一次方法调用，栈中便会多一个栈桢。最顶部的栈桢称作当前栈桢，其代表着当前执行的方法。栈桢中通常包含四个信息：</p>
+</blockquote>
+<ul>
+<li>局部变量：方法参数和方法中定义的局部变量</li>
+<li>操作数栈：后入先出的栈</li>
+<li>动态连接：指向运行时常量池该栈桢所属方法的引用</li>
+<li>返回地址：当前方法的返回地址<br> <img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606307297458.png" alt="Alt text"><br>基于堆栈架构的虚拟机的执行过程，就是不断在操作数栈上操作的过程。例如，对于计算“1+1”的结果这样一个计算，基于栈的虚拟机需要先将这两个数压入栈，然后通过一条指针对栈顶的两个数字进行加法运算，然后再将结果存储起来。其指令集会是这样子：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iconst_1</span><br><span class="line">iconst_1</span><br><span class="line">iadd</span><br><span class="line">istore_0</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>而对于基于寄存器的虚拟机来说执行过程是完全不一样的。该类型虚拟机会将运算的参数放至寄存器中，然后在寄存器上直接进行运算。因此如果是基于寄存器的虚拟机，其指令可能会是这个样子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mov eax，<span class="number">1</span></span><br><span class="line">add eax，<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>这两种架构哪种更好呢？</p>
+<p>很显然，既然它们同时存在，那就意味着它们各有优劣，假设其中一种明显优于另外一种，那劣势的那一种便就不会存在了。</p>
+<p>如果我们对这两种架构进行对比，我们会发现它们存在如下的区别：</p>
+<ul>
+<li>基于栈的架构具有更好的可移植性，因为其实现不依赖于物理寄存器</li>
+<li>基于栈的架构通常指令更短，因为其操作不需要指定操作数和结果的地址</li>
+<li>基于寄存器的架构通常运行速度更快，因为有寄存器的支撑</li>
+<li>基于寄存器的架构通常需要较少的指令来完成同样的运算，因为不需要进行压栈和出栈</li>
+</ul>
+<h4 id="dex文件"><a href="#dex文件" class="headerlink" title="dex文件"></a>dex文件</h4><p>如果我们对比jar文件和dex文件，就会发现：dex文件格式相对来说更加的紧凑。</p>
+<p>jar文件以class为区域进行划分，在连续的class区域中会包含每个class中的常量，方法，字段等等。而dex文件按照类型（例如：常量，字段，方法）划分，将同一类型的元素集中到一起进行存放。这样可以更大程度上避免重复，减少文件大小。</p>
+<p>两种文件格式的对比如下图所示：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606307614317.png" alt="Alt text"></p>
+<p>dex文件的完整格式参见这里：<br><a target="_blank" rel="noopener" href="https://source.android.google.cn/devices/tech/dalvik/dex-format">Dalvik 可执行文件格式。</a></p>
+<p>由于Dex文件相较于Jar来说，对同一类型的元素进行了规整，并且去掉了重复项。因此通常情况下，对于同样的内容，前者比后者文件要更小。以下是Google给出的数据，从这个对比数据可以看出，两者的差距还是很大的。</p>
+<table>
+<thead>
+<tr>
+<th align="center">内容</th>
+<th align="center">未压缩jar包</th>
+<th align="center">已压缩jar包</th>
+<th align="center">未压缩dex文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">系统库</td>
+<td align="center">100%</td>
+<td align="center">50%</td>
+<td align="center">48%</td>
+</tr>
+<tr>
+<td align="center">Web浏览器</td>
+<td align="center">100%</td>
+<td align="center">49%</td>
+<td align="center">44%</td>
+</tr>
+<tr>
+<td align="center">闹钟应用</td>
+<td align="center">100%</td>
+<td align="center">52%</td>
+<td align="center">44%</td>
+</tr>
+</tbody></table>
+<h4 id="Dalvik指令"><a href="#Dalvik指令" class="headerlink" title="Dalvik指令"></a>Dalvik指令</h4><p>Dalvik虚拟机一共包含两百多条指令。读者可以访问下面这个网址获取这些指令的详细信息：<br><a target="_blank" rel="noopener" href="https://source.android.google.cn/devices/tech/dalvik/dalvik-bytecode.html">Dalvik 字节码。</a></p>
+<p>下面是一个Activity的源码，在这个Activity中，我们定义了一个sum方法，进行两个整数的相加。然后在Activity的onCreate方法中，在setContentView之后，调用这个sum方法并传递1和2，然后再将结果通过System.out.print进行输出。这段代码很简单，简单到几乎没有什么实际的作用，不过这不要紧，因为这里我们的目的仅仅想看一下我们编写的源码最终得到的Dalvik指令究竟是什么样的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> test.android.com.helloandroid;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> android.app.Activity;</span><br><span class="line"><span class="keyword">import</span> android.os.Bundle;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="keyword">extends</span> <span class="title class_">Activity</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="title function_">sum</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"> </span><br><span class="line">        System.out.print(sum(<span class="number">1</span>,<span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p> 将这个工程编译之后获得了APK文件。APK文件其实是一种压缩格式，我们可以使用任何可以解压Zip格式的软件对其解压缩。解压缩之后的文件列表如下所示：<br> <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">├── <span class="title class_">AndroidManifest</span>.<span class="property">xml</span></span><br><span class="line">├── <span class="variable constant_">META</span>-<span class="variable constant_">INF</span></span><br><span class="line">│   ├── <span class="variable constant_">CERT</span>.<span class="property">RSA</span></span><br><span class="line">│   ├── <span class="variable constant_">CERT</span>.<span class="property">SF</span></span><br><span class="line">│   └── <span class="variable constant_">MANIFEST</span>.<span class="property">MF</span></span><br><span class="line">├── classes.<span class="property">dex</span></span><br><span class="line">├── res</span><br><span class="line">│   ├── layout</span><br><span class="line">│   │   └── activity_main.<span class="property">xml</span></span><br><span class="line">│   ├── mipmap-hdpi-v4</span><br><span class="line">│   │   ├── ic_launcher.<span class="property">png</span></span><br><span class="line">│   │   └── ic_launcher_round.<span class="property">png</span></span><br><span class="line">│   ├── mipmap-mdpi-v4</span><br><span class="line">│   │   ├── ic_launcher.<span class="property">png</span></span><br><span class="line">│   │   └── ic_launcher_round.<span class="property">png</span></span><br><span class="line">│   ├── mipmap-xhdpi-v4</span><br><span class="line">│   │   ├── ic_launcher.<span class="property">png</span></span><br><span class="line">│   │   └── ic_launcher_round.<span class="property">png</span></span><br><span class="line">│   ├── mipmap-xxhdpi-v4</span><br><span class="line">│   │   ├── ic_launcher.<span class="property">png</span></span><br><span class="line">│   │   └── ic_launcher_round.<span class="property">png</span></span><br><span class="line">│   └── mipmap-xxxhdpi-v4</span><br><span class="line">│       ├── ic_launcher.<span class="property">png</span></span><br><span class="line">│       └── ic_launcher_round.<span class="property">png</span></span><br><span class="line">└── resources.<span class="property">arsc</span></span><br></pre></td></tr></table></figure><br> 其他的文件不用在意，这里我们只要关注dex文件即可。我们可以通过adb push命令将classes.dex文件拷贝到手机上，然后通过手机上的dexdump命令来进行分析。</p>
+<p>直接输入dexdump classes.dex会得到一个非常长的输出。下面是其中的一个片段：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">Class #<span class="number">40</span>            -</span><br><span class="line">  Class descriptor  : <span class="string">&#x27;Ltest/android/com/helloandroid/MainActivity;&#x27;</span></span><br><span class="line">  Access flags      : <span class="number">0x0001</span> (PUBLIC)</span><br><span class="line">  Superclass        : <span class="string">&#x27;Landroid/app/Activity;&#x27;</span></span><br><span class="line">  Interfaces        -</span><br><span class="line">  Static fields     -</span><br><span class="line">  Instance fields   -</span><br><span class="line">  Direct methods    -</span><br><span class="line">    #<span class="number">0</span>              : (in Ltest/android/com/helloandroid/MainActivity;)</span><br><span class="line">      name          : <span class="string">&#x27;&lt;init&gt;&#x27;</span></span><br><span class="line">      type          : <span class="string">&#x27;()V&#x27;</span></span><br><span class="line">      access        : <span class="number">0x10001</span> (PUBLIC CONSTRUCTOR)</span><br><span class="line">      code          -</span><br><span class="line">      registers     : <span class="number">1</span></span><br><span class="line">      ins           : <span class="number">1</span></span><br><span class="line">      outs          : <span class="number">1</span></span><br><span class="line">      insns size    : <span class="number">4</span> <span class="number">16</span>-bit code units</span><br><span class="line">      catches       : (none)</span><br><span class="line">      positions     :</span><br><span class="line">        <span class="number">0x0000</span> line=<span class="number">6</span></span><br><span class="line">      locals        :</span><br><span class="line">        <span class="number">0x0000</span> - <span class="number">0x0004</span> reg=<span class="number">0</span> <span class="built_in">this</span> Ltest/android/com/helloandroid/MainActivity;</span><br><span class="line">  Virtual methods   -</span><br><span class="line">    #<span class="number">0</span>              : (in Ltest/android/com/helloandroid/MainActivity;)</span><br><span class="line">      name          : <span class="string">&#x27;onCreate&#x27;</span></span><br><span class="line">      type          : <span class="string">&#x27;(Landroid/os/Bundle;)V&#x27;</span></span><br><span class="line">      access        : <span class="number">0x0004</span> (PROTECTED)</span><br><span class="line">      code          -</span><br><span class="line">      registers     : <span class="number">5</span></span><br><span class="line">      ins           : <span class="number">2</span></span><br><span class="line">      outs          : <span class="number">3</span></span><br><span class="line">      insns size    : <span class="number">20</span> <span class="number">16</span>-bit code units</span><br><span class="line">      catches       : (none)</span><br><span class="line">      positions     :</span><br><span class="line">        <span class="number">0x0000</span> line=<span class="number">14</span></span><br><span class="line">        <span class="number">0x0003</span> line=<span class="number">15</span></span><br><span class="line">        <span class="number">0x0008</span> line=<span class="number">17</span></span><br><span class="line">        <span class="number">0x0013</span> line=<span class="number">18</span></span><br><span class="line">      locals        :</span><br><span class="line">        <span class="number">0x0000</span> - <span class="number">0x0014</span> reg=<span class="number">3</span> <span class="built_in">this</span> Ltest/android/com/helloandroid/MainActivity;</span><br><span class="line">        <span class="number">0x0000</span> - <span class="number">0x0014</span> reg=<span class="number">4</span> savedInstanceState Landroid/os/Bundle;</span><br><span class="line">    #<span class="number">1</span>              : (in Ltest/android/com/helloandroid/MainActivity;)</span><br><span class="line">      name          : <span class="string">&#x27;sum&#x27;</span></span><br><span class="line">      type          : <span class="string">&#x27;(II)I&#x27;</span></span><br><span class="line">      access        : <span class="number">0x0000</span> ()</span><br><span class="line">      code          -</span><br><span class="line">      registers     : <span class="number">4</span></span><br><span class="line">      ins           : <span class="number">3</span></span><br><span class="line">      outs          : <span class="number">0</span></span><br><span class="line">      insns size    : <span class="number">3</span> <span class="number">16</span>-bit code units</span><br><span class="line">      catches       : (none)</span><br><span class="line">      positions     :</span><br><span class="line">        <span class="number">0x0000</span> line=<span class="number">9</span></span><br><span class="line">      locals        :</span><br><span class="line">        <span class="number">0x0000</span> - <span class="number">0x0003</span> reg=<span class="number">1</span> <span class="built_in">this</span> Ltest/android/com/helloandroid/MainActivity;</span><br><span class="line">        <span class="number">0x0000</span> - <span class="number">0x0003</span> reg=<span class="number">2</span> a I</span><br><span class="line">        <span class="number">0x0000</span> - <span class="number">0x0003</span> reg=<span class="number">3</span> b I</span><br><span class="line">  source_file_idx   : <span class="number">455</span> (MainActivity.java)</span><br><span class="line">...</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<p>从这个片段中，我们看到了刚刚编写的MainActivity类的详细信息。包括每一个方法的名称，签名，访问级别，使用的寄存器等信息。</p>
+<p>接下来，我们通过dexdump -d classes.dex来反编译代码段，以查看方法实现逻辑所对应的Dalvik指令。</p>
+<p>通过这个命令，我们得到sum方法的指令如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[019f98] test.android.com.helloandroid.MainActivity.sum:(II)I</span><br><span class="line"><span class="number">0000</span>: add-<span class="type">int</span> v0, v2, v3</span><br></pre></td></tr></table></figure>
+<h4 id="Dalvik启动过程"><a href="#Dalvik启动过程" class="headerlink" title="Dalvik启动过程"></a>Dalvik启动过程</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103159626">引入</a><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606308810658.png" alt="Alt text"></p>
+<h3 id="程序的执行：解释与编译"><a href="#程序的执行：解释与编译" class="headerlink" title="程序的执行：解释与编译"></a>程序的执行：解释与编译</h3><p>程序员通过源码的形式编写程序，而机器只能认识机器码。从编写完的程序到在机器上运行，中间必须经过一个转换的过程。这个转换的过程由两种做法，那就是：解释和编译。</p>
+<ul>
+<li>解释是指：源程序由程序解释器边扫描边翻译执行，这种方式不会产生目标文件，因此如果程序执行多次就需要重复解释多次。</li>
+<li>编译是指：通过编译器将源程序完整的地翻译成用机器语言表示的与之等价的目标程序。因此，这种方式只要编译一次，得到的产物可以反复执行。</li>
+</ul>
+<p>许多脚本语言，例如JavaScript用的就是解释方式，因此其开发的过程中不牵涉到任何编译的步骤（注意，这里仅仅是指程序员的开发阶段，在虚拟机的内部解释过程中，仍然会有编译的过程，只不过对程序员隐藏了）。而对于C&#x2F;C++这类静态编译语言来说，在写完程序之后到真正运行之前，必须经由编译器将程序编译成机器对应的机器码。</p>
+<p>正如前面说过的观点那样：既然一个问题还存在两种解决方法，那么它们自然各有优势。</p>
+<p>解释性语言通常都具有的一个优点就是跨平台：因为这些语言由解释器承担了不同平台上的兼容工作，而开发者不用关心这一点。相反，编译性语言的编译产物是与平台向对应的，Windows上编译出来的C++可执行文件（不使用交叉编译工具链）不能在Linux或者Mac运行。但反过来，解释性语言的缺点就是运行效率较慢，因为有很多编译的动作延迟到运行时来执行了，这就必要导致运行时间较长。</p>
+<p>而Java语言介于完全解释和静态编译两者之间。因为无论是JVM上的class文件还是Dalvik上的dex文件，这些文件是已经经过词法和语法分析的中间产物。但这个产物与C&#x2F;C++语言所对应的编译产物还不一样，因为Java语言的编译产物只是一个中间产物，并没有完全对应到机器码。在运行时，还需要虚拟机进行解释执行或者进一步的编译。</p>
+<p>有些Java的虚拟机只包含解释器，有些只包含编译器。而在Dalvik在最早期的版本中，只包含了解释器，从Android 2.2版本开始，包含了JIT编译器。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606309060877.png" alt="Alt text"></p>
+<h4 id="Dalvik上的解释器"><a href="#Dalvik上的解释器" class="headerlink" title="Dalvik上的解释器"></a>Dalvik上的解释器</h4><p>解释器正如其名称那样：负责程序的解释执行。在Dalvik中，内置了三个解析器，分别是：</p>
+<ul>
+<li>fast： 默认解释器。这个解释器专门为平台优化过，因为其中包含了手写的汇编代码</li>
+<li>portable： 顾名思义，具有较好可移植性的解释器，因为这个解释器是用C语言实现的</li>
+<li>debug： 专门为debug和profile所用的解析器，性能较弱</li>
+</ul>
+<p>用户可以通过设置属性来选择解释器，例如下面这条命令设定解释器为portable：</p>
+<blockquote>
+<p>adb shell “echo dalvik.vm.execution-mode &#x3D; int:portable &gt;&gt; &#x2F;data&#x2F;local.prop”</p>
+</blockquote>
+<p>前面我们已经看到，Dalvik虚拟机在启动的时候会读取这个属性，因此当你修改了这个属性之后，需要重新启动才能使之生效。<br>Dalvik解释器的源码位于这个路径：</p>
+<blockquote>
+<p>&#x2F;dalvik&#x2F;vm&#x2F;mterp</p>
+</blockquote>
+<p>portable是最先实现的解释器，这个解释器以单个C语言函数的形式实现的。但是为了改进性能，Google后来使用汇编语言重写了，这也就是fast解释器。为了使得这些汇编程序更容易移植，解释器的实现采用了模块化的方法：这使得允许每次开发特定平台上的特定操作码。</p>
+<p>每个配置都有一个“config-*”文件来控制来源代码的生成。源代码被写入&#x2F;dalvik&#x2F;vm&#x2F;mterp&#x2F;out目录，Android编译系统会读取这里的文件。</p>
+<p>熟悉解释器的最好方法就是看翻译生成的文件在“out”目录下的文件。</p>
+<h4 id="Dalvik上的JIT"><a href="#Dalvik上的JIT" class="headerlink" title="Dalvik上的JIT"></a>Dalvik上的JIT</h4><p>Java虚拟机的引入是将传统静态编译的过程进行了分解：首先编译出一个中间产物（无论是JVM的class文件格式还是Android的dex文件格式），这个中间产物是平台无关的。而在真正运行这个中间产物的时候，再由解释器将其翻译成具体设备上的机器码然后执行。</p>
+<p>而虚拟机上的解释器通常只对运行到的代码进行机器码翻译。这样做效率就很低，因为有些代码可能要重复执行很多遍（例如日志输出），但每遍都要重新翻译。<br>而JIT就是为了解决这个问题而产生的，JIT在运行时进行代码的编译，这样下次再次执行同样的代码的时候，就不用再次解释翻译了，而是可以直接使用编译后的结果，这样就加快了执行的速度。但它并非编译所有代码，而是有选择性的进行编译，并且这个“选择性”是JIT编译器尤其需要考虑的。因为编译是一个非常耗时的事情，对于那些运行较少的“冷门”代码进行编译可能会适得其反。</p>
+<p>总的来说，JIT在选择哪些代码进行编译时，有两种做法：</p>
+<ol>
+<li>Method JIT</li>
+<li>Trace JIT<blockquote>
+<p>第一种是以Java方法为单位进行编译。第二种是以代码行为单位进行编译。考虑到移动设备上内存较小（编译的过程需要消耗内存），因此Dalvik上的JIT以后一种做法为主。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606309551407.png" alt="Alt text"></p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>首先需要记录代码的执行次数</li>
+<li>并设定一个“热门”代码的阈值，每次执行时都比对一下看看有没有到阈值</li>
+</ul>
+<ol>
+<li>如果没有，则还是继续用解释的方式执行</li>
+<li>如果到了阈值，则检查该代码是否存在已经编译好的产物<br>1- 如果有编译好的产物直接使用<br>2- 如果没有编译好的产物，则发送编译的请求</li>
+</ol>
+<ul>
+<li>虚拟机需要对已经编译好的机器码进行缓存</li>
+</ul>
+<h4 id="Dalvik上的垃圾回收"><a href="#Dalvik上的垃圾回收" class="headerlink" title="Dalvik上的垃圾回收"></a>Dalvik上的垃圾回收</h4><p>Davlik上的垃圾回收主要是在下面的这些时机会触发：</p>
+<ul>
+<li>堆中无法再创建对象的时候</li>
+<li>堆中的内存使用率超过阈值的时候</li>
+<li>程序通过Runtime.gc()主动GC的时候</li>
+<li>在OOM发生之前的时候</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// Heap.h</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Not enough space for an &quot;ordinary&quot; Object to be allocated. */</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">const</span> GcSpec *GC_FOR_MALLOC;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Automatic GC triggered by exceeding a heap occupancy threshold. */</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">const</span> GcSpec *GC_CONCURRENT;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Explicit GC via Runtime.gc(), VMRuntime.gc(), or SIGUSR1\. */</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">const</span> GcSpec *GC_EXPLICIT;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/* Final attempt to reclaim memory before throwing an OOM. */</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">const</span> GcSpec *GC_BEFORE_OOM;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>同的垃圾回收策略会有一些不同的特性，例如：是否只清理应用程序的堆，还是连Zygote的堆也要清理；该垃圾回收算法是否是并行执行的；是否需要对软引用进行处理等。</p>
+<p>Dalvik的垃圾回收算法在下面这个文件中实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/dalvik/vm/alloc/MarkSweep.h</span><br><span class="line">/dalvik/vm/alloc/MarkSweep.cpp</span><br></pre></td></tr></table></figure>
+<p>从文件名称上我们就能看得出，Dalvik使用的是标记清除的垃圾回收算法。</p>
+<p>Heap.cpp中的dvmCollectGarbageInternal函数控制了整个垃圾回收过程，其主要过程如下图所示：</p>
+<ul>
+<li>在开始垃圾回收之前，要暂停所有线程的执行：dvmSuspendAllThreads(SUSPEND_FOR_GC);</li>
+<li>创建GC标记的上下文：dvmHeapBeginMarkStep</li>
+<li>对GC的根对象进行标记：dvmHeapMarkRootSet</li>
+<li>然后以此为起点进行对象的追踪：dvmHeapScanMarkedObjects</li>
+<li>处理引用关系：dvmHeapProcessReferences</li>
+<li>执行清理：<br>1- dvmHeapSweepSystemWeaks<br>2- dvmHeapSourceSwapBitmaps<br>3- vdvmHeapSweepUnmarkedObjects</li>
+<li>完成标记工作：dvmHeapFinishMarkStep</li>
+<li>恢复所有线程的执行：dvmResumeAllThreads</li>
+</ul>
+<p>我们讲过：垃圾回收清理完对象之后会遗留下内存碎片，因此虚拟机还需要对碎片进行整理。在Dalvik虚拟机中，是直接利用了底层内存管理库完成这项工作。Dalvik的内存管理是基于dlmalloc实现的，这是由Doug Lea实现的内存分配器。而Dalvik的内存整理是直接利用了dlmalloc中的mspace_bulk_free函数进行了处理。读者可以在这里了解 dlmalloc 。</p>
+<p>看到Dalvik垃圾回收算法的读者应该能够发现，Dalvik虚拟机上的垃圾回收有一个很严重的问题，那就是在进行垃圾回收的时候，会暂停所有线程。而这个在程序执行过程中几乎是不能容忍的，这个暂停会造成应用程序的卡顿，并且这个卡顿会伴随着每次垃圾回收而存在。这也是为什么早期Android系统给大家的感受就是：很卡。这也是Google要用新的虚拟机来彻底替代Dalvik的原因之一。</p>
+<h3 id="ART"><a href="#ART" class="headerlink" title="ART"></a>ART</h3><p>即Android Runtime<br>ART 的机制与 Dalvik 不同。在Dalvik下，应用每次运行的时候，字节码都需要通过即时编译器（just in time ，JIT）转换为机器码，这会拖慢应用的运行效率，而在ART 环境中，应用在第一次安装的时候，字节码就会预先编译成机器码，使其成为真正的本地应用。这个过程叫做预编译（AOT,Ahead-Of-Time）。这样的话，应用的启动(首次)和执行都会变得更加快速。</p>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
+<li>1、系统性能的显著提升。</li>
+<li>2、应用启动更快、运行更快、体验更流畅、触感反馈更及时。</li>
+<li>3、更长的电池续航能力。</li>
+<li>4、支持更低的硬件。</li>
+</ul>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><ul>
+<li>1.机器码占用的存储空间更大，字节码变为机器码之后，可能会增加10%-20%（不过在应用包中，可执行的代码常常只是一部分。比如最新的 Google+ APK 是 28.3 MB，但是代码只有 6.9 MB。）</li>
+<li>2.应用的安装时间会变长。</li>
+</ul>
+<blockquote>
+<p>tips：现在智能手机大部分都可以让用户选择使用Dalvik还是ART模式。当然默认还是使用Dalvik模式。<br>用法：设置-辅助功能-开发者选项（开发人员工具）-选择运行环境（不同的手机设置的步骤可能不一样）。</p>
+</blockquote>
+<h4 id="ART垃圾回收"><a href="#ART垃圾回收" class="headerlink" title="ART垃圾回收"></a>ART垃圾回收</h4><p>ART 有多个不同的 GC 方案，这些方案包括运行不同垃圾回收器。默认方案是 CMS（并发标记清除）方案，主要使用粘性CMS和部分CMS。粘性CMS是ART的不移动分代垃圾回收器。它仅扫描堆中自上次GC后修改的部分，并且只能回收自上次GC后分配的对象。除CMS方案外，当应用将进程状态更改为察觉不到卡顿的进程状态（例如，后台或缓存）时，ART将执行堆压缩。</p>
+<p>除了新的垃圾回收器之外，ART 还引入了一种基于位图的新内存分配器，称为 RosAlloc(插槽运行分配器)。此新分配器具有分片锁，当分配规模较小时可添加线程的本地缓冲区，因而性能优于DlMalloc。</p>
+<p>与 Dalvik 相比，ART CMS 垃圾回收计划在很多方面都有一定的改善：</p>
+<ul>
+<li>与 Dalvik 相比，暂停次数从 2 次减少到 1 次。Dalvik 的第一次暂停主要是为了进行根标记，而这个动作在 ART中已经是让线程自己去标记，然后马上恢复运行，这样就减少了一次暂停。</li>
+<li>与 Dalvik 类似，ART GC 在清除过程开始之前也会暂停 1 次。两者在这方面的主要差异在于：在此暂停期间，某些 Dalvik 环节在 ART 中并发进行。这些环节包括 java.lang.ref.Reference 处理、系统弱清除（例如，jni 弱全局等）、重新标记非线程根和卡片预清理。在 ART 暂停期间仍进行的阶段包括扫描脏卡片以及重新标记线程根，这些操作有助于缩短暂停时间。</li>
+<li>相对于 Dalvik，ART GC 改进的最后一个方面是粘性 CMS 回收器增加了 GC 吞吐量。不同于普通的分代 GC，粘性 CMS 不移动。系统会将年轻对象保存在一个分配堆栈（基本上是 java.lang.Object 数组）中，而非为其设置一个专属区域。这样可以避免移动所需的对象以维持低暂停次数，但缺点是容易在堆栈中加入大量复杂对象图像而使堆栈变长。</li>
+</ul>
+<p>ART GC 与 Dalvik 的另一个主要区别在于 ART GC 引入了移动垃圾回收器。使用移动 GC 的目的在于通过堆压缩来减少后台应用使用的内存。目前，触发堆压缩的事件是 ActivityManager 进程状态的改变。当应用转到后台运行时，它会通知 ART 已进入不再“感知”卡顿的进程状态。此时 ART 会进行一些操作（例如，压缩和监视器压缩），从而导致应用线程长时间暂停。目前正在使用的两个移动 GC 是同构空间压缩和半空间压缩。</p>
+<ul>
+<li>半空间压缩将对象在两个紧密排列的碰撞指针空间之间进行移动。这种移动 GC 适用于小内存设备，因为它可以比同构空间压缩稍微多节省一点内存。额外节省出的空间主要来自紧密排列的对象，这样可以避免 RosAlloc&#x2F;DlMalloc 分配器占用开销。由于 CMS 仍在前台使用，且不能从碰撞指针空间中进行收集，因此当应用在前台使用时，半空间还要再进行一次转换。这种情况并不理想，因为它可能引起较长时间的暂停。</li>
+<li>同构空间压缩通过将对象从一个 RosAlloc 空间复制到另一个 RosAlloc 空间来实现。这有助于通过减少堆碎片来减少内存使用量。这是目前非低内存设备的默认压缩模式。相比半空间压缩，同构空间压缩的主要优势在于应用从后台切换到前台时无需进行堆转换。</li>
+</ul>
+<h2 id="ClassLoader"><a href="#ClassLoader" class="headerlink" title="ClassLoader"></a>ClassLoader</h2><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606318411158.png" alt="Alt text"></p>
+<h3 id="BaseDexClassLoader-构造函数"><a href="#BaseDexClassLoader-构造函数" class="headerlink" title="BaseDexClassLoader 构造函数"></a>BaseDexClassLoader 构造函数</h3><p>PathClassLoader 和 DexClassLoader 都是继承了 BaseDexClassLoader</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">```java</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BaseDexClassLoader</span> <span class="keyword">extends</span> <span class="title class_">ClassLoader</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> DexPathList pathList;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Constructs an instance.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * @param dexPath the list of jar/apk files containing classes and</span></span><br><span class="line"><span class="comment">     * resources, delimited by &#123;@code File.pathSeparator&#125;, which</span></span><br><span class="line"><span class="comment">     * defaults to &#123;@code &quot;:&quot;&#125; on Android</span></span><br><span class="line"><span class="comment">     * @param optimizedDirectory directory where optimized dex files</span></span><br><span class="line"><span class="comment">     * should be written; may be &#123;@code null&#125;</span></span><br><span class="line"><span class="comment">     * @param libraryPath the list of directories containing native</span></span><br><span class="line"><span class="comment">     * libraries, delimited by &#123;@code File.pathSeparator&#125;; may be</span></span><br><span class="line"><span class="comment">     * &#123;@code null&#125;</span></span><br><span class="line"><span class="comment">     * @param parent the parent class loader</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BaseDexClassLoader</span><span class="params">(String dexPath, File optimizedDirectory,</span></span><br><span class="line"><span class="params">            String libraryPath, ClassLoader parent)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(parent);</span><br><span class="line">        <span class="built_in">this</span>.pathList = <span class="keyword">new</span> <span class="title class_">DexPathList</span>(<span class="built_in">this</span>, dexPath, libraryPath, optimizedDirectory);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>BaseDexClassLoader 构造函数有四个参数，含义如下：</p>
+<ul>
+<li>dexPath: 需要加载的文件列表，文件可以是包含了 classes.dex 的 JAR&#x2F;APK&#x2F;ZIP，也可以直接使用 classes.dex 文件，多个文件用 “:” 分割</li>
+<li>optimizedDirectory: 存放优化后的 dex，可以为空</li>
+<li>libraryPath: 存放需要加载的 native 库的目录</li>
+<li>parent: 父 ClassLoader<blockquote>
+<p>通过构造函数我们大概可以了解到 BaseDexClassLoader 的运行方式，传入 dex 文件，然后进行优化，保存优化后的 dex 文件到 optimizedDirectory 目录。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="PathClassLoader-构造函数"><a href="#PathClassLoader-构造函数" class="headerlink" title="PathClassLoader 构造函数"></a>PathClassLoader 构造函数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Provides a simple &#123;<span class="doctag">@link</span> ClassLoader&#125; implementation that operates on a list</span></span><br><span class="line"><span class="comment"> * of files and directories in the local file system, but does not attempt to</span></span><br><span class="line"><span class="comment"> * load classes from the network. Android uses this class for its system class</span></span><br><span class="line"><span class="comment"> * loader and for its application class loader(s).</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PathClassLoader</span> <span class="keyword">extends</span> <span class="title class_">BaseDexClassLoader</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">PathClassLoader</span><span class="params">(String dexPath, ClassLoader parent)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(dexPath, <span class="literal">null</span>, <span class="literal">null</span>, parent);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Creates a &#123;<span class="doctag">@code</span> PathClassLoader&#125; that operates on two given</span></span><br><span class="line"><span class="comment">     * lists of files and directories. The entries of the first list</span></span><br><span class="line"><span class="comment">     * should be one of the following:</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * &lt;ul&gt;</span></span><br><span class="line"><span class="comment">     * &lt;li&gt;JAR/ZIP/APK files, possibly containing a &quot;classes.dex&quot; file as</span></span><br><span class="line"><span class="comment">     * well as arbitrary resources.</span></span><br><span class="line"><span class="comment">     * &lt;li&gt;Raw &quot;.dex&quot; files (not inside a zip file).</span></span><br><span class="line"><span class="comment">     * &lt;/ulyanzheng&gt;</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * The entries of the second list should be directories containing</span></span><br><span class="line"><span class="comment">     * native library files.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dexPath the list of jar/apk files containing classes and</span></span><br><span class="line"><span class="comment">     * resources, delimited by &#123;<span class="doctag">@code</span> File.pathSeparator&#125;, which</span></span><br><span class="line"><span class="comment">     * defaults to &#123;<span class="doctag">@code</span> &quot;:&quot;&#125; on Android</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> libraryPath the list of directories containing native</span></span><br><span class="line"><span class="comment">     * libraries, delimited by &#123;<span class="doctag">@code</span> File.pathSeparator&#125;; may be</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@code</span> null&#125;</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> parent the parent class loader</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">PathClassLoader</span><span class="params">(String dexPath, String libraryPath,</span></span><br><span class="line"><span class="params">            ClassLoader parent)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(dexPath, <span class="literal">null</span>, libraryPath, parent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于 PathClassLoader 有一点稍微注意一下，代码注释中对 PathClassLoader 的介绍是，用来操作文件系统上的一系列文件和目录 的 ClassLoader 实现。其中并没有提到只能加载安装后的 apk 文件。<br>PathClassLoader 有两个构造函数，区别在于传给 BaseDexClassLoader 的 libraryPath 是否为空。最终调用 BaseDexClassLoader 构造函数时，传入的 optimizedDirectory 为空。</p>
+<h3 id="DexClassLoader-构造函数"><a href="#DexClassLoader-构造函数" class="headerlink" title="DexClassLoader 构造函数"></a>DexClassLoader 构造函数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DexClassLoader</span> <span class="keyword">extends</span> <span class="title class_">BaseDexClassLoader</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Creates a &#123;<span class="doctag">@code</span> DexClassLoader&#125; that finds interpreted and native</span></span><br><span class="line"><span class="comment">     * code.  Interpreted classes are found in a set of DEX files contained</span></span><br><span class="line"><span class="comment">     * in Jar or APK files.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;The path lists are separated using the character specified by the</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@code</span> path.separator&#125; system property, which defaults to &#123;<span class="doctag">@code</span> :&#125;.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dexPath the list of jar/apk files containing classes and</span></span><br><span class="line"><span class="comment">     *     resources, delimited by &#123;<span class="doctag">@code</span> File.pathSeparator&#125;, which</span></span><br><span class="line"><span class="comment">     *     defaults to &#123;<span class="doctag">@code</span> &quot;:&quot;&#125; on Android</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> optimizedDirectory directory where optimized dex files</span></span><br><span class="line"><span class="comment">     *     should be written; must not be &#123;<span class="doctag">@code</span> null&#125;</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> librarySearchPath the list of directories containing native</span></span><br><span class="line"><span class="comment">     *     libraries, delimited by &#123;<span class="doctag">@code</span> File.pathSeparator&#125;; may be</span></span><br><span class="line"><span class="comment">     *     &#123;<span class="doctag">@code</span> null&#125;</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> parent the parent class loader</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DexClassLoader</span><span class="params">(String dexPath, String optimizedDirectory,</span></span><br><span class="line"><span class="params">            String librarySearchPath, ClassLoader parent)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(dexPath, <span class="keyword">new</span> <span class="title class_">File</span>(optimizedDirectory), librarySearchPath, parent);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面对构造函数的分析，我们可以明白，PathClassLoader 和 DexClassLoader 关键不同点，在 optimizedDirectory 参数上，PathClassLoader 传入的是 null，而 DexClassLoader 传入的是用户指定的目录。</p>
+<h3 id="类加载器的双亲委派加载机制"><a href="#类加载器的双亲委派加载机制" class="headerlink" title="类加载器的双亲委派加载机制"></a>类加载器的双亲委派加载机制</h3><p>类收到了类加载请求，他首先不会尝试自己去加载这个类，而是把这个请求委派给父类去完成，每一个层次类加载器都是如此，因此所有的加载请求都应该传送到启动类加载其中，只有当父类加载器反馈自己无法完成这个请求的时候（在它的加载路径下没有找到所需加载的Class），子类加载器才会尝试自己去加载</p>
+<h4 id="工作流程讲解"><a href="#工作流程讲解" class="headerlink" title="工作流程讲解"></a>工作流程讲解</h4><p>双亲委派模型的工作流程代码实现在java.lang.ClassLoader的loadClass()中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Override </span><br><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="type">boolean</span> resolve) </span><br><span class="line">        <span class="keyword">throws</span> ClassNotFoundException &#123; </span><br><span class="line">    Class&lt;?&gt; c = findLoadedClass(name); </span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 检查需要加载的类是否已经被加载过</span></span><br><span class="line">    <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123; </span><br><span class="line">        <span class="keyword">try</span> &#123; </span><br><span class="line">             <span class="comment">// 若没有加载，则调用父加载器的loadClass()方法</span></span><br><span class="line">            <span class="keyword">if</span> (parent != <span class="literal">null</span>) &#123; </span><br><span class="line">                c = parent.loadClass(name, <span class="literal">false</span>); </span><br><span class="line">            &#125;<span class="keyword">else</span>&#123; </span><br><span class="line">                <span class="comment">// 若父类加载器为空，则默认使用启动类加载器作为父加载器</span></span><br><span class="line">                c=findBootstrapClassOrNull(name); </span><br><span class="line">            &#125; </span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123; </span><br><span class="line">            <span class="comment">// 若父类加载器加载失败会抛出ClassNotFoundException， </span></span><br><span class="line">            <span class="comment">//说明父类加载器无法完成加载请求 </span></span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">if</span>(c==<span class="literal">null</span>)&#123; </span><br><span class="line">            <span class="comment">// 在父类加载器无法加载时 </span></span><br><span class="line">            <span class="comment">// 再调用本身的findClass方法进行类加载 </span></span><br><span class="line">            c=findClass(name); </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">if</span>(resolve)&#123; </span><br><span class="line">        resolveClass(c); </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">return</span> c; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>把 该类加载请求 委派给 父类加载器去完成，而不会自己去加载该类<blockquote>
+<p>每层的类加载器都是如此，因此所有的加载请求最终都应传送到顶层的启动类加载器中</p>
+</blockquote>
+</li>
+<li>只有当 父类加载器 反馈 自己无法完成该加载请求（它的搜索范围中没有找到所需的类）时，子加载器才会自己去加载</li>
+</ol>
+<h3 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h3><p>Java类随着它的类加载器一起具备了一种带优先级的层次关系</p>
+<ol>
+<li>如：类 java.lang.Object（存放在rt.jar中）在加载过程中，无论哪一个类加载器要加载这个类，最终需委派给模型顶端的启动类加载器进行加载，因此Object类在程序的各种类加载器环境中都是同一个类。</li>
+<li>若没有使用双亲委派模型（即由各个类加载器自行去加载）、用户编写了一个java.lang.Object的类(放在ClassPath中），那系统中将出现多个不同的Object类，Java体系中最基础的行为就无法保证</li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android/Android%20VM/">http://king-of-cement.gitee.io/blog/post/Android/Android%20VM/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/Android-View/Android-%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android-自定义View</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/Android/Android-RxJava%20&%20ioC%20DI%20&%20AOP/">Android-RxJava & ioC DI & AOP</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

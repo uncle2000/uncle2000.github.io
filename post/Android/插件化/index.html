@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>插件化 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">插件化</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/Android/">Android</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>[toc]</p>
+<h1 id="插件化"><a href="#插件化" class="headerlink" title="插件化"></a>插件化</h1><h2 id="Class文件"><a href="#Class文件" class="headerlink" title="Class文件"></a>Class文件</h2><p>Class文件是Java虚拟机定义并被其所识别的文件格式，通俗地讲，每一个接口或者类对应一个Class文件<br>Class文件是一组以8位字节为基础单位的的二进制流。</p>
+<h2 id="Class文件格式"><a href="#Class文件格式" class="headerlink" title="Class文件格式"></a>Class文件格式</h2><ul>
+<li>各数据项目之间没有任何分隔符</li>
+<li>Class文件格式采用的结构只有两种数据结构：无符号数和表。</li>
+<li>无符号数：以u1,u2等表示1，2个字节的无符号数，无符号数可用于描述数字、索引引用、数量值、字符串值。<br>表：以多个无符号数或者表组成，通常以_info结尾，整个Class文件就是一张表。</li>
+</ul>
+<h3 id="Class文件的组成："><a href="#Class文件的组成：" class="headerlink" title="Class文件的组成："></a>Class文件的组成：</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606748492603.png" alt="Alt text"></p>
+<ul>
+<li>魔数：Class文件开始四个字节是魔数，用于验证该文件是否能被虚拟机执行</li>
+<li>版本号：魔数后四个字节则是Class文件的主版本号和次版本号</li>
+<li>常量池：版本号后面紧跟着的则是常量池部分。常量池不同与java中，它是由1开始计数的，常量池表的数目是常量个数减一。第0项为保留项目，用于指示当前Class文件不需要引用任何一个常量池。常量池中主要包含两大类常量：<blockquote>
+<p> 字面量：包括文本字符串，被声明为final的常量值等。<br> 符号引用：包括类和接口的全限定名，字段的名称和描述符，方法的名称和描述符</p>
+</blockquote>
+</li>
+<li>访问标志：常量池部分结束后则是访问标志部分，该部分包括信息：是类还是接口，是否定义为public，是否final，是否abstract等信息。</li>
+<li>访问标志之后则是类索引，父类索引，接口索引集合部分，该部分的主要信息为：该类的信息的索引，父类的信息的索引，实现接口的个数和对应接口信息的索引。（通过指向一个类型为CONSTANT_Class_info的类描述符常量，从而在对应的常量池找到相关信息）</li>
+<li>字段表：接下来的部分则是用于描述类声明的变量信息，包括变量的作用域，是否为static，是否为final等信息。</li>
+<li>方法表：方法表则是用于描述类中方法的信息，与字段表类似。</li>
+<li>属性表：属性表在字段表和方法表中都会出现，主要用于描述某些场景特有的信息。比如方法是否抛出异常，被final声明的变- 量的值，内部类列表等信息。</li>
+</ul>
+<h2 id="Dex文件"><a href="#Dex文件" class="headerlink" title="Dex文件"></a>Dex文件</h2><p>Dex是Android平台上(Dalvik虚拟机，art虚拟机)的可执行文件，每个APK压缩包中都包含一个（或者多个MultiDex）Dex文件，Dex文件中包含了app的所有源码。</p>
+<h3 id="Dex文件的结构"><a href="#Dex文件的结构" class="headerlink" title="Dex文件的结构"></a>Dex文件的结构</h3><p>Dex文件是一组以8位字节为基础单位的的二进制流。</p>
+<p>Dex文件的各数据项目之间也没有任何分隔符</p>
+<p>Dex文件由文件头，索引区，数据区三个部分组成<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606749086701.png" alt="Alt text"><br>其各个元素的解释如下：</p>
+<p>header：dex文件头部，记录整个dex文件的相关属性<br>string_ids：字符串数据索引，记录了每个字符串在数据区的偏移量<br>type_ids：类型数据索引，记录了每个类型的字符串索引<br>proto_ids：原型数据索引，记录了方法声明的字符串，返回类型字符串，参数列表<br>field_ids：字段数据索引，记录了所属类，类型以及方法名<br>method_ids：类方法索引，记录方法所属类名，方法声明以及方法名等信息<br>class_defs：类定义数据索引，记录指定类各类信息，包括接口，超类，类数据偏移量<br>data：数据区，保存了各个类的真实数据<br>link_data：连接数据区</p>
+<h3 id="header"><a href="#header" class="headerlink" title="header"></a>header</h3><p>文件头记录了dex文件的一些基本信息, 以及大致的数据分布。其各字段及解释如下：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606749264920.png" alt="Alt text"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606749269134.png" alt="Alt text"></p>
+<h3 id="索引区"><a href="#索引区" class="headerlink" title="索引区"></a>索引区</h3><p>索引区中索引了整个dex中的字符串、类型、方法声明、字段以及方法的信息, 其结构体的开始位置和个数均来自dex文件头中的记录</p>
+<p>字符串索引区：描述dex文件中所有的字符串信息<br>类型索引区：描述dex文件中所有的类型, 如类类型、基本类型、返回值类型等<br>方法声明索引区：描述dex文件中所有的方法声明<br>字段索引区：描述dex文件中所有的字段声明, 这个结构中的数据全部都是索引值, 指明了字段所在的类、字段的类型以及字段名称<br>方法索引区：描述Dex文件中所有的方法, 指明了方法所在的类、方法的声明以及方法名字<br>数据区<br>索引区中的最终数据偏移以及文件头中描述的偏移都指向数据区, 还包括了即将要解析的class_def_item</p>
+<p>class_def_item：这个结构由dex文件头中的classDefsSize和classDefsOff所指向, 描述Dex文件中所有类定义信息, 每一个DexClassDef中包含一个DexClassData的结构(classDataOff),每一个DexClassData中包含了一个Class的数据, Class数据中包含了所有的方法, 方法中包含了该方法中的所有指令</p>
+<h2 id="Class文件和Dex文件对比"><a href="#Class文件和Dex文件对比" class="headerlink" title="Class文件和Dex文件对比"></a>Class文件和Dex文件对比</h2><p>Class文件是JVM的执行文件，而Dex文件是安卓虚拟机（Dalvik，art）的执行文件<br>Class文件对应Java中每一个类，而Dex文件则包含整个APK文件中的JAVA代码，故Dex文件可以大大缩小体积，减少Class文件的数据冗余，有利于在移动端中运行。（可以通过SDK中的dx命令将若干个Class文件转化为Dex文件）</p>
+<h2 id="定义资源"><a href="#定义资源" class="headerlink" title="定义资源"></a>定义资源</h2><h3 id="解析资源"><a href="#解析资源" class="headerlink" title="解析资源"></a>解析资源</h3><p>资源解析主要涉及到两个类，一个是AttributeSet，另一个是TypedArray。</p>
+<h4 id="AttributeSet"><a href="#AttributeSet" class="headerlink" title="AttributeSet"></a>AttributeSet</h4><p>该类位于android.util.AttributeSet，纯粹是一个辅助类，当从XML文件解析时会返回AttributeSet对象，该对象包含了解析元素的所有属性及属性值。并且在解析的属性名称与attrs.xml中定义的属性名称之间建立联系。AttributeSet还提供了一组API接口从而可以方便的根据attrs.xml中已有的名称获取相应的值。</p>
+<p>如果使用一般的XML解析工具，则可以通过类似getElementById()等方法获取属性的名称和属性值，然而这样并没有在获取的属性名称与attrs.xml定义的属性名称之间建立联系。</p>
+<p>Attribute对象一般作为View的构造函数的参数传递过来，例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">publlic <span class="title function_">TextView</span><span class="params">(Context context,AttributeSet attrs,<span class="type">int</span> defStyle)</span></span><br></pre></td></tr></table></figure>
+<p>AttributeSet中的API可按功能分为以下几类，假定TextView定义如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;TextView  </span><br><span class="line">android:id=<span class="string">&quot;@+id/tv&quot;</span>  </span><br><span class="line">android:layout_width=<span class="string">&quot;@dimen/width&quot;</span>  </span><br><span class="line">android:layout_height=<span class="string">&quot;wrap_content&quot;</span>  </span><br><span class="line">style=<span class="string">&quot;@stylel/text&quot;</span></span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+<p>第一类，操作特定属性：</p>
+<p>public String getIdAttribute()，获取id属性对应的字符串，此处返回”@+id&#x2F;tv”<br>public String getStyleAttribute()，获取style属性对应的字符串，返回”@style&#x2F;text”<br>public int getIdAttributeResourceValue(int defaultValue)，返回id属性对应的int值，此处对应R.id.tv。</p>
+<p>第二类，操作通用属性：</p>
+<p>public int getAttributeCount()，获取属性的数目，本例中返回4<br>public String getAttributeName(int index)，根据属性所在位置返回相应的属性名称。例如，id&#x3D;0，layout_width&#x3D;1，layout_height&#x3D;2，style&#x3D;3，如果getAttributeName(2)，则返回android:layout_height<br>public String getAttributeValue(int index),根据位置返回值。本例中，getAttributeValue(2)则返回”wrap_content”。<br>public String getAttributeValue(String namespace,String name)，返回指定命名空间，指定名称的属性值，该方法说明AttributeSet允许给一个XML Element的属性增加多个命名空间的属性值。<br>public int getAttributeResource(int index)，返回指定位置的属性id值。本例中，getAttributeResource(2)返回R.attr.layout_width。前面也说过，系统会为每一个attr分配一个唯一的id。</p>
+<p>第三类，获取特定类型的值：</p>
+<p>public XXXType getAttributeXXXType(int index,XXXType defaultValue)，其中XXXType包括int、unsigned int、boolean、float类型。使用该方法时，必须明确知道某个位置（index）对应的数据类型，否则会返回错误。而且该方法仅适用于特定的类型，如果某个属性值为一个style类型，或者为一个layout类型，那么返回值都将无效。</p>
+<h4 id="TypedArray"><a href="#TypedArray" class="headerlink" title="TypedArray"></a>TypedArray</h4><p>程序员在开发应用程序时，在XML文件中引用某个变量通常是android:background&#x3D;”@drawable&#x2F;background”，该引用对应的元素一般为某个View&#x2F;ViewGroup，而View&#x2F;ViewGroup的构造函数中会通过obatinStyledAttributes方法返回一个TypedArray对象，然后再调用对象中的getDrawable()方法获取背景图片。</p>
+<p>TypedArray是对AttributeSet数据类的某种抽象。对于andorid:layout_width&#x3D;”@dimen&#x2F;width”，如果使用AttributeSet的方法，仅仅能获取”@dimen&#x2F;width”字符串。而实际上该字符串对应了一个dimen类型的数据。TypedArray可以将某个AttributeSet作为参数构造TypedArray对象，并提供更方便的方法直接获取该dimen的值。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">TypedArray</span> <span class="variable">a</span> <span class="operator">=</span> context.obtainStyledAttributes(attrs,com.android.internal.R.styleable.XXX,defStyle,<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+<p>方法obtainStyledAttributes()的第一个参数是一个AttributeSet对象，它包含了一个XML元素中定义的所有属性。第二个参数是前面定义的styleable，appt会把一个styleable编译成一个int[]数组，该数组的内部实现正是通过遍历AttributeSet中的每一个属性，找到用户感兴趣的属性，然后把值和属性经过重定位，返回一个TypedArray对象。想要获取某个属性的值则调用相关的方法即可，比如TypedArray.getDrawbale()，TypedArray.getString()等。getDrawable()，getString()方法内部均通过Resources获取属性值。</p>
+<h2 id="加载资源"><a href="#加载资源" class="headerlink" title="加载资源"></a>加载资源</h2><p>在使用资源时首先要把资源加载到内存，一般情况下每个应用都会仅有一个Resources对象。<br>获取Resources对象有两种方法，一种是通过Context，一种是通过PackageManager。</p>
+<h3 id="使用Context获取Resources"><a href="#使用Context获取Resources" class="headerlink" title="使用Context获取Resources"></a>使用Context获取Resources</h3><p>抽象类Context内部个有getResources()方法，一般是在Activity对象或者Service对象中调用，因为Activity或者Service的本质是一个Context，而真正实现Context接口的是ContextImpl类。</p>
+<p>ContextImpl对象是在ActivityThread类中创建，所以getResources()方法实际上是调用ContextImpl.getResources()方法。在ContextImpl类中，该方法仅仅是返回内部的mResources变量，而对该变量赋值是在init()方法中。在创建ContextImpl对象后，一般会调用init()方法对ContextImpl对象内部变量初始化，其中就包括mResources变量，如以下代码所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">(ActivityThread.PackageInfo packageInfo, IBinder activityToken, ActivityThread mainThread, Resources container)</span>&#123;  </span><br><span class="line">mPackageInfo = packageInfo;  </span><br><span class="line">mResources = mPackageInfo.getResources(mainThread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从以上代码可以看出，mResources又是调用mPackageInfo的getResources()方法进行赋值。<code>一个应用程序中可以有多个ContextImpl</code>，<code>但多个ContextImpl对象共享一个PackageInfo对象</code>。所以多个ContextImpl对象中的mResources变量实际上是同一个Resources对象。</p>
+<p>PackageInfo.getResources()方法如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Resources <span class="title function_">getResources</span><span class="params">(ActivityThread mainThread)</span>&#123;  </span><br><span class="line"><span class="keyword">if</span>(mResources == <span class="literal">null</span>)&#123;    </span><br><span class="line">mResources = mainThread.getTopLevelResources(mResDir,<span class="built_in">this</span>);  </span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上代码中，参数mainThread指的就是ActivityThread对象，<code>每个应用程序只有一个ActivityThread对象</code>。getTopLevelResources()方法就是获取本应用程序中的Resources对象。</p>
+<p>在ActivityThread对象中，使用HashMap&lt;ResourcesKey,WeakReference<Resources>&gt; mActiveResources保存该应用程序所有的Resources对象，并且这些Resources都是以一个弱引用保存起来的，这样在内存紧张时可以释放Resources所占的内存。</p>
+<p>在mActiveResources中，使用ResourcesKey映射Resources类，ResourcesKey仅仅是一个数据类，其创建方式如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ResourcesKey</span> <span class="variable">key</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ResourcesKey</span>(resDir,compInfo.applicatioScale);</span><br></pre></td></tr></table></figure>
+<p>resDir变量代表资源文件所在路径，实际是指APK程序所在路径，例如 &#x2F;data&#x2F;app&#x2F;xxx.apk。该APK会对应&#x2F;data&#x2F;dalvik-cache目录下的data@<a href="mailto:&#x61;&#x70;&#112;&#64;&#120;&#x78;&#x78;&#46;&#97;&#x70;&#107;">&#x61;&#x70;&#112;&#64;&#120;&#x78;&#x78;&#46;&#97;&#x70;&#107;</a>@classes.dex文件，这两个文件也是应用程序安装后自动生成的文件。</p>
+<p>如果一个应用程序没有访问该应用程序以外的资源，那么mActivieResources变量中就仅有一个Resources对象。当应用程序想要访问其他应用程序的资源则需要构建不同的ResourcesKey，也就是需要不同的resDir，毕竟每一个ResourcesKey对应一个Resources对象，这样该应用程序就可以访问其他应用程序中的资源。</p>
+<p>如果mActiveResources中还没有包含所要的Resources对象，那就需要重新创建一个：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">AssetManager</span> <span class="variable">assets</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AssetManager</span>();</span><br><span class="line"><span class="keyword">if</span>(assets.addAssetPath(resDir) == <span class="number">0</span>)&#123;  </span><br><span class="line"><span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">DisplayMetrics</span> <span class="variable">metrics</span> <span class="operator">=</span> getDisplayMetricsLocked(<span class="literal">false</span>);</span><br><span class="line">r = <span class="keyword">new</span> <span class="title class_">Resources</span>(assets,metrics,getConfiguration(),compInfo);</span><br></pre></td></tr></table></figure>
+<p>创建Resources需要一个AssetManager对象。在开发应用程序时，使用Resources.getAssets()获取的就是这里创建的AssetManager对象。AssetManager其实并不只是访问res&#x2F;assets目录下的资源，而是可以访问res目录下的所有资源。</p>
+<p>AssetManager在初始化的时候会被赋予两个路径，一个是应用程序资源路径 &#x2F;data&#x2F;app&#x2F;xxx.apk，一个是Framework资源路径&#x2F;system&#x2F;framework&#x2F;framework-res.apk(系统资源会被打包到此apk中）。所以应用程序使用本地Resources既可访问应用程序资源，又可访问系统资源。</p>
+<p>AssetManager中很多获取资源的关键方法都是native实现，当使用getXXX(int id)访问资源时，如果id小于0x1000 0000时表示访问系统资源，如果id都大于0x7000 0000则表示应用资源。aapt在对系统资源进行编译时，所有资源id都被编译为小于0x1000 0000。</p>
+<p>当创建好Resources后就把该对象放到mActivieResources中以便以后继续使用。</p>
+<h3 id="使用PackageManager获取Resources"><a href="#使用PackageManager获取Resources" class="headerlink" title="使用PackageManager获取Resources"></a>使用PackageManager获取Resources</h3><p>该方法主要是用来访问其他应用程序中的资源，最典型的就是切换主题，但这种主题一般仅限于一个应用程序内部。获取Resources的过程如下所示：</p>
+<p>使用PackageManager获取Resources对象：</p>
+<p>PackageManager pm &#x3D; mContext.getPackageManager();pm.getResourcesForApplication(“com.android…your package name”);<br>其中getPackageManager()返回一个PackageManager对象，PackageManager本身是一个abstract类，其真正实现类是ApplicationPackageManager。其内部方法一般调用远程PackageManagerService。ApplicationPackageManager在构造时传入一个远程服务的引用IPackageManager，该对象是通过调用getPackageManager()静态方法获取的。这种获取远程服务的方法和大多数获取远程服务的方法类似：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> IPackageManager <span class="title function_">getPackageManager</span><span class="params">()</span>&#123;  </span><br><span class="line"><span class="keyword">if</span>(sPackageManager !=<span class="literal">null</span>)&#123;    </span><br><span class="line"><span class="keyword">return</span> sPackageManager;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="type">IBinder</span> <span class="variable">b</span> <span class="operator">=</span> ServiceManager.getService(<span class="string">&quot;package&quot;</span>);  </span><br><span class="line">sPackageManager = IPackageManager.Stub.asInterface(b);  </span><br><span class="line"><span class="keyword">return</span> sPackageManager;&#125;</span><br><span class="line">获得了PackageManager对象后，接着调用getResourcesForApplication()方法，该方法位于ContextImpl.ApplicationPackageManager中：</span><br><span class="line"></span><br><span class="line">Override  </span><br><span class="line"><span class="keyword">public</span> Resources <span class="title function_">getResourcesForApplication</span><span class="params">(ApplicationInfo app)</span> <span class="keyword">throws</span> NameNotFoundException&#123;  </span><br><span class="line"><span class="keyword">if</span>(app.packageName.equals(<span class="string">&quot;system&quot;</span>))&#123;    </span><br><span class="line"><span class="keyword">return</span> mContext.mMainThread.getSystemContext().getResources();  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="type">Resources</span> <span class="variable">r</span> <span class="operator">=</span> mContext.mMainThread.getTopLevelResources(app.uid == Process.myUid() ? app.sourceDir : app.publicSourceDir,mContext.mPackageInfo);  </span><br><span class="line"><span class="keyword">if</span>(r != <span class="literal">null</span>)&#123;    </span><br><span class="line"><span class="keyword">return</span> r;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NameNotFoundException</span>(<span class="string">&quot;Unable to open &quot;</span> + app.publicSourceDir);&#125;</span><br></pre></td></tr></table></figure>
+<p>以上代码内部调用mMainThread.getTopLevelResources()方法，又回到了使用Context获取Resources对象的过程中。注意，此处调用参数的含义：如果目标资源程序和当前程序是同一个uid，那么就使用目标程序的sourceDir作为路径，否则就使用目标程序的publicSourceDir目录，该目录可以在AndroidManifest.xml中指定。在大多数情况下，目标程序和当前程序不属于同一个uid，因此，多为publicSourceDir，而该值默认情况下和sourceDir的值相同。</p>
+<p>当进入mMainThread.getTopLevelResources()方法后，ActivityThread对象就会在mActivieResources变量中保存一个新的Resources对象，其键值对应目标程序的包名。</p>
+<h3 id="加载应用程序资源"><a href="#加载应用程序资源" class="headerlink" title="加载应用程序资源"></a>加载应用程序资源</h3><p>应用程序打包的最终文件是xxx.apk。APK本身是一个zip文件，可以使用压缩工具解压。系统在安装应用程序时首先解压，并将其中的文件放到指定目录。其中有一个文件名为resources.arsc，APK所有的资源均在其中定义。</p>
+<p>resources.arsc是一种二进制格式的文件。aapt在对资源文件进行编译时，会为每一个资源分配唯一的id值，程序在执行时会根据这些id值读取特定的资源，而resources.arsc文件正是包含了所有id值得一个数据集合。在该文件中，如果某个id对应的资源是String或者数值（包括int，long等），那么该文件会直接包含相应的值，如果id对应的资源是某个layout或者drawable资源，那么该文件会存入对应资源的路径地址。</p>
+<p>事实上，当程序运行时，所需要的资源都要从原始文件中读取（APK在安装时都会被系统拷贝到&#x2F;data&#x2F;app目录下）。加载资源时，首先加载resources.arsc，然后根据id值找到指定的资源。</p>
+<h3 id="加载Framework资源"><a href="#加载Framework资源" class="headerlink" title="加载Framework资源"></a>加载Framework资源</h3><p>系统资源是在zygote进程启动时被加载的，并且只有当加载了系统资源后才开始启动其他应用进程，从而实现其他应用进程共享系统资源的目标。</p>
+<p>启动第一步就是加载系统资源，加载完毕后再调用startSystemServer()启动系统进程，并最后调用runSelectLoopMode()开始监听Socket，并启动指定的应用进程。加载系统资源是通过preLoadResources()完成的，该方法关键代码如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mResources = Resources.getSystem();</span><br><span class="line">mResources.startPreLoading();</span><br><span class="line"><span class="keyword">if</span>(PRELOAD_RESOURCES)&#123;  </span><br><span class="line"><span class="type">long</span> <span class="variable">startTime</span> <span class="operator">=</span> SystemClock.uptimeMillis();  </span><br><span class="line"><span class="type">TypeArray</span> <span class="variable">ar</span> <span class="operator">=</span> mResources.obtainTypedArray(com.android.internal.R.array.preloadingdrawables);  </span><br><span class="line"><span class="type">int</span> <span class="variable">N</span> <span class="operator">=</span> prelaodDrawables(runtime,ar);  </span><br><span class="line">Log.i(TAG,<span class="string">&quot;...preloading &quot;</span> + N + <span class="string">&quot;resources in &quot;</span> + (SystemClock.uptimeMillis()-startTime) + <span class="string">&quot;ms.&quot;</span>);  </span><br><span class="line">startTime = SystemClock.uptimeMillis();  </span><br><span class="line">ar = mResources.obtainTypedArray(com.android.internal.R.array.preloading_color_state_lists);  </span><br><span class="line">N = preloadingColorStateLists(runtime,ar);  </span><br><span class="line">Log.i(TAG,<span class="string">&quot;...preloaded &quot;</span> + N + <span class="string">&quot;resources in &quot;</span> + (SystemClock.uptimeMillis()-startTime) + <span class="string">&quot;ms.&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">mResources.finishPreloading();</span><br></pre></td></tr></table></figure>
+<p>在以上代码中使用Resources.getSystem()创建Resources对象，一般情况下应用程序不应该调用此方法，因为该方法返回的Resources仅能访问Framework资源。</p>
+<p>当Resources对象创建完成后，调用preloadDrawables()和preloadColorStateLists()装在需要”预装载”的资源。这两个方法都需要传入一个TypeArray，其来源是res&#x2F;values&#x2F;arrays.xml中定义的一个array数组资源，例如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">array</span> <span class="attr">name</span>=<span class="string">&quot;preloaded_drawables&quot;</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">item</span>&gt;</span>@drawable/sym_def_app_icon<span class="tag">&lt;/<span class="name">item</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">item</span>&gt;</span>@drawable/arrow_down_float<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span> </span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">array</span> <span class="attr">name</span>=<span class="string">&quot;preloaded_color_state_lists&quot;</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">item</span>&gt;</span>@color/hint_foreground_dark<span class="tag">&lt;/<span class="name">item</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">item</span>&gt;</span>@color/hint_foreground_light<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在Resources类中，相关资源读取函数需要将读取到的资源缓冲起来，以便以后使用，Resources类中定义了四个静态变量缓冲这些资源：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> LongSparseArray&lt;Drawable.ConstantState&gt; sPreloadedDrawables = <span class="keyword">new</span> <span class="title class_">LongSparseArray</span>&lt;Drawable.ConstantState&gt;();</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> LongSparseArray&lt;ColorStateList&gt; sPreloadedColorStateLists = <span class="keyword">new</span> <span class="title class_">LongSparseArray</span>&lt;ColorStateList&gt;();</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> LongSparseArray&lt;Drawable.ConstantState&gt; sPreloadedColorDrawables = <span class="keyword">new</span> <span class="title class_">LongSparseArray</span>&lt;Drawable.ConstantState&gt;();</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="type">boolean</span> mPreloaded;</span><br></pre></td></tr></table></figure>
+<p>其中前三个变量是列表类型，并且被static修饰，所有Resources对象均共享这三个变量。所以当应用程序创建新的Resources对象时可以访问系统资源。</p>
+<p>第四个变量用来区分是zygote装在资源还是普通应用进程装在资源。因为zygote与普通进程装载资源的方式类似，所以增加mPreloaded变量进行区分。</p>
+<p>mPreloaded在startPreloading()中被置为true，在finishPreloading()中被置为false，而startPreloading()和finishPreloading()正是在ZygoteInit.java的preloadResources()中被调用，这就区别了zygote调用和普通进程调用。</p>
+<p>最后，在Resources的具体资源读取方法中，会判断mPreloaded变量，如果为true，则同时把读取到的资源存储到三个静态列表中，否则把资源放到非静态列表中，这些非静态列表的作用范围为调用者所在进程。</p>
+<p>Resources.loadDrawable()方法代码如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(mPreloading)&#123;  </span><br><span class="line"><span class="keyword">if</span>(isColorDrawable)&#123;    </span><br><span class="line">sPreloadedColorDrawables.put(key,cs);  </span><br><span class="line">&#125; <span class="keyword">else</span> &#123;    </span><br><span class="line">sPreloadedDrawables.put(key,cs);  </span><br><span class="line">&#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;  </span><br><span class="line"><span class="keyword">synchronized</span>(mTmpValue)&#123;    </span><br><span class="line"><span class="keyword">if</span>(isColorDrawbale)&#123;      </span><br><span class="line">mColorDrawableCache.put(key,<span class="keyword">new</span> <span class="title class_">WeakReference</span>&lt;ColorDrawable&gt;(cs));    </span><br><span class="line">&#125; <span class="keyword">else</span> &#123;      </span><br><span class="line">mDrawableCache.put(key,<span class="keyword">new</span> <span class="title class_">WeakReference</span>&lt;Drawable&gt;(cs));    </span><br><span class="line">&#125;  </span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面所介绍的资源加载仅仅只是加载在res&#x2F;values&#x2F;arrays.xml中预先定义的资源值，Framework包含了更多的资源，zygote所加载的仅仅是一小部分。对于那些非”预装载”的系统资源则不会被缓冲到静态列表变量中，这时应用进程如果需要一个非预装载资源则会在各自进程中保持一个资源缓冲。</p>
+<h2 id="Replugin插件化-360开源"><a href="#Replugin插件化-360开源" class="headerlink" title="Replugin插件化(360开源)"></a>Replugin插件化(360开源)</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/hellogmm/article/details/79058135">引用</a></p>
+<h2 id="so-文件加载机制"><a href="#so-文件加载机制" class="headerlink" title="so 文件加载机制"></a>so 文件加载机制</h2><h3 id="提问"><a href="#提问" class="headerlink" title="提问"></a>提问</h3><p>本文的结论是跟着 System.loadlibrary() 一层层源码走进去，个人对其的理解所整理的，那么开始看源码之前，先来提几个问题：</p>
+<p>Q1：你知道 so 文件的加载流程吗？</p>
+<p>Q2：设备存放 so 的路径有 system&#x2F;lib，vendor&#x2F;lib，system&#x2F;lib64，vendor&#x2F;lib64，知道在哪里规定了这些路径吗？清楚哪些场景下系统会去哪个目录下寻找 so 文件吗？还是说，所有的目录都会去寻找？</p>
+<p>Q3：Zygote 进程是分 32 位和 64 位的，那么，系统是如何决定某个应用应该运行在 32 位上，还是 64 位上？</p>
+<p>Q4：如果程序跑在 64 位的 Zygote 进程上时，可以使用 32 位的 so 文件么，即应用的 primaryCpuAbi 为 arm64-v8a，那么是否可使用 armeabi-v7a 的 so 文件，兼容的吗？</p>
+<p>Q2，Q3，Q4，这几个问题都是基于设备支持 64 位的前提下，在旧系统版本中，只支持 32 位，也就没这么多疑问需要处理了。</p>
+<h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><p>准备工作<br>由于这次的源码会涉及很多 framework 层的代码，包括 java 和 c++，直接在 AndroidStudio 跟进 SDK 的源码已不足够查看到相关的代码了。所以，此次是借助 Source Insight 软件，而源码来源如下：</p>
+<p><a target="_blank" rel="noopener" href="https://android.googlesource.com/platform/">https://android.googlesource.com/platform/</a></p>
+<p>我并没有将所有目录下载下来，只下载了如下目录的源码：</p>
+<p>system&#x2F;core<br>bionic<br>libcore<br>dalvik<br>frameworks&#x2F;base<br>frameworks&#x2F;native<br>我没有下载最新版本的代码，而是选择了 Tags 下的 More 按钮，然后选择 tag 为： android-5.1.1 r24 的代码下载。所以，此次分析的源码是基于这个版本，其余不同版本的代码可能会有所不一样，但大体流程应该都是一致的。</p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>源码分析的过程很长很长，不想看过程的话，你也可以直接跳到末尾看结论，但就会错失很多细节的分析了。</p>
+<p>那么下面就开始来过下源码吧，分析的入口就是跟着 System.loadlibrary() 走 ：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161340">过程</a></p>
+<h2 id="系统服务"><a href="#系统服务" class="headerlink" title="系统服务"></a>系统服务</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161370">过程</a></p>
+<h1 id="组件化"><a href="#组件化" class="headerlink" title="组件化"></a>组件化</h1><h2 id="ARouter源码分析"><a href="#ARouter源码分析" class="headerlink" title="ARouter源码分析"></a>ARouter源码分析</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103159575">解析</a></p>
+<h2 id="SPI机制"><a href="#SPI机制" class="headerlink" title="SPI机制"></a>SPI机制</h2><p>SPI机制（Service Provider Interface)其实源自服务提供者框架（Service Provider Framework，参考【EffectiveJava】page6)，是一种将服务接口与服务实现分离以达到解耦、大大提升了程序可扩展性的机制。引入服务提供者就是引入了spi接口的实现者，通过本地的注册发现获取到具体的实现类，轻松可插拔。<br>SPI ，全称为 Service Provider Interface，是一种服务发现机制。它通过在ClassPath路径下的META-INF&#x2F;services文件夹查找文件，自动加载文件里所定义的类。</p>
+<p>这一机制为很多框架扩展提供了可能，比如在Dubbo、JDBC中都使用到了SPI机制</p>
+<p>SPI使用方法并不复杂，只需要简单的3步就可以搞定。</p>
+<ul>
+<li>定义一个接口</li>
+<li>提供方’‘META-INF&#x2F;services’’目录下新建一个名称为接口全限定名的文件，内容为接口实现类的全限定名。</li>
+<li>调用方通过ServiceLoader.load方法加载接口的实现类实例</li>
+</ul>
+<p>优点：使用Java SPI机制的优势是实现了解耦，使第三方模块的装配逻辑与业务代码分离。应用程序可以根据实际业务情况使用新的框架拓展或者替换原有组件。</p>
+<p>缺点：ServiceLoader在加载实现类的时候会全部加载并实例化，假如不想使用某些实现类，它也会被加载示例化的，这就造成了浪费。另外获取某个实现类只能通过迭代器迭代获取，不能根据某个参数来获取，使用方式上不够灵活。</p>
+<blockquote>
+<p>Dubbo框架中大量使用了SPI来进行框架扩展，但它是重新对SPI进行了实现，完美的解决上面提到的问题。</p>
+</blockquote>
+<h3 id="典型实例：jdbc的设计"><a href="#典型实例：jdbc的设计" class="headerlink" title="典型实例：jdbc的设计"></a>典型实例：jdbc的设计</h3><p>通常各大厂商（如Mysql、Oracle）会根据一个统一的规范(java.sql.Driver)开发各自的驱动实现逻辑。客户端使用jdbc时不需要去改变代码，直接引入不同的spi接口服务即可。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161310">引入</a></p>
+<h2 id="AOP（面向切面编程）、Filter（过虑器）、Interceptor（拦截器）"><a href="#AOP（面向切面编程）、Filter（过虑器）、Interceptor（拦截器）" class="headerlink" title="AOP（面向切面编程）、Filter（过虑器）、Interceptor（拦截器）"></a>AOP（面向切面编程）、Filter（过虑器）、Interceptor（拦截器）</h2><h3 id="AOP（面向切面编程）"><a href="#AOP（面向切面编程）" class="headerlink" title="AOP（面向切面编程）"></a>AOP（面向切面编程）</h3><p>面向切面编程（AOP是Aspect Oriented Program的首字母缩写） ，我们知道，面向对象的特点是继承、多态和封装。而封装就要求将功能分散到不同的对象中去，这在软件设计中往往称为职责分配。实际上也就是说，让不同的类设计不同的方法。这样代码就分散到一个个的类中去了。这样做的好处是降低了代码的复杂程度，使类可重用。</p>
+<p>但是人们也发现，在分散代码的同时，也增加了代码的重复性。什么意思呢？比如说，我们在两个类中，可能都需要在每个方法中做日志。按面向对象的设计方法，我们就必须在两个类的方法中都加入日志的内容。也许他们是完全相同的，但就是因为面向对象的设计让类与类之间无法联系，而不能将这些重复的代码统一起来。</p>
+<p>也许有人会说，那好办啊，我们可以将这段代码写在一个独立的类独立的方法里，然后再在这两个类中调用。但是，这样一来，这两个类跟我们上面提到的独立的类就有耦合了，它的改变会影响这两个类。那么，有没有什么办法，能让我们在需要的时候，随意地加入代码呢？这种在运行时，动态地将代码切入到类的指定方法、指定位置上的编程思想就是面向切面的编程。</p>
+<p>一般而言，我们管切入到指定类指定方法的代码片段称为切面，而切入到哪些类、哪些方法则叫切入点。有了AOP，我们就可以把几个类共有的代码，抽取到一个切片中，等到需要时再切入对象中去，从而改变其原有的行为。这样看来，AOP其实只是OOP的补充而已。OOP从横向上区分出一个个的类来，而AOP则从纵向上向对象中加入特定的代码。有了AOP，OOP变得立体了。如果加上时间维度，AOP使OOP由原来的二维变为三维了，由平面变成立体了。从技术上来说，AOP基本上是通过代理机制实现的。 AOP在编程历史上可以说是里程碑式的，对OOP编程是一种十分有益的补充。</p>
+<p>AOP不一定都像Spring AOP那样，是在运行时生成代理对象来织入的，还可以在编译期、类加载期织入，比如AspectJ。AOP像OOP一样，只是一种编程范式，AOP并没有规定说，实现AOP协议的代码，要用什么方式去实现。<br>代理分为静态代理和动态代理。<br>静态代理，顾名思义，就是你自己写代理对象。<br>动态代理，则是在运行期，生成一个代理对象。Spring AOP就是基于动态代理的，但是不是所有AOP的实现都是在运行时进行织入的，因为这样效率太低了，而且只能针对方法进行AOP，无法针对构造函数、字段进行AOP。我完全可以在编译成class时就织入啊，比如AspectJ，当然AspectJ还提供了后编译器织入和类加载期织入。</p>
+<h4 id="AOP概念"><a href="#AOP概念" class="headerlink" title="AOP概念"></a>AOP概念</h4><p>方面（Aspect）：一个关注点的模块化，这个关注点实现可能另外横切多个对象。事务管理是J2EE应用中一个很好的横切关注点例子。方面用Spring的Advisor或拦截器实现。</p>
+<p>连接点（Joinpoint）：程序执行过程中明确的点，如方法的调用或特定的异常被抛出。</p>
+<p>通知（Advice）：在特定的连接点，AOP框架执行的动作。各种类型的通知包括“around”、“before”和“throws”通知。通知类型将在下面讨论。许多AOP框架包括Spring都是以拦截器做通知模型，维护一个“围绕”连接点的拦截器链。</p>
+<p>切入点（Pointcut）：指定一个通知将被引发的一系列连接点的集合。AOP框架必须允许开发者指定切入点，例如，使用正则表达式。</p>
+<p>引入（Introduction）：添加方法或字段到被通知的类。Spring允许引入新的接口到任何被通知的对象。例如，你可以使用一个引入使任何对象实现IsModified接口，来简化缓存。</p>
+<p>目标对象（Target Object）：包含连接点的对象，也被称作被通知或被代理对象。</p>
+<p>AOP代理（AOP Proxy）：AOP框架创建的对象，包含通知。在Spring中，AOP代理可以是JDK动态代理或CGLIB代理。</p>
+<p>编织（Weaving）：组装方面来创建一个被通知对象。这可以在编译时完成（例如使用AspectJ编译器），也可以在运行时完成。Spring和其他纯Java AOP框架一样，在运行时完成织入。</p>
+<h4 id="通知类型"><a href="#通知类型" class="headerlink" title="通知类型"></a>通知类型</h4><ul>
+<li>Around通知：包围一个连接点的通知，如方法调用。这是最强大的通知。Aroud通知在方法调用前后完成自定义的行为，它们负责选择继续执行连接点或通过返回它们自己的返回值或抛出异常来短路执行。</li>
+<li>Before通知：在一个连接点之前执行的通知，但这个通知不能阻止连接点前的执行（除非它抛出一个异常）。</li>
+<li>Throws通知：在方法抛出异常时执行的通知。Spring提供强制类型的Throws通知，因此你可以书写代码捕获感兴趣的异常（和它的子类），不需要从Throwable或Exception强制类型转换。</li>
+<li>After returning通知：在连接点正常完成后执行的通知，例如，一个方法正常返回，没有抛出异常。</li>
+</ul>
+<p>Around通知是最通用的通知类型。大部分基于拦截的AOP框架（如Nanning和Jboss 4）只提供Around通知。</p>
+<p>如同AspectJ，Spring提供所有类型的通知，我们推荐你使用最为合适的通知类型来实现需要的行为。例如，如果只是需要用一个方法的返回值来更新缓存，你最好实现一个after returning通知，而不是around通知，虽然around通知也能完成同样的事情。使用最合适的通知类型使编程模型变得简单，并能减少潜在错误。例如，你不需要调用在around通知中所需使用的MethodInvocation的proceed()方法，因此就调用失败。</p>
+<p>切入点的概念是AOP的关键，它使AOP区别于其他使用拦截的技术。切入点使通知独立于OO的层次选定目标。例如，提供声明式事务管理的around通知可以被应用到跨越多个对象的一组方法上。 因此切入点构成了AOP的结构要素。</p>
+<h3 id="Interceptor（拦截器）"><a href="#Interceptor（拦截器）" class="headerlink" title="Interceptor（拦截器）"></a>Interceptor（拦截器）</h3><h4 id="拦截器的概念"><a href="#拦截器的概念" class="headerlink" title="拦截器的概念"></a>拦截器的概念</h4><p>java里的拦截器是动态拦截Action调用的对象，它提供了一种机制可以使开发者在一个Action执行的前后执行一段代码，也可以在一个Action<br>执行前阻止其执行，同时也提供了一种可以提取Action中可重用部分代码的方式。在AOP中，拦截器用于在某个方法或者字段被访问之前，进行拦截<br>然后再之前或者之后加入某些操作。目前，我们需要掌握的主要是Spring的拦截器，Struts2的拦截器不用深究，知道即可。</p>
+<h4 id="拦截器的原理"><a href="#拦截器的原理" class="headerlink" title="拦截器的原理"></a>拦截器的原理</h4><p>大部分时候，拦截器方法都是通过代理的方式来调用的。Struts2的拦截器实现相对简单。当请求到达Struts2的ServletDispatcher时，Struts2<br>会查找配置文件，并根据配置实例化相对的拦截器对象，然后串成一个列表（List），最后一个一个的调用列表中的拦截器。Struts2的拦截器是可<br>插拔的，拦截器是AOP的一个实现。Struts2拦截器栈就是将拦截器按一定的顺序连接成一条链。在访问被拦截的方法或者字段时，Struts2拦截器链<br>中的拦截器就会按照之前定义的顺序进行调用。</p>
+<h4 id="自定义拦截器的步骤"><a href="#自定义拦截器的步骤" class="headerlink" title="自定义拦截器的步骤"></a>自定义拦截器的步骤</h4><p>第一步：自定义一个实现了Interceptor接口的类，或者继承抽象类AbstractInterceptor。<br>第二步：在配置文件中注册定义的拦截器。<br>第三步：在需要使用Action中引用上述定义的拦截器，为了方便也可以将拦截器定义为默认的拦截器，这样在不加特殊说明的情况下，所有的<br>Action都被这个拦截器拦截。</p>
+<h4 id="过滤器与拦截器的区别"><a href="#过滤器与拦截器的区别" class="headerlink" title="过滤器与拦截器的区别"></a>过滤器与拦截器的区别</h4><p>过滤器可以简单的理解为“<code>取你所想取</code>”，过滤器关注的是web请求；拦截器可以简单的理解为“<code>拒你所想拒</code>”，拦截器关注的是方法调用，比如拦截<br>敏感词汇。</p>
+<ul>
+<li>拦截器是基于java反射机制来实现的，而过滤器是基于函数回调来实现的。（有人说，拦截器是基于动态代理来实现的）</li>
+<li>拦截器不依赖servlet容器，过滤器依赖于servlet容器。</li>
+<li>拦截器只对Action起作用，过滤器可以对所有请求起作用。</li>
+<li>拦截器可以访问Action上下文和值栈中的对象，过滤器不能。</li>
+<li>在Action的生命周期中，拦截器可以多次调用，而过滤器只能在容器初始化时调用一次。</li>
+</ul>
+<h4 id="Spring拦截器"><a href="#Spring拦截器" class="headerlink" title="Spring拦截器"></a>Spring拦截器</h4><h5 id="抽象类HandlerInterceptorAdapter"><a href="#抽象类HandlerInterceptorAdapter" class="headerlink" title="抽象类HandlerInterceptorAdapter"></a>抽象类HandlerInterceptorAdapter</h5><p>我们如果在项目中使用了Spring框架，那么，我们可以直接继承HandlerInterceptorAdapter.java这个抽象类，来实现我们自己的拦截器。</p>
+<p>Spring框架，对java的拦截器概念进行了包装，这一点和Struts2很类似。HandlerInterceptorAdapter继承了抽象接口HandlerInterceptor。</p>
+<h2 id="Android-IOC注入框架"><a href="#Android-IOC注入框架" class="headerlink" title="Android IOC注入框架"></a>Android IOC注入框架</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161365">引入</a></p>
+<h2 id="手写组件化"><a href="#手写组件化" class="headerlink" title="手写组件化"></a>手写组件化</h2><h3 id="解决的问题是："><a href="#解决的问题是：" class="headerlink" title="解决的问题是："></a>解决的问题是：</h3><ol>
+<li>让 App内 各个功能模块能够独立开发单元测试，也可以 所有模块集成打包，统一测试<br>独立开发<br>更改gradle.properties的配置，使得每个功能模块都成为application， 可以独立打包成apk，单独运行。单个模块，独立测试。<br>集成打包<br>更改gradle.properties的配置，使得原先每个单独模块，都变成library，被 主模块引用，这时候只有主模块能够打包apk，所有功能都集成在这个apk内。</li>
+<li>实现 功能模块的整体移植，灵活拔插<br>故事背景<br>当你们公司有多个安卓开发人员，开发出核心业务相同，但是UI不同，其他业务不同的一系列App时（如果核心业务是X，你们有5个开发人员，做出了A,B,C,D,E 5个app，都包含核心业务X，但是除了X之外，其他的业务模块各不相同）这时候，如果领导要把A里面的一个非核心功能，挪到B里面…<br>现状<br>开发B的程序猿可能要骂娘，因为他在从移植A的代码中剥离代码 遇到了很多高耦合，低内聚 的类结构，挪过来之后，牵一发而动全身，动一点小地方，整个代码满江红。<br>理想<br>如果这个时候，我们通过代码框架的配置，能够把A里面的一个模块，作为一个module 移植到 工程内部，然后主module 来引用这个module，略微写一些代码来使得这个功能模块在app中生效。那么无论是多少个功能模块，都可以作为整体来 给其他app复用。这样开发人员也不用相互骂娘了，如果挪过来的模块存在bug或者其他问题，也不用甩锅，模块原本是谁开发的，找谁就好了。</li>
+<li>保证App内 业务模块的相互隔离，但是又不妨碍业务模块之间的数据交互<br> 我们开发app的功能模块，一个业务，可能是通过一个Activity或者 一个Fragment 作为对外的窗口,也可能是。所谓窗口，就是这个业务，相对于其他模块，”有且只有”一个入口，没有任何其他可以触达到这个业务的途径。业务代码之间相互隔离，绝对不可以有相互引用。那么，既然相互不会引用，那A模块一定要用到B模块的数据，怎么办呢？下文提供解决方案。</li>
+</ol>
+<h3 id="正文大纲"><a href="#正文大纲" class="headerlink" title="正文大纲"></a>正文大纲</h3><blockquote>
+<p>1、代码结构现状以及理想状态一览<br>2、功能组件化的实现思路，实现组件移植拔插<br>3、参考ARouter源码，写出自己的Router框架，统一通过Router来进行模块的切换 以及 组件之间数据的交互<br>4、使用组件api化，在模块很多的情况下优化公共模块的结构</p>
+</blockquote>
+<p>正文<br>1、代码结构现状以及理想状态一览<br>现状；<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835619910.png" alt="Alt text"></p>
+<blockquote>
+<p>代码有模块化的迹象，但是没有对业务模块进行非常明显的模块化（不明白啥意思是吧？不明白就对了，app这个module里面其实还有很多东西没有展示出来，请看下图：试想，把所有的模块集中到一个module的一个包里面，当你要移植某一个功能的时候，想想那酸爽….当然如果你口味别致，那当我没说）<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835697439.png" alt="Alt text"><br>理想：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835703850.png" alt="Alt text"><br>理想化的话，参照：理想.png; 项目结构层次分明，脉络清晰</p>
+</blockquote>
+<p>按照图中的分层，详细解释一下：<br>外壳层：app module</p>
+<blockquote>
+<p>内部代码只写 app的骨骼框架，比如说，你的app是这个样子的结构：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835728113.png" alt="Alt text"><br>下方有N个TAB，通过Fragment来进行切换模块。这种架构肯定不少见。</p>
+</blockquote>
+<p>这个时候，外壳层 app module，就只需要写上 上面这种UI架构的框架代码就行了，至于有多少个模块，需要代码去读取配置进行显示。你问我怎么写这种UI框架吗？网上一大把的，如果实在找不到，来我的 github项目地址</p>
+<p>业务层</p>
+<blockquote>
+<p>我们的业务模块，对外接口可能是一个Activity* （比如说，登录模块，只对外提供一个LoginActivity,有且仅有这一个窗口）或者 是一个Fragment，就像上图（典型的app架构.png）, 如果app的UI框架是通过切换Fragment来却换业务模块的话。用business*这个目录，将所有的业务模块包含进去，每个模块又是独立的module，这样既实现了业务代码隔离，又能一眼看到所有的业务模块，正所谓，一目了然。</p>
+</blockquote>
+<p>功能组件层</p>
+<blockquote>
+<p>每一个业务模块，不可避免的需要用到一些公用工具类，有的是第三方SDK的再次封装，有的是自己的工具类，或者自己写的自定义控件，还有可能是 所有业务模块都需要的 辅助模块，都放在这里。</p>
+</blockquote>
+<p>路由框架层</p>
+<blockquote>
+<p>设计这一层，是想让app内的所有Activity，业务模块Fragment，以及模块之间的数据交互，都由 这一层开放出去的接口来负责</p>
+</blockquote>
+<p>gradle统一配置文件</p>
+<blockquote>
+<p>工程内部的一些全局gradle变量，放在这里，整个工程都有效</p>
+</blockquote>
+<p>module编译设置</p>
+<blockquote>
+<p>setting.gradle 配置要编译的module; 也可以做更复杂的操作，比如，写gradle代码去自动生成一些module，免除人为创建的麻烦.</p>
+</blockquote>
+<h3 id="功能组件化的实现思路，实现组件移植拔插"><a href="#功能组件化的实现思路，实现组件移植拔插" class="headerlink" title="功能组件化的实现思路，实现组件移植拔插"></a>功能组件化的实现思路，实现组件移植拔插</h3><p>能够兼顾 每个模块的单独开发，单独测试 和 整体打包，统一测试。 听起来很神奇的样子，但是其实就一个核心：gradle编程。</p>
+<p>打开gradle.properties文件：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835794770.png" alt="Alt text"><br>注解应该很清晰了，通过一个全局变量，就可以控制当前是要 模块化单元测试呢？还是要集成打包apk测试。</p>
+<p>那么，只写一个isModule就完事了吗？当然不是，还有一堆杂事 需要我们处理，我们要使用这个全局变量。</p>
+<p>一堆杂事，分为两类；<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835806715.png" alt="Alt text"><br>1- app 外壳层module 的build.gradle(注意：写在dependencies)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isModule.toBoolean()) &#123; </span><br><span class="line">   implementation <span class="title function_">project</span><span class="params">(<span class="string">&quot;:business:activity_XXX&quot;</span>)</span></span><br><span class="line">   <span class="comment">//...在这里引用更多业务模块</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2- 每个业务module的build.gradle</p>
+<p>第一处：判定 isModule，决定当前module是要当成library还是application</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (isModule.toBoolean()) &#123;</span><br><span class="line">    apply plugin:<span class="string">&#x27;com.android.library&#x27;</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    apply plugin:<span class="string">&#x27;com.android.application&#x27;</span>*</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第二处：更改defaultConfig里面的部分代码，为什么要改？因为当当前module作为library的时候，不能有applicationId “XXXX”这一句</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">defaultConfig &#123;</span><br><span class="line">    <span class="keyword">if</span> (!isModule.toBoolean()) &#123;</span><br><span class="line">       applicationId<span class="string">&quot;study.hank.com.XXXX&quot;</span>*</span><br><span class="line">    &#125;</span><br><span class="line">    ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第三处：当业务模块module作为library的时候，不可以在 AndroidManifest.xml中写 Launcher Activity,否则，你打包app module的时候，安装完毕，手机桌面上将会出现不止一个icon。而，当业务模块module 作为application单独运行的时候，必须有一个Launcher Activity ，不然…launcher都没有，你测个什么鬼 &#96;&#96;&#96; 所以这里针对manifest文件进行区分对待。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sourceSets &#123;</span><br><span class="line">        main &#123;</span><br><span class="line">            <span class="keyword">if</span> (isModule.toBoolean()) &#123;</span><br><span class="line">                manifest.srcFile <span class="string">&#x27;src/main/module/AndroidManifest.xml&#x27;</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                manifest.srcFile <span class="string">&#x27;src/main/AndroidManifest.xml&#x27;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>由于要区分对待，我们就需要另外创建一个manifest文件，移除launcher配置即可。参考下图：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835906925.png" alt="Alt text"><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835911438.png" alt="Alt text"><br>这就是业务模块组件化的秘密了。</p>
+<p>什么，你问我怎么 进行功能拔插吗？</p>
+<p>当你不需要某一个模块的时候，</p>
+<p>1）在app的build.gradle里面 把 引用该模块的配置去掉；<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835929389.png" alt="Alt text"><br>2）setting.gradle 的include 去掉它<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606835940308.png" alt="Alt text"><br>3）app module 里面，改动代码，不再使用这个模块。（这个我就不截图了，因为app module的UI框架代码不是一句话说得清的。请运行我的demo源码自己看吧）</p>
+<p>功能的插入，同理，上面的过程倒过来走一遍，就不浪费篇幅了。</p>
+<h3 id="参考ARouter源码，写出自己的Router框架，统一通过Router来进行模块的切换-以及组件之间数据的交互"><a href="#参考ARouter源码，写出自己的Router框架，统一通过Router来进行模块的切换-以及组件之间数据的交互" class="headerlink" title="参考ARouter源码，写出自己的Router框架，统一通过Router来进行模块的切换 以及组件之间数据的交互"></a>参考ARouter源码，写出自己的Router框架，统一通过Router来进行模块的切换 以及组件之间数据的交互</h3><p>说到路由框架的使用价值，有两点：</p>
+<blockquote>
+<p>1、在app实现了组件化之后，由于组件之间由于代码隔离，不允许相互引用，导致 相互不能直接沟通，那么，就需要一个 “中间人角色” 来帮忙*” 带话”了.<br>2、app内部，不可避免地要进行Activity跳转，Fragment切换。把这些重复性的代码，都统一让路由来做吧。省了不少代码行数。</p>
+</blockquote>
+<p>阅读了阿里巴巴ARouter的源码，参照阿里大神的主要思路，简化了一些流程，去掉了一些我不需要的功能，增加了一些我独有的功能，加入了一些自己的想法，写出了自己的 ZRouter 路由 框架。那就不罗嗦了，上干货吧。</p>
+<p>基础知识<br>如果以下基础知识不具备，建议先去学习基础知识。 或者 也可以跟着笔者的思路来看代码，慢慢理解这些知识的实用价值。</p>
+<blockquote>
+<p>java反射机制（路由框架里大量地使用了 class反射创建 对象）<br>APT 注解，注解解析机制（注解解析机制贯穿了整个路由框架）<br>javapoet ， java类的元素结构（一些人为写起来很麻烦的代码，一些脏活累活，就通过自动生成代码来解决）</p>
+</blockquote>
+<p>如何使用<br>1- 在app module的自定义Application类里面，进行初始化， ZRouter准备就绪</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FTApplication</span> <span class="keyword">extends</span> <span class="title class_">Application</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate();</span><br><span class="line">        ZRouter.getInstance().initRegister(<span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>2- 就绪之后才可以直接使用（RouterPathConst 里面都是我自己定义的String常量）:</p>
+<p>切换Fragment</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZRouter.getInstance().build(RouterPathConst.PATH_FRAGMENT_MINE).navigation();</span><br></pre></td></tr></table></figure>
+<p>跳转Activity</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZRouter.getInstance().build(RouterPathConst.PATH_ACTIVITY_CHART).navigation();</span><br></pre></td></tr></table></figure>
+<p>组件之间的通信,取得Mine模块的 accountNo 然后 toast出来</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">accountNo</span> <span class="operator">=</span> ZRouter.getInstance().navigation(MineOpenServiceApi.class).accountNo();</span><br><span class="line"> </span><br><span class="line">Toast.makeText(getActivity(), accountNo, Toast.LENGTH_LONG).show();</span><br></pre></td></tr></table></figure>
+<p>如我们之前所设想的，切换Fragment，跳转Activity，组件之间的通信 全部只能通过 ZRouter框架来执行。</p>
+<p>3- 退出app时，要释放ARouer的资源（主要是静态变量）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZRouter.getInstance().release();</span><br></pre></td></tr></table></figure>
+<p>4- 每个业务模块，在将要暴露出去的Fragment或者Activity上，要加上注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ZRoute(RouterPathConst.PATH_ACTIVITY_CHART)<span class="comment">//注册Activity</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ChartActivity</span> <span class="keyword">extends</span> <span class="title class_">AppCompatActivity</span> &#123;···&#125;</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ZRoute(RouterPathConst.PATH_FRAGMENT_HOME)</span><span class="comment">//注册Fragment</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HomeFragment</span> <span class="keyword">extends</span> <span class="title class_">Fragment</span> &#123;···&#125;</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ZRoute(RouterPathConst.PATH_PROVIDER_MINE)</span> <span class="comment">// 注册数据接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MineServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">MineOpenServiceApi</span>  &#123;···&#125;</span><br></pre></td></tr></table></figure>
+<p>设计思路<br>讲解设计思路，必须用源码进行参照，请务必参照源码 。<br>源码地址为：<a target="_blank" rel="noopener" href="https://github.com/18598925736/EvolutionPro">https://github.com/18598925736/EvolutionPro</a></p>
+<p>说明一下我本人 阅读源码的方法。也许很多人都和曾经的我一样，看到一份第三方SDK的源码，不知道从何下手，要么看了半天还在原地打转转，要么就是这里看一点，那里看一点，没有中心思想，看了半天毫无收获。</p>
+<blockquote>
+<p>干货：看源码要思路清晰，目的明确。一切技术的价值都只有一个，那就是解决实际问题。既然是解决实际问题，那我们就从这个SDK暴露出来的最外围接口为起点，看这个接口的作用是什么，解决了什么问题，顺藤摸瓜，找找它解决问题的核心方法，至于顺藤摸瓜道路上遇到的枝枝脉脉，要分清哪些是辅助类（每个人写辅助类的习惯可能都不同，所以不必太在意），哪些是核心类（核心思想一般都是大同小异）。找到了核心思想，再从头重新过几遍，SDK的设计思路就了然于胸了哈.</p>
+</blockquote>
+<p>按照我的上面提供的“干货”，如果你现在下载了我的Demo源码，那么我们继续：</p>
+<p>如果把看源码的结构，理解为 警察查案。那么就要从最表层的现象开始着手，慢慢查找根源。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HomeFragment.java的<span class="number">54</span>行， 这里要进行Activity跳转。</span><br><span class="line"></span><br><span class="line">ZRouter.getInstance().build(RouterPathConst.PATH_ACTIVITY_CHART).navigation();</span><br></pre></td></tr></table></figure>
+<p>这里有getInstance()方法，build()方法，还有navigation()方法,一个一个看</p>
+<blockquote>
+<p>getInstance()是处在ZRouter类内部，是ZRouter的单例模式的get方法，单例模式就不赘述了，我写了注释<br>build()方法也是在ZRouter类内部，逻辑很简单，就是new Postcard(path) 参数path是一个string,方法返回值是一个Postcard对象<br>navigation()方法是在Postcard类内部，但是，具体的执行逻辑，依然是在ZRouter类里面<br>getInstance()和build()方法都很简单，不需要花太多精力。下面继续跟随ZRouter的navigation()方法“追查”</p>
+</blockquote>
+<p>ZRouter 的 navigation() 方法内容如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Object <span class="title function_">navigation</span><span class="params">(Postcard postcard)</span> &#123;</span><br><span class="line">        LogisticsCenter.complete(postcard);</span><br><span class="line">        <span class="keyword">switch</span> (postcard.getRouteType()) &#123;</span><br><span class="line">            <span class="keyword">case</span> ACTIVITY:<span class="comment">//如果是Activity，那就跳吧</span></span><br><span class="line">                <span class="keyword">return</span> startActivity(postcard);</span><br><span class="line">            <span class="keyword">case</span> FRAGMENT:<span class="comment">//如果是Fragment，那就切换吧</span></span><br><span class="line">                <span class="keyword">return</span> switchFragment(postcard);</span><br><span class="line">            <span class="keyword">case</span> PROVIDER:<span class="comment">//如果是Provider，那就执行业务逻辑</span></span><br><span class="line">                <span class="keyword">return</span> postcard.getProvider();<span class="comment">//那就直接返回provider对象</span></span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>发现一个可疑的代码：LogisticsCenter.complete(postcard); 看方法名，应该是对postcard对象进行完善。<br>进去追查</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Postcard字段补全</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> postcard</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">complete</span><span class="params">(Postcard postcard)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == postcard) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;err:postcard 是空的，怎么搞的？&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="type">RouteMeta</span> <span class="variable">routeMeta</span> <span class="operator">=</span> Warehouse.routeMap.get(postcard.getPath());<span class="comment">//</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == routeMeta) &#123;<span class="comment">//如果路由meta是空，说明可能这个路由没注册，也有可能路由表没有去加载到内存中</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;err:路由寻址失败，请检查是否path写错了&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            postcard.setDestination(routeMeta.getDestination());</span><br><span class="line">            postcard.setRouteType(routeMeta.getRouteType());</span><br><span class="line"> </span><br><span class="line">            ···</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这段代码，从一个map中，用path作为key，get出了一个RouteMeat对象，然后用这个对象的字段值，对参数postcard的属性进行赋值。好像有点莫名其妙。看不太懂。不着急，继续。</p>
+<p>刚才的navigation()方法这里存在switch分支，分支设计到ACTIVITY,FRAGMENT,PROVIDER，由于我们这次追查的只是activity相关，所以，忽略掉其他分支，只追查startActivity(postcard)； 下面是该方法的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Object <span class="title function_">startActivity</span><span class="params">(Postcard postcard)</span> &#123;</span><br><span class="line">        Class&lt;?&gt; cls = postcard.getDestination();</span><br><span class="line">        <span class="keyword">if</span> (cls == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cls == <span class="literal">null</span>)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;没找到对应的activity，请检查路由寻址标识是否写错&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">Intent</span> <span class="variable">intent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(mContext, cls);</span><br><span class="line">        <span class="keyword">if</span> (Postcard.FLAG_DEFAULT != postcard.getFlag()) &#123;<span class="comment">//如果不是初始值，也就是说，flag值被更改过，那就用更改后的值</span></span><br><span class="line">            intent.setFlags(postcard.getFlag());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;<span class="comment">//如果沒有设定启动模式，即 flag值没有被更改，就用常规模式启动</span></span><br><span class="line">            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);<span class="comment">//常规模式启动Activity</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//跳转只能在主线程中进行</span></span><br><span class="line">        runInMainThread(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                mContext.startActivity(intent);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这里只是一个简单的跳转操作，但是，发现了一个关键点，跳转的“目的地”class是来自 postcard的destination . 发现规律了，原来刚才在 LogisticsCenter.complete(postcard); 里面进行postcard“完善”的时候，set进去的destination 原来在这里被使用到。</p>
+<p>那么问题的关键点就发生了转移了， 这个destination Class是从map里面get出来的，那么，又是什么时候被put进去的呢？</p>
+<blockquote>
+<p>开始追踪这个map : Warehouse.routeMap ，通过代码追踪，可以发现，唯一可能往map里面put东西的代码只有这一句：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606836172010.png" alt="Alt text"></p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 反射执行APT注册文件的注册方法</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">registerComm</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Set&lt;String&gt; classNames = ClassUtils.getFileNameByPackageName(mContext, RouterConst.GENERATION_PACKAGE_NAME);<span class="comment">//找到包名下的所有class</span></span><br><span class="line">        <span class="keyword">for</span> (String className : classNames) &#123;</span><br><span class="line">            Class&lt;?&gt; clz = Class.forName(className);</span><br><span class="line">            <span class="keyword">if</span> (IRouterZ.class.isAssignableFrom(clz)) &#123;</span><br><span class="line">                <span class="type">IRouterZ</span> <span class="variable">iRouterComm</span> <span class="operator">=</span> (IRouterZ) clz.getConstructor().newInstance();</span><br><span class="line">                iRouterComm.onLoad(Warehouse.routeMap);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Warehouse.traversalCommMap();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>利用java反射机制，反射创建类的实例，然后执行onLoad方法，参数，正是这个map</p>
+<p>OK,关于查看源码的详细步骤，就写到这么多，再罗嗦，大佬们要打人啦。</p>
+<p>目前为止的结论：通过追踪ZRouter.getInstance().build(RouterPathConst.PATH_ACTIVITY_CHART).navigation();</p>
+<p>我们一路上遭遇了这些类或接口：<br>核心类 :</p>
+<blockquote>
+<p>ZRouter（提供Activity跳转的接口）;</p>
+</blockquote>
+<p>辅助类或接口</p>
+<blockquote>
+<p>Postcard (“明信片”，封装我们要执行操作，这次的操作是 跳Activity）<br>RouteMeta (“路由参数”,Postcard的基类)<br>RouteType （“路由类型”，我们要执行的操作，用枚举来进行区分）<br>LogisticsCenter (“物流中心”，主要封装ZRouter类的一些特殊逻辑，比如对Postcard对象进行完善补充 )<br>Warehouse (“货舱”，用hashMap来存储“路由”对象)<br>IRouterZ (“路由注册”接口类 ，用于反射创建对象，从而进行路由的注册)</p>
+</blockquote>
+<p>上面用大量篇幅详述了 追踪源码， 追查框架结构的方法，那么下面的篇幅就直接说结论了：</p>
+<p>路由框架的结构，可以用一张图表示：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606836216868.png" alt="Alt text"><br>针对这张图 简单说两句：</p>
+<blockquote>
+<p>路由框架必然有3个部分，注解定义，注解解析，以及路由对外接口。<br>demo中我把这3个部分定义成了3个module.<br>其中，每个部分的核心代码是：<br>zrouter-annotation模块的 ZRoute @interface，IRouterZ 接口<br>zrouter-api模块的ZRouter类<br>zrouter-compiler 模块的RouterProcessor类<br>具体的代码，不加以说明了。</p>
+</blockquote>
+<p>如何用路由进行Activity跳转，我写了详细步骤，相信没人看不懂了。那么Fragment的切换，是我自定义的方法，可能有点粗糙，但是也是通俗易懂，就点到为止。但是，我们组件化的思想，就是要隔离所有的业务模块，彼此之间不能进行直接通信，如果A模块一定要使用B模块的一些数据，通过路由框架也能实现。</p>
+<blockquote>
+<p>HomeFragment类的第72行代码：<br>String accountNo &#x3D; ZRouter.getInstance().navigation(MineOpenServiceApi.class).accountNo();<br>这句代码的意义是：在Home模块中，通过路由框架，调用Mine模块对外开放的接口accountNo();</p>
+</blockquote>
+<p>追踪这句代码的navigation()方法，找到真正的执行逻辑 ZRouter类141行起:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T&gt; T <span class="title function_">navigation</span><span class="params">(String serviceName)</span> &#123;</span><br><span class="line">        <span class="type">Postcard</span> <span class="variable">postcard</span> <span class="operator">=</span> LogisticsCenter.buildProvider(serviceName);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == postcard)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        LogisticsCenter.complete(postcard);<span class="comment">//补全postcard字段值</span></span><br><span class="line">        <span class="keyword">return</span> (T) postcard.getProvider();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>这里：最终返回了一个Provider对象.</p>
+<blockquote>
+<p>LogisticsCenter类又有了戏份：LogisticsCenter.buildProvider(serviceName) 和 LogisticsCenter.complete(postcard);</p>
+</blockquote>
+<p>分别点进去看：</p>
+<blockquote>
+<p>buildProvider(String) 方法，其实就是从map中找出RouteMeta对象，然后返回一个Postcard.</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Postcard <span class="title function_">buildProvider</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="type">RouteMeta</span> <span class="variable">routeMeta</span> <span class="operator">=</span> Warehouse.routeMap.get(name);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == routeMeta) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Postcard</span>(routeMeta.getPath());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>complete(Postcard)方法，其实就是完善postcard的字段，且，针对Provider，进行特别处理，反射创建Provider对象，并建立Provider的缓存机制，防止多次进行数据交互时进行无意义的反射创建对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Postcard字段补全</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> postcard</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">complete</span><span class="params">(Postcard postcard)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == postcard) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;err:postcard 是空的，怎么搞的？&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="type">RouteMeta</span> <span class="variable">routeMeta</span> <span class="operator">=</span> Warehouse.routeMap.get(postcard.getPath());<span class="comment">//</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == routeMeta) &#123;<span class="comment">//如果路由meta是空，说明可能这个路由没注册，也有可能路由表没有去加载到内存中</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;err:路由寻址失败，请检查是否path写错了&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            postcard.setDestination(routeMeta.getDestination());</span><br><span class="line">            postcard.setRouteType(routeMeta.getRouteType());</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">switch</span> (routeMeta.getRouteType()) &#123;</span><br><span class="line">                <span class="keyword">case</span> PROVIDER:<span class="comment">//如果是数据接口Provider的话</span></span><br><span class="line">                    Class&lt;? <span class="keyword">extends</span> <span class="title class_">IProvider</span>&gt; clz = (Class&lt;? <span class="keyword">extends</span> <span class="title class_">IProvider</span>&gt;) routeMeta.getDestination();</span><br><span class="line">                    <span class="comment">//从map中找找看</span></span><br><span class="line">                    <span class="type">IProvider</span> <span class="variable">provider</span> <span class="operator">=</span> Warehouse.providerMap.get(clz);</span><br><span class="line">                    <span class="comment">//如果没找到</span></span><br><span class="line">                    <span class="keyword">if</span> (<span class="literal">null</span> == provider) &#123;</span><br><span class="line">                        <span class="comment">//执行反射方法创建，并且存入到map</span></span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            provider = clz.getConstructor().newInstance();</span><br><span class="line">                            provider.init(mContext);</span><br><span class="line">                            Warehouse.providerMap.put(clz, provider);</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                            e.printStackTrace();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    postcard.setProvider(provider);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">default</span>:</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>看到这里，整个路由框架，包括模块间的通信，就讲解完毕了。</p>
+<p>做下结论吧：</p>
+<blockquote>
+<p>使用路由框架的目的，是 在项目代码组件化的背景之下，优化Activity跳转，Fragment切换的重复代码的编写，而统一使用路由框架的对外接口执行跳转或者切换。同时，通过路由框架的对外接口，实现组件之间的无障碍通信，保证组件的独立性。</p>
+</blockquote>
+<blockquote>
+<p>在探索框架的过程中，我们遇到了很多辅助类，但是辅助类怎么写，完全看个人习惯，我是看了阿里巴巴的ARtouer框架之后得到启发，按照它的思路来写自己的路由框架，但是很多辅助类的写法，我并完全按它的意思来。但是，核心思想，APT 注解+反射+自动生成代码 是完全一样的。</p>
+</blockquote>
+<blockquote>
+<p>所以说，打蛇打七寸，看框架要看核心，拿住核心之后，其他的东西，就算代码量再大，也是狐假虎威。</p>
+</blockquote>
+<h3 id="使用组件api化，在模块很多的情况下优化公共模块的结构"><a href="#使用组件api化，在模块很多的情况下优化公共模块的结构" class="headerlink" title="使用组件api化，在模块很多的情况下优化公共模块的结构"></a>使用组件api化，在模块很多的情况下优化公共模块的结构</h3><p>回顾一下理想中的项目结构:<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606836418939.png" alt="Alt text"></p>
+<p>背景</p>
+<blockquote>
+<p>这里的功能组件层 function，是存放各个业务模块都需要的公共类或者接口。这里说的公共类，也包含了刚才所提及的 业务模块之间进行通信所需要的接口。<br>举例说明：A模块，需要调用B模块的test()接口，由于A不能直接引用B模块，那这个test接口，只能放在function这个公共模块内，然后A,B同时引用，B对test接口进行实现并通过注解进行路由注册，A通过路由对外接口调用B的test方法。</p>
+</blockquote>
+<p>现状</p>
+<blockquote>
+<p>诚然，这种做法没毛病，能够实现功能。但是随着项目模块的增多，function 里面会存在很多的业务模块数据接口。有一种情况：如果存在A,B,C,D,E 5个模块，它们都在function内存放了 数据接口，并且5个模块都引用了function模块。那么，当A需要，并且只需要B的数据接口，而不需要C,D,E的接口时，它还是不得不去引用这些用不着的接口。A不需要这些接口，但是，还不得不引用！这显然会不合逻辑。并且这种 全部业务数据接口都塞到function模块里面的做法，会导致function出现不必要的臃肿。</p>
+</blockquote>
+<p>理想</p>
+<blockquote>
+<p>每个业务模块的数据接口，只和本模块的业务有关，所以最好是放在本模块之内，但是，如果放在本模块之内，又会导致组件之间不能通信. 那么就创建一个专门的 Module来存放每个业务模块的接口。想法可行，但是每个业务模块的module数量一下子加倍了，又会造成维护困难的问题。那么有没有方法可以自动生成这些数据接口模块呢？ 还真有~ 神奇的gradle编程 &gt;_&lt;*</p>
+</blockquote>
+<p>关键词</p>
+<blockquote>
+<p>组件API化技术 使用gradle配置，对module内的特殊后缀文件进行检索，并以当前module为基础，自动生成新的module.<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606836506188.png" alt="Alt text"><br>这个名叫MineOpenServiceApi的接口，原本是.java后缀，现在改成.api</p>
+</blockquote>
+<p>打开demo的setting.gradle文件：<br>找到下面的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">include_with_api(<span class="string">&#x27;:business:fragment_mine&#x27;</span>)</span><br><span class="line"> </span><br><span class="line">def <span class="title function_">include_with_api</span><span class="params">(String moduleName)</span> &#123;</span><br><span class="line">    include(moduleName)</span><br><span class="line">    <span class="comment">//获得工程根目录</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">originDir</span> <span class="operator">=</span> project(moduleName).projectDir</span><br><span class="line">    <span class="comment">//制作的 SDK 工程的目录</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">targetDir</span> <span class="operator">=</span> <span class="string">&quot;$&#123;originDir&#125;_api&quot;</span></span><br><span class="line">    <span class="comment">//制作的 SDK 工程的名字</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">sdkName</span> <span class="operator">=</span> <span class="string">&quot;$&#123;project(moduleName).name&#125;_api&quot;</span></span><br><span class="line">    System.out.println(<span class="string">&quot;-------------------------------------SDK name:&quot;</span> + sdkName)</span><br><span class="line">    <span class="comment">//删除掉 SDK 工程目录 除了 iml</span></span><br><span class="line">    <span class="type">FileTree</span> <span class="variable">targetFiles</span> <span class="operator">=</span> fileTree(targetDir)</span><br><span class="line">    targetFiles.exclude <span class="string">&quot;*.iml&quot;</span></span><br><span class="line">    targetFiles.each &#123; File file -&gt;</span><br><span class="line">        file.delete()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//从待制作SDK工程拷贝目录到 SDK工程 只拷贝目录</span></span><br><span class="line">    copy &#123;</span><br><span class="line">        from originDir</span><br><span class="line">        into targetDir</span><br><span class="line">        <span class="comment">//拷贝文件</span></span><br><span class="line">        include <span class="string">&#x27;**/*.api&#x27;</span></span><br><span class="line">        include <span class="string">&#x27;**/AndroidManifest.xml&#x27;</span></span><br><span class="line">        include <span class="string">&#x27;api.gradle&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//读取实现模块的manifest并将package的值后加 .api 作为API工程的manifest package</span></span><br><span class="line">    <span class="type">FileTree</span> <span class="variable">manifests</span> <span class="operator">=</span> fileTree(targetDir).include(<span class="string">&quot;**/AndroidManifest.xml&quot;</span>)</span><br><span class="line">    manifests.each &#123;</span><br><span class="line">        File file -&gt;</span><br><span class="line">            <span class="type">def</span> <span class="variable">parser</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">XmlParser</span>().parse(file)</span><br><span class="line">            <span class="type">def</span> <span class="variable">node</span> <span class="operator">=</span> parser.attribute(<span class="string">&#x27;package&#x27;</span>)</span><br><span class="line">            parser.attributes().replace(<span class="string">&#x27;package&#x27;</span>, <span class="string">&quot;$&#123;node&#125;.api&quot;</span>)</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">XmlNodePrinter</span>(<span class="keyword">new</span> <span class="title class_">PrintWriter</span>(file)).print(parser)</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//将api.gradle改为build.gradle</span></span><br><span class="line">    <span class="type">File</span> <span class="variable">build</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(targetDir + <span class="string">&quot;/api.gradle&quot;</span>)</span><br><span class="line">    <span class="keyword">if</span> (build.exists()) &#123;</span><br><span class="line">        build.renameTo(<span class="keyword">new</span> <span class="title class_">File</span>(targetDir + <span class="string">&quot;/build.gradle&quot;</span>))</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 将.api 文件改为 .java</span></span><br><span class="line">    <span class="type">FileTree</span> <span class="variable">files</span> <span class="operator">=</span> fileTree(targetDir).include(<span class="string">&quot;**/*.api&quot;</span>)</span><br><span class="line">    files.each &#123;</span><br><span class="line">        File file -&gt;</span><br><span class="line">            file.renameTo(<span class="keyword">new</span> <span class="title class_">File</span>(file.absolutePath.replace(<span class="string">&quot;.api&quot;</span>, <span class="string">&quot;.java&quot;</span>)))</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//加入 SDK工程</span></span><br><span class="line">    include <span class="string">&quot;:business:&quot;</span> + <span class="string">&quot;$sdkName&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这段代码来自一位很厉害的大神，它的作用是，检索指定模块里面，有没有指定后缀名（.api）的文件，有的话，找出来，经过一系列处理(注解很详细，应该能看懂)，自动生成一个module. 生成的module名字比原来的module多一个_api. 表示这个模块，包含原模块的所有对外数据接口</p>
+</blockquote>
+<p>有几处细节需要注意:</p>
+<blockquote>
+<p>数据接口的.java后缀需要改成.api(整个.api完全和setting.gradle代码里的.api对应，你可以都换成其他后缀，比如.apixxxxx)<br>原模块里面，会多出一个api.gradle,这个文件的名字也和 setting.gradle里的api.gradle对应，也可以修改</p>
+</blockquote>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606836574216.png" alt="Alt text"><br>这个api.gradle并不会在本模块被编译的时候起作用，但是它最终会变成 _api 新模块的build.gradle，并保持完全一样的代码。 新的_api模块只是一个library，所以，要去掉 本模块里面的build.gradle里面针对isModule的判定。</p>
+<p>OK,感受一下组件API化的成果：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606836606332.png" alt="Alt text"><br>理想实现了<br>现在不用把所有的数据接口都放到function公共模块内，而只需要在本模块之内将数据接口文件后缀改成.api，然后在setting.gradle里面使用自定义的方法进行include。 就可以只引用本模块需要的 数据接口module，而不需要引用多余的module,而且，防止了function模块的无意义的膨胀。简直破费。</p>
+<h1 id="apt"><a href="#apt" class="headerlink" title="apt"></a>apt</h1><h1 id="Android动态加载技术基础之类加载（ClassLoader）"><a href="#Android动态加载技术基础之类加载（ClassLoader）" class="headerlink" title="Android动态加载技术基础之类加载（ClassLoader）"></a>Android动态加载技术基础之类加载（ClassLoader）</h1><h2 id="虚拟机类加载机制"><a href="#虚拟机类加载机制" class="headerlink" title="虚拟机类加载机制"></a>虚拟机类加载机制</h2><p>类加载过程是指虚拟机将描述类的数据从Class文件中加载到内存，并对数据进行校验，转化解析和初始化，最终形成可以被虚拟机直接使用的Java类型的过程。<br>在Java中，类的加载和连接过程都是在程序运行期间完成。虽然会增加运行时的性能开销，但可以提高程序灵活性，这也是Java能够实现动态加载的原因之一。</p>
+<h2 id="类加载的过程"><a href="#类加载的过程" class="headerlink" title="类加载的过程"></a>类加载的过程</h2><p>虚拟机类加载过程分为加载，验证，准备，解析，初始化，使用，卸载七个阶段。其中验证，准备，解析三个部分成为连接阶段。</p>
+<h3 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h3><p>一般来说，在遇到了以下四种情况的时候，虚拟机会开始进行类的加载：</p>
+<ul>
+<li><p>使用new关键字实例化对象，读取或者设置一个类的静态变量（被final修饰的除外，已经在编译器被加入常量池），以及调用一个类的静态方法的时候</p>
+</li>
+<li><p>对类进行反射调用的时候</p>
+</li>
+<li><p>当初始化一个类时，如果其父类没有被加载，则先对其父类进行加载</p>
+</li>
+<li><p>当虚拟机启动的时候，用户指定的（包含main方法）的类会被加载</p>
+</li>
+<li><p>在类的加载阶段，虚拟机会完成一下三件事情:</p>
+</li>
+<li><p>通过一个类的全限定名获取定义类的二进制字节流</p>
+</li>
+<li><p>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</p>
+</li>
+<li><p>在Java堆中生成一个代表这个类的Class对象，作为方法区这些数据的访问入口。</p>
+</li>
+</ul>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><p>这一阶段是为了确保class文件的字节流包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。主要包括以下几个过程：</p>
+<ul>
+<li><p>文件格式验证</p>
+</li>
+<li><p>元数据验证</p>
+</li>
+<li><p>字节码验证</p>
+</li>
+<li><p>符号引用验证</p>
+<hr>
+</li>
+</ul>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><p>  准备阶段是正式为类变量分配内存并设置类变量初始值的阶段，这些内存都将在方法区中进行分配。这个阶段中进行内存分配的变量只有被static修饰的变量，并将其设置为默认值，而真正的赋值则在初始化阶段。另外，被final static字段修饰的常量在编译器就已经被赋值。</p>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><p>解析阶段主要是虚拟机将常量池内的符号引用替换为直接引用的过程。</p>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>初始化阶段是执行类构造器<cinit>()方法的过程。<br><cinit>()与类的构造方法不同，<cinit>()方法是由编译器自动收集类中的所有类变量的赋值动作和静态语句块中的语句合并而成的。编译器收集的顺序是按语句在源文件中出现的顺序决定的，静态语句块中只能访问定义在它之前的静态变量，定义在它之后的静态变量，只可以赋值，不可以访问。<br>虚拟机会保证子类的<cinit>()方法执行之前，其父类的<cinit>()方法一定被执行（父类先与子类完成加载过程）</p>
+<h2 id="Java中的ClassLoader"><a href="#Java中的ClassLoader" class="headerlink" title="Java中的ClassLoader"></a>Java中的ClassLoader</h2><p>类加载阶段中，实现“通过一个类的全限定名获取定义类的二进制字节流”的动作被放在了虚拟机外部去实现，以便应用程序决定如何去加载所需要的类，实现这个动作的代码模块被称为“类加载器”<br>从Java虚拟机的角度上讲，只存在两种不同的类加载器：</p>
+<ul>
+<li><p>Bootstrap ClassLoader：使用C++实现，是虚拟机的一部分。它主要负责加载存放在%JAVAHOME%&#x2F;lib目录中的，或者被Xbootclasspath指定的类库到虚拟机内存中，Bootstrap ClassLoader无法被java程序直接引用。</p>
+</li>
+<li><p>继承自java.lang.ClassLoader的类加载器：</p>
+</li>
+<li><p>Extension ClassLoader：主要负责加载%JAVAHOME%&#x2F;lib&#x2F;ext目录中的，或者被java.ext.dirs系统变量指定路径的所有类。</p>
+</li>
+<li><p>Application ClassLoader：也被称为系统类加载器（因为其实getSystemClassLoader的返回对象），主要负责加载用户类路径（ClassPath）下的类库</p>
+<h3 id="类的双亲委派模型"><a href="#类的双亲委派模型" class="headerlink" title="类的双亲委派模型"></a>类的双亲委派模型</h3><p>这些类加载器之间的关系如下：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830703493.png" alt="Alt text"><br>双亲委派模型中，除了顶层的BootstrapClassLoader，其他类加载器都要求有自己的父类加载器，这里的类加载器一般以组合的方式实现。</p>
+</li>
+<li><p>双亲委派模型的工作过程是：当一个类加载器收到一个类加载请求的时候，他首先不会自己加载这个类，而是将这个请求委派给父类加载器去完成，只有当父类加载器无法完成这个加载请求时，子加载器才会尝试自己去加载。</p>
+</li>
+<li><p>双亲委派模型的作用：</p>
+</li>
+<li><p>使得java类随着它的类加载器一起具备了一种带有优先级的层次关系</p>
+</li>
+<li><p>保证Java环境的稳定性</p>
+</li>
+<li><p>避免重复加载，如果已经加载过一次Class，就不需要再次加载，而是先从缓存中直接读取。</p>
+</li>
+</ul>
+<h2 id="Android中的ClassLoader"><a href="#Android中的ClassLoader" class="headerlink" title="Android中的ClassLoader"></a>Android中的ClassLoader</h2><p>由于Android虚拟机的执行文件是Dex文件，而不是JVM中的Class文件，所以Java中的类加载器是无法加载Dex文件的，因此，Android中存在另外一套ClassLoader。<br>Android的ClassLoader类型<br>Android中的ClassLoader根据用途可分为一下几种：</p>
+<ul>
+<li><p>BootClassLoader：主要用于加载系统的类，包括java和android系统的类库，和JVM中不同，BootClassLoader是ClassLoader内部类，是由Java实现的，它也是所有系统ClassLoader的父ClassLoader</p>
+</li>
+<li><p>PathClassLoader：用于加载Android系统类和开发编写应用的类，只能加载已经安装应用的 dex 或 apk 文件，也是getSystemClassLoader的返回对象</p>
+</li>
+<li><p>DexClassLoader：可以用于加载任意路径的zip,jar或者apk文件，也是进行安卓动态加载的基础<br>Android中ClassLoader的继承关系<br><img src="/blog/.https:/uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830779965.png" alt="Alt text"></p>
+</li>
+</ul>
+<h3 id="ClassLoader的执行过程"><a href="#ClassLoader的执行过程" class="headerlink" title="ClassLoader的执行过程"></a>ClassLoader的执行过程</h3><ul>
+<li>从上面的ClasLoader结构图可以看到，ClassLoader的主要逻辑主要集中在ClassLoader和BaseDexClassLoder这两个类中。</li>
+</ul>
+<h3 id="ClasLoader"><a href="#ClasLoader" class="headerlink" title="ClasLoader"></a>ClasLoader</h3><ul>
+<li><p>ClasLoader是所有ClassLoader的父类，它定义了加载Class的一般行为。</p>
+</li>
+<li><p>与Java中不同，Android中加载类的过程主要是由loadClass方法实现，而在Java中则是findClass方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String className, <span class="type">boolean</span> resolve) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">    Class&lt;?&gt; clazz = findLoadedClass(className);</span><br><span class="line">    <span class="keyword">if</span> (clazz == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="type">ClassNotFoundException</span> <span class="variable">suppressed</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            clazz = parent.loadClass(className, <span class="literal">false</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            suppressed = e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (clazz == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                clazz = findClass(className);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                e.addSuppressed(suppressed);</span><br><span class="line">                <span class="keyword">throw</span> e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> clazz;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>可以看到，当收到一个加载类请求的时候，ClassLoader会先调用findLoadedClass查询是否本类是否被本加载器加载过（调用JNI方法），如果没有被加载则把请求委托给父加载器，当父加载器无法完成加载行为的时候，才会调用findClass方法尝试自己加载，而ClassLoader中的findClass方法并没有实现，而是交给子类去是实现。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830882328.png" alt="Alt text"></p>
+</li>
+</ul>
+<h3 id="BaseDexClassLoader"><a href="#BaseDexClassLoader" class="headerlink" title="BaseDexClassLoader"></a>BaseDexClassLoader</h3><ul>
+<li><p>作为ClassLoader的直接子类，BaseDexClassLoader实现加载findClass方法的主要逻辑，而其子类DexClassLoader和PathClassLoader都只是加载路径以及某些行为不同而已<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830913665.png" alt="Alt text"></p>
+</li>
+<li><p>可以看到findClass方法是又是调用了pathList的findClass方法去加载类，而pathList则是一个DexPathList对象，它的findClass对象是这样实现的：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830923773.png" alt="Alt text"></p>
+</li>
+<li><p>其中DexFile是Dex文件在Java中的表现形式，而它的loadClassBinaryName方法则是最后调用了JNI方法去完成在dex文件在加载Class对象。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830939836.png" alt="Alt text"></p>
+<h3 id="DexClassLoader和PathClassLoader"><a href="#DexClassLoader和PathClassLoader" class="headerlink" title="DexClassLoader和PathClassLoader"></a>DexClassLoader和PathClassLoader</h3></li>
+<li><p>DexClassLoader和PathClassLoader都是BaseDexClassLoader的子类，他们的实现也很简单，只是构造方法传入了不同的参数而已：</p>
+</li>
+<li><p>DexClassLoader ：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830969369.png" alt="Alt text"></p>
+</li>
+<li><p>PathClassLoader：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830979448.png" alt="Alt text"></p>
+</li>
+<li><p>可以看到，DexClassLoader和PathClassLoader的区别就是，PathClassLoader的第二个参数传为NULL，回到BaseDexClassLoader中可以看到：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606831030087.png" alt="Alt text"></p>
+</li>
+<li><p>根据注释可以看到optimizedDirectory参数是用来放置DexFile的，那么具体是怎么回事呢，再进入DexPathList<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606831045917.png" alt="Alt text"></p>
+</li>
+<li><p>optimizedDirectory被传进了makeDexElements方法<br>![Alt text]<a target="_blank" rel="noopener" href="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/(.1606831076758.png)">https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/(.1606831076758.png)</a></p>
+</li>
+<li><p>又被传进了loadDexFile</p>
+</li>
+<li><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606831084219.png" alt="Alt text"><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606831094403.png" alt="Alt text"></p>
+</li>
+<li><p>可以看到，如果optimizedDirectory为NULL，则会以原来的路径创建DexFile，否则会以optimizedDirectory为路径创建DexFile</p>
+</li>
+<li><p>其实optimizedDirectory是要求一个内部路径的，因为动态加载去加载的可执行文件一定要存放在内部存储。而DexClassLoader可以指定optimizedDirectory，所以它可以加载外部的dex，并且这个dex会被复制到内部路径的optimizedDirectory；而PathClassLoader没有optimizedDirectory，所以它只能加载内部路径的dex，也就是存在于已经安装过的apk里面的。</p>
+</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android/%E6%8F%92%E4%BB%B6%E5%8C%96/">http://king-of-cement.gitee.io/blog/post/Android/%E6%8F%92%E4%BB%B6%E5%8C%96/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/%E5%85%B6%E4%BB%96/%E5%90%84%E7%A7%8D%E8%AF%AD%E8%A8%80&%E5%90%84%E7%A7%8D%E5%B9%B3%E5%8F%B0/">各种语言&各种平台</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

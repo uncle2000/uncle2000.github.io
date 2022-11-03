@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>Java VM | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java VM</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/java/">java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Java-VM"><a href="#Java-VM" class="headerlink" title="Java VM"></a>Java VM</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161670">引入</a></p>
+<p>[toc]</p>
+<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><blockquote>
+<p>对于程序计数器、虚拟机栈、本地方法栈这三个部分而言，其生命周期与相关线程有关，随线程而生，随线程而灭。并且这三个区域的内存分配与回收具有确定性，因为当方法结束或者线程结束时，内存就自然跟着线程回收了。因此本篇文章所讲的有关内存分配和回收关注的是Java堆与方法区这两个区域。</p>
+</blockquote>
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><h4 id="引用计数法"><a href="#引用计数法" class="headerlink" title="引用计数法"></a>引用计数法</h4><blockquote>
+<p>引用计数法描述的算法为：给对象增加一个引用计数器，每当有一个地方引用它时，计数器就+1；当引用失效时，计数器就-1；任何时刻计数器为0的对象就是不能再被使用的，即对象已“死”。<br>引用计数法实现简单，判定效率也比较高，在大部分情况下都是一个比较好的算法。比如Python语言就是采用的引用计数法来进行内存管理的。<br>但是，在主流的JVM中没有选用引用计数法来管理内存，最主要的原因是引用计数法无法解决对象的循环引用问题。</p>
+</blockquote>
+<p>循环引用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * JVM参数:-XX:+PrintGC</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">Object</span> <span class="variable">instance</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">_1MB</span> <span class="operator">=</span> <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">byte</span>[] bigSize = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">testGC</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">Test</span> <span class="variable">test1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">        <span class="type">Test</span> <span class="variable">test2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">        test1.instance = test2;</span><br><span class="line">        test2.instance = test1;</span><br><span class="line">        test1 = <span class="literal">null</span>;</span><br><span class="line">        test2 = <span class="literal">null</span>;</span><br><span class="line">        <span class="comment">// 强制JVM进行垃圾回收</span></span><br><span class="line">        System.gc();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        testGC();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">程序输出：[GC (System.gc()) 6092K-&gt;856K(125952K), <span class="number">0.0007504</span> secs]</span><br></pre></td></tr></table></figure>
+
+<p>从结果可以看出，GC日志包含” 6092K-&gt;856K(125952K)”，意味着虚拟机并没有因为这两个对象互相引用就不回收他们。即JVM并不使用引用计数法来判断对象是否存活。</p>
+<h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><blockquote>
+<p>Java采用“可达性分析”来判断对象是否存活（同样采用此法的还有C#、Lisp-最早的一门采用动态内存分配的语言）。</p>
+</blockquote>
+<p>此算法的核心思想：通过一系列称为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索走过的路径称为“引用链”，当一个对象到 GC Roots 没有任何的引用链相连时(从 GC Roots 到这个对象不可达)时，证明此对象不可用。以下图为例：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606303304034.png" alt="Alt text"><br>在Java语言中，可作为GC Roots的对象包含以下几种：</p>
+<ul>
+<li>虚拟机栈(栈帧中的本地变量表)中引用的对象。</li>
+<li>方法区中静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中(Native方法)引用的对象</li>
+</ul>
+<h5 id="引用发展史"><a href="#引用发展史" class="headerlink" title="引用发展史"></a>引用发展史</h5><blockquote>
+<p>在JDK1.2以前，Java中引用的定义很传统: 如果引用类型的数据中存储的数值代表的是另一块内存的起始地址，就称这块内存代表着一个引用。这种定义有些狭隘，一个对象在这种定义下只有被引用或者没有被引用两种状态。<br>我们希望能描述这一类对象: 当内存空间还足够时，则能保存在内存中；如果内存空间在进行垃圾回收后还是非常紧张，则可以抛弃这些对象。很多系统中的缓存对象都符合这样的场景。<br>在JDK1.2之后，Java对引用的概念做了扩充，将引用分为强引用(Strong Reference)、软引用(Soft Reference)、弱引用(Weak Reference)和虚引用(Phantom Reference)四种，这四种引用的强度依次递减。</p>
+</blockquote>
+<ul>
+<li>强引用: 强引用指的是在程序代码之中普遍存在的，类似于”Object obj &#x3D; new Object()”这类的引用，只要强引用还存在，垃圾回收器永远不会回收掉被引用的对象实例。</li>
+<li>软引用: 软引用是用来描述一些还有用但是不是必须的对象。对于软引用关联着的对象，在系统将要发生内存溢出之前，会把这些对象列入回收范围之中进行第二次回收。如果这次回收还是没有足够的内存，才会抛出内存溢出异常。在JDK1.2之后，提供了SoftReference类来实现软引用。</li>
+<li>弱引用: 弱引用也是用来描述非必需对象的。但是它的强度要弱于软引用。被弱引用关联的对象只能生存到下一次垃圾回收发生之前。当垃圾回收器开始进行工作时，无论当前内容是否够用，都会回收掉只被弱引用关联的对象。在JDK1.2之后提供了WeakReference类来实现弱引用。</li>
+<li>虚引用: 虚引用也被称为幽灵引用或者幻影引用，它是最弱的一种引用关系。一个对象是否有虚引用的存在，完全不会对其生存时间构成影响，也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用的唯一目的就是能在这个对象被收集器回收时收到一个系统通知。在JDK1.2之后，提供了PhantomReference类来实现虚引用。</li>
+</ul>
+<h5 id="生存还是死亡？"><a href="#生存还是死亡？" class="headerlink" title="生存还是死亡？"></a>生存还是死亡？</h5><p>即使在可达性分析算法中不可达的对象，也并非”非死不可”的，这时候他们暂时处在”缓刑”阶段。要宣告一个对象的真正死亡，至少要经历<code>两次标记过程</code>: 如果对象在进行可达性分析之后发现没有与GC Roots相连接的引用链，那它将会被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行ﬁnalize()方法。当对象没有覆盖ﬁnalize()方法或者ﬁnalize()方法已经被JVM调用过，虚拟机会将这两种情况都视为”没有必要执行”，此时的对象才是真正”死”的对象。<br>如果这个对象被判定为有必要执行ﬁnalize()方法，那么这个对象将会被放置在一个叫做<code>F-Queue的队列</code>之中，并在稍后由一个虚拟机自动建立的、低优先级的<code>Finalizer线程</code>去执行它（这里所说的执行指的是虚拟机会触发ﬁnalize()方法）。ﬁnalize()方法是对象逃脱死亡的最后一次机会，稍后GC将对F-Queue中的对象进行第二次小规模标记，如果对象在ﬁnalize()中成功拯救自己(只需要重新与引用链上的任何一个对象建立起关联关系即可)，那在第二次标记时它将会被移除出”即将回收”的集合；如果对象这时候还是没有逃脱，那基本上它就是真的被回收了。</p>
+<ul>
+<li>自我拯救<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Test test;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">isAlive</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;I am alive :)&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">finalize</span><span class="params">()</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="built_in">super</span>.finalize();</span><br><span class="line">        System.out.println(<span class="string">&quot;finalize method executed!&quot;</span>);</span><br><span class="line">        test = <span class="built_in">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        test = <span class="keyword">new</span> <span class="title class_">Test</span>();</span><br><span class="line">        test = <span class="literal">null</span>;</span><br><span class="line">        System.gc();</span><br><span class="line">        Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        <span class="keyword">if</span> (test != <span class="literal">null</span>) &#123;</span><br><span class="line">            test.isAlive();</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;no,I am dead :(&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 下面代码与上面完全一致，但是此次自救失败</span></span><br><span class="line">        test = <span class="literal">null</span>;</span><br><span class="line">        System.gc();</span><br><span class="line">        Thread.sleep(<span class="number">500</span>);</span><br><span class="line">        <span class="keyword">if</span> (test != <span class="literal">null</span>) &#123;</span><br><span class="line">            test.isAlive();</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;no,I am dead :(&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>两个完全一样的代码片段，结果是一次逃脱成功，一次失败。这是因为，<code>任何一个对象的ﬁnalize()方法都只会被系统自动调用一次</code>，如果相同的对象在逃脱一次后又面临一次回收，它的ﬁnalize()方法不会被再次执行，因此第二段代码的自救行动失败。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><p>方法区(永久代)的垃圾回收主要收集两部分内容：废弃常量和无用类。</p>
+<h4 id="废弃常量"><a href="#废弃常量" class="headerlink" title="废弃常量"></a>废弃常量</h4><p>回收废弃常量和回收Java堆中的对象十分类似。以常量池中字面量(直接量)<code>还有哪些？</code>的回收为例，假如一个字符串”abc”已经进入了常量池中，但是当前系统没有任何一个String对象引用常量池中的”abc”常量，也没有其他地方引用这个字面量，如果此时发生GC并且有必要的话，这个”abc”常量会被系统清理出常量池。常量池中的其他<code>类(接口)</code>、<code>方法</code>、<code>字段的符号引用</code>也与此类似。</p>
+<h4 id="无用类"><a href="#无用类" class="headerlink" title="无用类"></a>无用类</h4><p>判定一个类是否是”无用类”则相对复杂很多。类需要同时满足下面三个条件才会被算是”无用的类”</p>
+<ol>
+<li>该类的所有实例都已经被回收(即在Java堆中不存在任何该类的实例)</li>
+<li>加载该类的ClassLoader已被回收</li>
+<li>该类对应的Class对象没有任何其他地方被引用，无法在任何地方通过反射访问该类的方法</li>
+</ol>
+<p>JVM可以对同时满足上述3个条件的无用类进行回收，也仅仅是“可以”而不是必然。在大量使用反射、动态代理等场景都需要JVM具备类卸载的功能来防止永久代的溢出。</p>
+<h4 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h4><h5 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h5><p>“标记-清除”算法是最基础的收集算法。算法分为标记和清除两个阶段：首先标记出所有需要回收的对象，在标记完成后统一回收所有被标记的对象(标记过程参见1.2可达性分析)。后续的收集算法都是基于这种思路并对其不足加以改进而已。</p>
+<blockquote>
+<p>缺点：</p>
+</blockquote>
+<ol>
+<li>效率问题：标记和清除这两个过程的效率都不高</li>
+<li>空间问题：标记清除后会产生大量不连续的内存碎片，空间碎片太多可能会导致以后在程序运行中需要分配较大对象时，无法找到足够连续内存而不得不提前触发另一次垃圾收集。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606304599529.png" alt="Alt text"></li>
+</ol>
+<h5 id="复制算法-新生代回收算法"><a href="#复制算法-新生代回收算法" class="headerlink" title="复制算法(新生代回收算法)"></a>复制算法(新生代回收算法)</h5><p>“复制”算法是为了解决“标记-清除”的效率问题。它将可用内存按容量划分为大小相等的两块，每次只使用其中一块。当这块内存需要进行垃圾回收时，会将此区域还存活着的对象复制到另一块上面，然后再把已经使用过的内存区域一次清理掉。这样做的好处是每次都是对整个半区进行内存回收，内存分配时也就不需要考虑内存碎片等的复杂情况，只需要移动堆顶指针，按顺序分配即可。此算法实现简单，运行高效。算法的执行流程如下图：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606305087523.png" alt="Alt text"></p>
+<blockquote>
+<p>现在的商用虚拟机(包括HotSpot)都是采用这种收集算法来回收新生代</p>
+</blockquote>
+<p>新生代中98%的对象都是”朝生夕死”的，所以并不需要按照1 : 1的比例来划分内存空间，而是将内存(新生代内存)分为一块较大的Eden(伊甸园)空间和两块较小的Survivor(幸存者)空间，每次使用Eden和其中一块Survivor（两个Survivor区域一个称为From区，另一个称为To区域）。当回收时，将Eden和Survivor中还存活的对象一次性复制到另一块Survivor空间上，最后清理掉Eden和刚才用过的Survivor空间。<br>当Survivor空间不够用时，需要依赖其他内存(老年代)进行分配担保。<br>HotSpot默认Eden与Survivor的大小比例是8 : 1，也就是说Eden:Survivor From : Survivor To &#x3D; 8:1:1。所以每次新生代可用内存空间为整个新生代容量的90%,而剩下的10%用来存放回收后存活的对象。</p>
+<p>HotSpot实现的复制算法流程如下：</p>
+<p>当Eden区满的时候，会触发第一次Minor gc，把还活着的对象拷贝到Survivor From区；当Eden区再次出发Minor gc的时候，会扫描Eden区和From区，对两个区域进行垃圾回收，经过这次回收后还存活的对象，则直接复制到To区域，并将Eden区和From区清空。<br>当后续Eden区又发生Minor gc的时候，会对Eden区和To区进行垃圾回收，存活的对象复制到From区，并将Eden区和To区清空<br>部分对象会在From区域和To区域中复制来复制去，<code>如此交换15次(由JVM参数MaxTenuringThreshold决定，这个参数默认是15)</code>，最终如果还存活，就存入老年代。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606305511551.png" alt="Alt text"></p>
+<h5 id="标记整理算法-老年代回收算法"><a href="#标记整理算法-老年代回收算法" class="headerlink" title="标记整理算法(老年代回收算法)"></a>标记整理算法(老年代回收算法)</h5><p>复制收集算法在对象存活率较高时会进行比较多的复制操作，效率会变低。因此在老年代一般不能使用复制算法。<br>针对老年代的特点，提出了一种称之为“标记-整理算法”。标记过程仍与“标记-清除”过程一致，但后续步骤不是直接对可回收对象进行清理，而是让所有存活对象向一端移动，然后直接清理掉端边界以外的内存。流程图如下：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606305570400.png" alt="Alt text"></p>
+<h5 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h5><p>当前JVM垃圾收集都采用的是”分代收集(Generational Collection)”算法，这个算法并没有新思想，只是根据对象存活周期的不同将内存划分为几块。<br>一般是把Java堆分为新生代和老年代。在新生代中，每次垃圾回收都有大批对象死去，只有少量存活，因此我们采用复制算法；而老年代中对象存活率高、没有额外空间对它进行分配担保，就必须采用”标记-清理”或者”标记-整理”算法。</p>
+<p>面试题: 请问了解Minor GC和Full GC么，这两种GC有什么不一样吗？</p>
+<p><code>Minor GC又称为新生代GC </code>: 指的是发生在新生代的垃圾收集。因为Java对象大多都具备朝生夕灭的特性，因此Minor GC(采用复制算法)非常频繁，一般回收速度也比较快。<br><code>Full GC 又称为老年代GC或者Major GC</code> : 指发生在老年代的垃圾收集。出现了Major GC，经常会伴随至少一次的Minor GC(并非绝对，在Parallel Scavenge收集器中就有直接进行Full GC的策略选择过程)。<code>Major GC的速度一般会比Minor GC慢10倍以上</code>。</p>
+<h2 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h2><h3 id="对象优先在Eden分配"><a href="#对象优先在Eden分配" class="headerlink" title="对象优先在Eden分配"></a>对象优先在Eden分配</h3><p>大多情况，对象在新生代Eden区分配。当Eden区没有足够空间进行分配时，虚拟机将进行一次Minor GC。虚拟机提供了参数 -XX:+PrintGCDetails ，在虚拟机发生垃圾收集行为时打印内存回收日志。</p>
+<ul>
+<li>新生代Minor GC 事例</li>
+</ul>
+<p>通过-Xms20M -Xmx20M -Xmn10M 三个参数限制了Java堆大小为 20M ，不可扩展，其中的 10MB 分配给新生代，剩下 10MB 分配给老年代<br>-XX:SurvivorRatio&#x3D;8 新生代 Eden 与 Survivor 区空间比例是 8:1:1</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lkf.jvm;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MinorGCDemo</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">_1MB</span> <span class="operator">=</span> <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * VM参数：-verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8</span></span><br><span class="line"><span class="comment">     * */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">testAllocation</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">byte</span>[] allocation1, allocation2, allocation3, allocation4;</span><br><span class="line">        allocation1 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">        allocation2 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">        allocation3 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2</span> * _1MB];</span><br><span class="line">        allocation4 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * _1MB]; /出现一次 Minor GC</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        testAllocation();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">[GC (Allocation Failure) Disconnected from the target VM, address: <span class="string">&#x27;127.0.0.1:61454&#x27;</span>, transport: <span class="string">&#x27;socket&#x27;</span></span><br><span class="line">[PSYoungGen: 6570K-&gt;704K(9216K)] 6570K-&gt;4808K(19456K), <span class="number">0.0036571</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.00</span> secs] </span><br><span class="line">Heap</span><br><span class="line"> PSYoungGen      total 9216K, used 7253K [<span class="number">0x00000007bf600000</span>, <span class="number">0x00000007c0000000</span>, <span class="number">0x00000007c0000000</span>)</span><br><span class="line">  eden space 8192K, <span class="number">79</span>% used [<span class="number">0x00000007bf600000</span>,<span class="number">0x00000007bfc657a0</span>,<span class="number">0x00000007bfe00000</span>)</span><br><span class="line">  from space 1024K, <span class="number">68</span>% used [<span class="number">0x00000007bfe00000</span>,<span class="number">0x00000007bfeb0000</span>,<span class="number">0x00000007bff00000</span>)</span><br><span class="line">  to   space 1024K, <span class="number">0</span>% used [<span class="number">0x00000007bff00000</span>,<span class="number">0x00000007bff00000</span>,<span class="number">0x00000007c0000000</span>)</span><br><span class="line"> ParOldGen       total 10240K, used 4104K [<span class="number">0x00000007bec00000</span>, <span class="number">0x00000007bf600000</span>, <span class="number">0x00000007bf600000</span>)</span><br><span class="line">  object space 10240K, <span class="number">40</span>% used [<span class="number">0x00000007bec00000</span>,<span class="number">0x00000007bf002020</span>,<span class="number">0x00000007bf600000</span>)</span><br><span class="line"> Metaspace       used 3104K, capacity 4568K, committed 4864K, reserved 1056768K</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">space</span>    used 338K, capacity 392K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>从输出结果可以清晰看到 “eden space 8192K、from space 1024K、to space 1024K”<br>新生代总可用空间为 9216KB (Eden区空间大小 + 1个Survivor区的总容量)<br>这次GC发生的原因是给allocation4对象分配内存的时候，发现Eden区已经被占用了6MB，剩余空间已经不足以分配4MB的内存，因此发生了MinorGC。GC期间有发现已有的3个2MB大小的对象已经无法全部放入Survivor空间（只有1MB大小）,所以只好通过分配担保机制提前将这三个对象转移到老年代去了。</p>
+</blockquote>
+<h3 id="大对象直接进入老年代"><a href="#大对象直接进入老年代" class="headerlink" title="大对象直接进入老年代"></a>大对象直接进入老年代</h3><p>所谓大对象是指，需要大量连续内存空间的Java对象，经常出现大对象容易导致内存还有不少空间时就提前触发垃圾收集以获取足够的连续空间来为大对象分配内存。</p>
+<p>虚拟机提供了一个-XX:PretenureSizeThreshold 参数，让大于该值得对象直接进入老年代。这样做的目的是避免在新生代Eden区及两个Survivor区之间发生大量的内存复制。</p>
+<p>PretenureSieThreshold 参数只对 Serial 和 ParNew 两款收集器有效，Parallel Scavenge 收集器不识别这个参数，并且该收集器一般不需要设置。如果必须使用此参数的场合，可以考虑ParNew加CMS的收集器组合。</p>
+<ul>
+<li>jdk1.7 默认垃圾收集器Parallel Scavenge（新生代）+Parallel Old（老年代）</li>
+<li>jdk1.8 默认垃圾收集器Parallel Scavenge（新生代）+Parallel Old（老年代）</li>
+<li>jdk1.9 默认垃圾收集器G1<br>.</li>
+<li>-XX:+PrintCommandLineFlags 可查看默认设置收集器类型</li>
+<li>-XX:+PrintGCDetails 打印的GC日志<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lkf.jvm;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PretenureSizeThresholdDemo</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">_1MB</span> <span class="operator">=</span> <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * VM参数：-verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8</span></span><br><span class="line"><span class="comment">     * -XX:+PrintCommandLineFlags -XX:PretenureSizeThreshold=3145728 -XX:+UseSerialGC</span></span><br><span class="line"><span class="comment">     * 因为使用的是jdk1.8，所以此处特指定了使用垃圾收集器Serial</span></span><br><span class="line"><span class="comment">     * 大于3M的对象直接进入老年代</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">testPretenureSizeThreshold</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">byte</span>[] allocation;</span><br><span class="line">        allocation = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * _1MB];<span class="comment">//直接分配在老年代</span></span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        testPretenureSizeThreshold();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Heap</span><br><span class="line"> def <span class="keyword">new</span> <span class="title class_">generation</span>   total 9216K, used 2643K [<span class="number">0x00000007bec00000</span>, <span class="number">0x00000007bf600000</span>, <span class="number">0x00000007bf600000</span>)</span><br><span class="line">  eden space 8192K,  <span class="number">32</span>% used [<span class="number">0x00000007bec00000</span>, <span class="number">0x00000007bee94ee8</span>, <span class="number">0x00000007bf400000</span>)</span><br><span class="line">  from space 1024K,   <span class="number">0</span>% used [<span class="number">0x00000007bf400000</span>, <span class="number">0x00000007bf400000</span>, <span class="number">0x00000007bf500000</span>)</span><br><span class="line">  to   space 1024K,   <span class="number">0</span>% used [<span class="number">0x00000007bf500000</span>, <span class="number">0x00000007bf500000</span>, <span class="number">0x00000007bf600000</span>)</span><br><span class="line"> tenured generation   total 10240K, used 4096K [<span class="number">0x00000007bf600000</span>, <span class="number">0x00000007c0000000</span>, <span class="number">0x00000007c0000000</span>)</span><br><span class="line">   the space 10240K,  <span class="number">40</span>% used [<span class="number">0x00000007bf600000</span>, <span class="number">0x00000007bfa00010</span>, <span class="number">0x00000007bfa00200</span>, <span class="number">0x00000007c0000000</span>)</span><br><span class="line"> Metaspace       used 3104K, capacity 4568K, committed 4864K, reserved 1056768K</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">space</span>    used 338K, capacity 392K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="长期存活的对象将进入老年代"><a href="#长期存活的对象将进入老年代" class="headerlink" title="长期存活的对象将进入老年代"></a>长期存活的对象将进入老年代</h3><p>虚拟机使用了分代收集的思想来管理内存，内存回收时为了区分哪些对象应放在新生代，哪些应该放在老年代，虚拟机为每个对象定义了一个对象年龄（Age）计数器。</p>
+<p>如果对象被分配在Eden区并经过第一次Minor GC 后仍然存活，并且能被Survivor容乃的情况下，将被移动到Survivor中，对象年龄设为1。在Survivor区每经过一次Minor GC，年龄就加1，当对象的年龄到达一定程度时（默认15岁），就会晋升到老年代。对象晋升到老年代的阈值，可以通过参数：-XX:MaxTenuringThreshold 设置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lkf.jvm;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 长期存活对象将进入老年代</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MaxTenuringThresholdDemo</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">_1MB</span> <span class="operator">=</span> <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * VM 参 数：-verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8 -XX:MaxTenuringThreshold=1 -XX:+PrintTenuringDistribution</span></span><br><span class="line"><span class="comment">     * */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">testTenuringThreshold</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">byte</span>[] allocation1, allocation2, allocation3;</span><br><span class="line">        allocation1 = <span class="keyword">new</span> <span class="title class_">byte</span>[_1MB / <span class="number">4</span>];</span><br><span class="line">        <span class="comment">//什么时候进入老年代取决于XX:MaxTenuringThreshold设置</span></span><br><span class="line">        allocation2 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * _1MB];</span><br><span class="line">        allocation3 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * _1MB];</span><br><span class="line">        allocation3 = <span class="literal">null</span>;</span><br><span class="line">        allocation3 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * _1MB];</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        testTenuringThreshold();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//-XX:MaxTenuringThreshold=1 （jdk1.8）运行结果：</span></span><br><span class="line">Heap</span><br><span class="line"> PSYoungGen      total 9216K, used 6994K [<span class="number">0x00000007bf600000</span>, <span class="number">0x00000007c0000000</span>, <span class="number">0x00000007c0000000</span>)</span><br><span class="line">  eden space 8192K, <span class="number">85</span>% used [<span class="number">0x00000007bf600000</span>,<span class="number">0x00000007bfcd4b68</span>,<span class="number">0x00000007bfe00000</span>)</span><br><span class="line">  from space 1024K, <span class="number">0</span>% used [<span class="number">0x00000007bff00000</span>,<span class="number">0x00000007bff00000</span>,<span class="number">0x00000007c0000000</span>)</span><br><span class="line">  to   space 1024K, <span class="number">0</span>% used [<span class="number">0x00000007bfe00000</span>,<span class="number">0x00000007bfe00000</span>,<span class="number">0x00000007bff00000</span>)</span><br><span class="line"> ParOldGen       total 10240K, used 8192K [<span class="number">0x00000007bec00000</span>, <span class="number">0x00000007bf600000</span>, <span class="number">0x00000007bf600000</span>)</span><br><span class="line">  object space 10240K, <span class="number">80</span>% used [<span class="number">0x00000007bec00000</span>,<span class="number">0x00000007bf400020</span>,<span class="number">0x00000007bf600000</span>)</span><br><span class="line"> Metaspace       used 3104K, capacity 4568K, committed 4864K, reserved 1056768K</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">space</span>    used 338K, capacity 392K, committed 512K, reserved 1048576K</span><br><span class="line">  </span><br><span class="line"><span class="comment">//  -XX:MaxTenuringThreshold=15 （jdk1.8）运行结果：</span></span><br><span class="line">  Heap</span><br><span class="line"> PSYoungGen      total 9216K, used 6994K [<span class="number">0x00000007bf600000</span>, <span class="number">0x00000007c0000000</span>, <span class="number">0x00000007c0000000</span>)</span><br><span class="line">  eden space 8192K, <span class="number">85</span>% used [<span class="number">0x00000007bf600000</span>,<span class="number">0x00000007bfcd4b68</span>,<span class="number">0x00000007bfe00000</span>)</span><br><span class="line">  from space 1024K, <span class="number">0</span>% used [<span class="number">0x00000007bff00000</span>,<span class="number">0x00000007bff00000</span>,<span class="number">0x00000007c0000000</span>)</span><br><span class="line">  to   space 1024K, <span class="number">0</span>% used [<span class="number">0x00000007bfe00000</span>,<span class="number">0x00000007bfe00000</span>,<span class="number">0x00000007bff00000</span>)</span><br><span class="line"> ParOldGen       total 10240K, used 8192K [<span class="number">0x00000007bec00000</span>, <span class="number">0x00000007bf600000</span>, <span class="number">0x00000007bf600000</span>)</span><br><span class="line">  object space 10240K, <span class="number">80</span>% used [<span class="number">0x00000007bec00000</span>,<span class="number">0x00000007bf400020</span>,<span class="number">0x00000007bf600000</span>)</span><br><span class="line"> Metaspace       used 3104K, capacity 4568K, committed 4864K, reserved 1056768K</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">space</span>    used 338K, capacity 392K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
+<h3 id="动态对象年龄判定"><a href="#动态对象年龄判定" class="headerlink" title="动态对象年龄判定"></a>动态对象年龄判定</h3><p>虚拟机并不是永远要求对象的年龄必须达到了MaxTenuringThreshold才能晋升老年代，如果Survivor空间中，相同年龄对象的大小之和大于Survivor空间大小的一半，就可以直接进入老年代。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lkf.jvm;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 动态对象年龄判定</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TenuringThresholdDemo</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">_1MB</span> <span class="operator">=</span> <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * VM 参 数：-verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8 -XX:MaxTenuringThreshold=15 -XX:+PrintTenuringDistribution -XX:+UseSerialGC</span></span><br><span class="line"><span class="comment">     * */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">testTenuringThreshold</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">byte</span>[] allocation1, allocation2, allocation3, allocation4;</span><br><span class="line">        allocation1 = <span class="keyword">new</span> <span class="title class_">byte</span>[_1MB / <span class="number">4</span>];</span><br><span class="line">        allocation2 = <span class="keyword">new</span> <span class="title class_">byte</span>[_1MB / <span class="number">4</span>];</span><br><span class="line">        <span class="comment">//allocation1+allocation2大于Survivo空间的一半</span></span><br><span class="line">        allocation3 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * _1MB];</span><br><span class="line">        allocation4 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * _1MB];</span><br><span class="line">        allocation4 = <span class="literal">null</span>;</span><br><span class="line">        allocation4 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * _1MB];</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        testTenuringThreshold();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">[GC (Allocation Failure) [DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> <span class="title class_">threshold</span> <span class="number">1</span> (max <span class="number">15</span>)</span><br><span class="line">- age   <span class="number">1</span>:    <span class="number">1048568</span> bytes,    <span class="number">1048568</span> total</span><br><span class="line">: 7087K-&gt;1023K(9216K), <span class="number">0.0048599</span> secs] 7087K-&gt;5179K(19456K), <span class="number">0.0048867</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.01</span>, real=<span class="number">0.01</span> secs] </span><br><span class="line">[GC (Allocation Failure) [DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> <span class="title class_">threshold</span> <span class="number">15</span> (max <span class="number">15</span>)</span><br><span class="line">: 5283K-&gt;0K(9216K), <span class="number">0.0018311</span> secs] 9439K-&gt;5148K(19456K), <span class="number">0.0018528</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.00</span> secs] </span><br><span class="line">Heap</span><br><span class="line"> def <span class="keyword">new</span> <span class="title class_">generation</span>   total 9216K, used 4260K [<span class="number">0x00000007bec00000</span>, <span class="number">0x00000007bf600000</span>, <span class="number">0x00000007bf600000</span>)</span><br><span class="line">  eden space 8192K,  <span class="number">52</span>% used [<span class="number">0x00000007bec00000</span>, <span class="number">0x00000007bf0290e0</span>, <span class="number">0x00000007bf400000</span>)</span><br><span class="line">  from space 1024K,   <span class="number">0</span>% used [<span class="number">0x00000007bf400000</span>, <span class="number">0x00000007bf400000</span>, <span class="number">0x00000007bf500000</span>)</span><br><span class="line">  to   space 1024K,   <span class="number">0</span>% used [<span class="number">0x00000007bf500000</span>, <span class="number">0x00000007bf500000</span>, <span class="number">0x00000007bf600000</span>)</span><br><span class="line"> tenured generation   total 10240K, used 5148K [<span class="number">0x00000007bf600000</span>, <span class="number">0x00000007c0000000</span>, <span class="number">0x00000007c0000000</span>)</span><br><span class="line">   the space 10240K,  <span class="number">50</span>% used [<span class="number">0x00000007bf600000</span>, <span class="number">0x00000007bfb07198</span>, <span class="number">0x00000007bfb07200</span>, <span class="number">0x00000007c0000000</span>)</span><br><span class="line"> Metaspace       used 3104K, capacity 4568K, committed 4864K, reserved 1056768K</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">space</span>    used 338K, capacity 392K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
+
+<h3 id="空间分配担保"><a href="#空间分配担保" class="headerlink" title="空间分配担保"></a>空间分配担保</h3><p>在发生Minor GC 之前，虚拟机会先检查老年代最大可用连续空间是否大于新生代所有对象大小总和，如果条件成立，那么Minor GC可以确保是安全的。如果不成立，虚拟机会查看HandlePromotionFailure设置的值是否允许担保失败。如果允许，那么虚拟机会检查老年代最大可用连续空间是否大于历次晋升到老年代对象大小的平均值，如果大于，将会尝试进行一次Minor GC；如果小于，或者HandlePromotionFailure设置不允许冒险，这时会进行一次Full GC。</p>
+<p>JDK 6 Update 24 之后，HandlePromotionFailure参数不会再影响到虚拟机空间分配担保的策略，规则变为只要老年代的连续空间大于新生代对象总大小或者大于历次晋升对象大小的平均值就会进行Minor GC ，否则将进行Full GC。</p>
+<p>Minor GC 和 Full GC的区别</p>
+<ul>
+<li>新生代GC（Minor GC）：指发生在新生代的垃圾收集动作，因为Java对象大多都有朝生夕死的特性，所以Minor GC 很频繁，一般回收速度也很快。</li>
+<li>老年代GC（Major GC&#x2F;Full GC）:指发生在老年代的GC，出现了Major GC ，经常会伴随至少一次的Minor GC。Major GC 的速度一般会比Minor GC 慢10倍。</li>
+</ul>
+<h2 id="Hook动态注入代码"><a href="#Hook动态注入代码" class="headerlink" title="Hook动态注入代码"></a>Hook动态注入代码</h2><p>Hook机制是回调机制的一种，普通的回调是静态的，我们必须提前写好回调接口；而Hook机制在Java中则可以利用反射，针对切入点(通常是一个成员变量)，采用替换的手段，使代码在运行时改变<br>寻找适合Hook点，它应该是一个成员变量，并且应该在我们需要注入的方法中调用过它的方法，或者使用了它的的值；<br>创建继承自Hook点的对象的子类，根据需求修改其相应的方法；<br>使用反射将我们自己创建的对象替换对象实例中的对象，达到偷梁换柱的目的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">```java</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Hero</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> Weapon weaponMain;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Hero</span><span class="params">(Weapon weaponMain)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.weaponMain = weaponMain;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">attack</span><span class="params">()</span>&#123;</span><br><span class="line">     weaponMain.attack();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Weapon</span> &#123;</span><br><span class="line">  <span class="type">int</span> <span class="variable">damage</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">attack</span><span class="params">()</span>&#123;</span><br><span class="line">    System.out.println(String.format(<span class="string">&quot;对目标造成 %d 点伤害&quot;</span>,damage));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Game</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="type">Hero</span> <span class="variable">hero</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hero</span>(<span class="keyword">new</span> <span class="title class_">Weapon</span>());</span><br><span class="line">        hero.attack();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//对于上面这段程序，游戏对我们隐藏了Weapon的伤害值，但现在我们想要在每次攻击的时候知道这个伤害值是多少。</span></span><br><span class="line"><span class="comment">//下面看看使用Hook机制如何来实现。</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">//首先我们通过观察，发现切入点就是weaponMain，我们要对它下手。</span></span><br><span class="line"><span class="comment">//创建一个Weapon的复制品WeaponHook，我们需要用自己的人WeaponHook打入内部。</span></span><br><span class="line"><span class="comment">//WeaponHook一切看起来都和Weapon那么相似，但是我们给它留了一个后门，使得我们可以进行监控。</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WeaponHook</span> <span class="keyword">extends</span> <span class="title class_">Weapon</span>&#123;</span><br><span class="line">  <span class="keyword">private</span> OnUseWeaponAttackListener onUseWeaponAttackListener;</span><br><span class="line"> </span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">attack</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="built_in">super</span>.attack();</span><br><span class="line">    <span class="keyword">if</span> (onUseWeaponAttackListener != <span class="literal">null</span>)&#123;</span><br><span class="line">      onUseWeaponAttackListener.onUseWeaponAttack(damage);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setOnUseWeaponAttackListener</span><span class="params">(OnUseWeaponAttackListener onUseWeaponAttackListener)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.onUseWeaponAttackListener = onUseWeaponAttackListener;</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//这就是我们的后门</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">interface</span> <span class="title class_">OnUseWeaponAttackListener</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="title function_">onUseWeaponAttack</span><span class="params">(<span class="type">int</span> damage)</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//下面看看如何来进行“偷天换日”</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Game</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">    <span class="type">Hero</span> <span class="variable">hero</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hero</span>(<span class="keyword">new</span> <span class="title class_">Weapon</span>());</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="type">Field</span> <span class="variable">weapon</span> <span class="operator">=</span> ReflectUtils.getVariable(hero.getClass(), <span class="string">&quot;weaponMain&quot;</span>);</span><br><span class="line">      weapon.setAccessible(<span class="literal">true</span>);</span><br><span class="line">      <span class="type">Weapon</span> <span class="variable">weaponHook</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">WeaponHook</span>();</span><br><span class="line">      ((WeaponHook) weaponHook).setOnUseWeaponAttackListener(damage -&gt; &#123;</span><br><span class="line">        <span class="comment">//通过后门进行操作，这其实就是我们注入的代码</span></span><br><span class="line">          System.out.println(<span class="string">&quot;damage = &quot;</span> + damage);</span><br><span class="line">          <span class="keyword">return</span> damage;</span><br><span class="line">      &#125;);</span><br><span class="line">      weapon.set(hero, weaponHook); <span class="comment">//tou tian偷天换日</span></span><br><span class="line">      hero.attack();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NoSuchFieldException e) &#123;</span><br><span class="line">      e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">      e.printStackTrace();</span><br><span class="line">    &#125;<span class="type">Hero</span> <span class="variable">hero</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Hero</span>(<span class="keyword">new</span> <span class="title class_">Weapon</span>());</span><br><span class="line">        hero.attack();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//看输出</span></span><br><span class="line">对目标造成 <span class="number">10</span> 点伤害</span><br><span class="line">damage = <span class="number">10</span>   <span class="comment">//我们获得了Weapon的伤害值</span></span><br></pre></td></tr></table></figure>
+<h3 id="防止hook"><a href="#防止hook" class="headerlink" title="防止hook"></a>防止hook</h3><p>我们在Hero类中加入一个检查机制。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">```java</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Hero</span> &#123;</span><br><span class="line">  <span class="keyword">private</span> Weapon weaponMain;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> weaponMainId; </span><br><span class="line"> </span><br><span class="line">  <span class="keyword">public</span> <span class="title function_">Hero</span><span class="params">(Weapon weaponMain)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.weaponMain = weaponMain;</span><br><span class="line">    weaponMainId = <span class="built_in">this</span>.weaponMain.hashCode();<span class="comment">//记录原始Weapon对象的Id，hashCode对于每个对象而言都是唯一的。</span></span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">attack</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.weaponMain.hashCode() != weaponMainId) &#123; <span class="comment">//关键位置检查是否遭到替换</span></span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalAccessError</span>(String.format(<span class="string">&quot;警告！遭到入侵！入侵者身份:%d&quot;</span>, <span class="built_in">this</span>.weaponMain.hashCode()));</span><br><span class="line">    &#125;</span><br><span class="line">    weaponMain.attack();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="动态代理模式"><a href="#动态代理模式" class="headerlink" title="动态代理模式"></a>动态代理模式</h2><p>所谓静态和动态指的是，接口方法的调用方式．静态代理，是真实对象显式地方法调用，而动态代理则是通过反射的方式调用真实对象的方法．</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">```java</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DynamicProxy</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line">    <span class="comment">// 这个就是我们要代理的真实对象</span></span><br><span class="line">    <span class="keyword">private</span> Object subject;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">// 构造方法，给我们要代理的真实对象赋初值</span></span><br><span class="line">   <span class="keyword">public</span> <span class="title function_">DynamicProxy</span><span class="params">(Object subject)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.subject = subject;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="keyword">return</span> method.invoke(subject, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProxyClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Subject</span> <span class="variable">realSubject</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RealSubject</span>();</span><br><span class="line">		<span class="type">InvocationHandler</span> <span class="variable">handler</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">design</span>.pattern.structure.proxy.demo.DynamicProxy(realSubject);</span><br><span class="line">        <span class="type">Subject</span> <span class="variable">subject</span> <span class="operator">=</span> (Subject) Proxy.newProxyInstance(handler.getClass().getClassLoader(), realSubject.getClass().getInterfaces(), handler);</span><br><span class="line">        subject.operate1();</span><br><span class="line">        subject.operate2(<span class="string">&quot;hello proxy&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>三大角色：接口类，真实对象，InvocationHandler的实现类</p>
+<p>通过Java的Proxy.newProxyInstance的方法调用，给Subject生成了一个实例对象；接口方法的调用，会传递给handler中，handler通过invoke的执行，间接地调用了真实对象的方法．</p>
+<h2 id="注解"><a href="#注解" class="headerlink" title="注解"></a>注解</h2><blockquote>
+<p>注解是一种将元数据附加到代码中的方法。<br>注解，也叫做元数据，一种代码级别的说明。 它是 JDK 1.5 及以后版本引入的一个特性，与类、接口、枚举是在同一个层次。它可以声明在包、类、字段、方法、局部变量、方法参数等的前面，用来对这些元素进行说明、注解。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/x283930450/article/details/108215178">引入</a></p>
+<h3 id="元注解"><a href="#元注解" class="headerlink" title="元注解"></a>元注解</h3><blockquote>
+<p>元注解是用来定义其他注解的注解，简单来说，就是注解上的注解。<br>元注解共有四种：@Rentention、@Target、@Inherited、@Documented。</p>
+</blockquote>
+<ul>
+<li>@Retention：注解保留的声明周期，默认值为 CLASS。对应 RetentionPolicy 的枚举，表示注解在何时生效，可选值有三种<br>SOURCE：只在源码中可用（当 Java 文件编译成 Class 文件的时候，注解被遗弃）<br>CLASS：在源码和字节码中可用（Jvm 加载 Class 文件的时候被遗弃，这是默认的声明周期）<br>RUNTIME：在源码、字节码和运行时均可用（Jvm 加载到 Class 文件之后，仍然存在）<br>SOURCE &lt; CLASS &lt; RUNTIME，前者能作用的地方后者一定也能作用。</li>
+<li>@Target：注解对象的作用范围，对应 ElementType 枚举，明确了注解的有效范围。ElementType 枚举中包括：<br>TYPE：类、接口、枚举、注解类型<br>FIELD：类成员（构造方法、方法、成员变量）<br>METHOD：方法<br>PARAMETER：方法参数<br>CONSTRUCTOR：构造函数<br>LOCAL_VARIABLE：局部变量<br>ANNOTATION_TYPE：注解<br>PACKAGE：包<br>TYPE_PARAMETER：类型参数<br>TYPE_USE：类型使用声明</li>
+<li>＠Inherited：注解是否可以被继承，默认为 false。用 @Inherited 声明出来的注解只对类有效，对方法&#x2F;属性无效。</li>
+<li>＠Document：是否会保存到 Javadoc 文档中。</li>
+</ul>
+<h3 id="自定义注解"><a href="#自定义注解" class="headerlink" title="自定义注解"></a>自定义注解</h3><p>需要用元注解来标识</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Target(ElementType.FIELD)<span class="comment">// 属性</span></span><br><span class="line">Retention(RetentionPolicy.RUNTIME)<span class="comment">// 运行时</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> InjectPresenter &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Target(</span><br><span class="line">    AnnotationTarget.FUNCTION,</span><br><span class="line">    AnnotationTarget.PROPERTY_GETTER,</span><br><span class="line">    AnnotationTarget.PROPERTY_SETTER</span><br><span class="line">)</span><br><span class="line">Retention(AnnotationRetention.RUNTIME)</span><br><span class="line"><span class="keyword">annotation</span> <span class="keyword">class</span> <span class="title class_">OnClick</span>(<span class="keyword">vararg</span> <span class="keyword">val</span> value: <span class="built_in">Int</span>)</span><br></pre></td></tr></table></figure>
+<p><code>注解值的写法：类型 参数名() default 默认值;</code><br>其中默认值是可选的，可以定义，也可以不定义。</p>
+<h3 id="APT（-编译时注解处理器Annotation-Processing-Tool）"><a href="#APT（-编译时注解处理器Annotation-Processing-Tool）" class="headerlink" title="APT（ 编译时注解处理器Annotation Processing Tool）"></a>APT（ 编译时注解处理器Annotation Processing Tool）</h3><blockquote>
+<p>javac 的一个工具，APT 可以用来在编译时扫描和处理注解。通过 APT 可以获取到注解和被注解对象的相关信息，在拿到这些信息后我们可以根据需求来自动的生成一些代码，省去了手动编写。<br>注意，获取注解及生成代码都是在代码编译时完成的，相比反射在运行时处理注解大大提高了程序性能。<br>APT 的核心是abstractProcessor 类</p>
+</blockquote>
+<h4 id="Android-Studio-中构建一个-APT-项目"><a href="#Android-Studio-中构建一个-APT-项目" class="headerlink" title="Android Studio 中构建一个 APT 项目"></a>Android Studio 中构建一个 APT 项目</h4><p>APT 项目需要由至少两个 Java Library 模块组成。这两个模块分别是是什么作用呢？</p>
+<ol>
+<li>首先需要一个 Annotation 模块，这个用来存放自定义的注解。</li>
+<li>另外需要一个 Compiler 模块，这个模块依赖 Annotation 模块。</li>
+<li>项目的 App 模块和其他的业务模块都需要依赖 Annotation 模块，同时需要通过 annotationProcessor 依赖 Compiler 模块。</li>
+</ol>
+<blockquote>
+<p>为什么要强调 APT 的两个模块一定是要 Java Library？如果你创建 Android Library 模块会发现不能找到 AbstractProcessor 这个类，这是因为 Android 平台是基于 OpenJDK 的，而 OpenJDK 中不包含 APT 的相关代码。因此，在使用 APT 时，必须在 Java Library 中进行。</p>
+</blockquote>
+<h3 id="Retrofit-中的注解"><a href="#Retrofit-中的注解" class="headerlink" title="Retrofit 中的注解"></a>Retrofit 中的注解</h3><ul>
+<li>请求方法类</li>
+<li>标记类</li>
+<li>参数类</li>
+<li>其他类</li>
+</ul>
+<p>####请求方法类注解<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606225227927.png" alt="Alt text"></p>
+<h4 id="标记类注解"><a href="#标记类注解" class="headerlink" title="标记类注解"></a>标记类注解</h4><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606225316123.png" alt="Alt text"></p>
+<h4 id="参数注解"><a href="#参数注解" class="headerlink" title="参数注解"></a>参数注解</h4><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606225354227.png" alt="Alt text"></p>
+<h4 id="其他注解"><a href="#其他注解" class="headerlink" title="其他注解"></a>其他注解</h4><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606225301654.png" alt="Alt text"></p>
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><ol>
+<li><p>以上部分注解真正的实现在 ParameterHandler 类中，每个注解的真正实现都是 ParameterHandler 类中的一个 final 类型的内部类，每个内部类都对各个注解的使用要求做了限制，比如参数是否为空，键和值是否为空等。</p>
+</li>
+<li><p>FromUrlEncoded 注解和 Multipart 注解不能同时使用，否则会抛出 methodError（“Only one encoding annotation is allowed”），可在 ServiceMethod 类中 parseMethodAnnotation() 方法中找到不能同时使用的具体原因。</p>
+</li>
+<li><p>Path 注解与 Url 注解不同时使用，否则会抛出 parameterError(p, “@Path parameters may not be used with @Url”)，可在 ServiceMethod 类中找到不能同时使用的具体代码，其实原因也很好理解，Path 注解用于替换 url 路径中的参数，这就要求在使用 path 注解时，必须已经存在请求路径，不然没法替换路径中指定的参数，而 Url 注解是在参数中指定的请求路径的，这个时候指定请求路径已经晚了，path 注解找不到请求路径，更别提更换请求路径中的参数了。</p>
+</li>
+<li><p>对于 FieldMap、HeaderMap、PartMap、QueryMap 这四种作用于方法的注解，其参数类型必须为 Map 的实例，且 key 的类型必须为 String 类型，否则会抛出异常，以 PartMap 注解为例，会抛出 parameterError(p, “@PartMap keys must be of type String:” + keyType)</p>
+</li>
+<li><p>使用 Body 注解的参数不能使用 form 或 multi-part 编码，即如果为方法使用了 FormUrlEncoded 或 Multipart 注解，则方法的参数中不能使用 Body 注解，否则会抛出异常 parameterError(p, “@Body parameters cannot be used with form or multi-part encoding”)</p>
+</li>
+</ol>
+<h2 id="插桩"><a href="#插桩" class="headerlink" title="插桩"></a>插桩</h2><h3 id="什么是插桩"><a href="#什么是插桩" class="headerlink" title="什么是插桩"></a>什么是插桩</h3><p>QQ 空间曾经发布的《热修复解决方案》中利用 Javaassist 库实现向类的构造函数中插入一段代码解决 CLASS_ISPREVERIFIED 问题。<br>包括了 Instant Run 的实现以及参照 Instant Run 实现的热修复美团 Robus 等都利用到了插桩技术。<br>插桩就是将一段代码插入或者替换原本的代码。字节码插桩顾名思义就是在我们编写的源码编译成字节码（Class）后，在 Android 下生成 dex 之前修改 Class 文件，修改或者增强原有代码逻辑的操作。</p>
+<h3 id="ASM"><a href="#ASM" class="headerlink" title="ASM"></a>ASM</h3><p>上面我们提到 QQ 空间使用了 Javaassist 来进行字节码插桩，除了 Javaassist 之外还有一个应用更为广泛的 ASM 框架同样也是字节码操作框架，Instant Run 包括 AspectJ 就是借助 ASM 来实现各自的功能。</p>
+<p>我们非常熟悉的 JSON 格式数据是基于文本的，我们只需要知道它的规则就能够轻松的生成、修改 JSON 数据。同样的 Class 字节码也有其自己的规则（格式）。操作 JSON 可以借助 GSON 来非常方便的生成、修改 JSON 数据。而字节码 Class，同样可以借助 Javaassist&#x2F;ASM 来实现对其修改。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/java/vm/.1606223916878.png" alt="Alt text"></p>
+<h2 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h2><blockquote>
+<p>Java 反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取的信息以及动态调用对象的方法的功能称为 Java 语言的反射机制。 注意关键词：运行状态，换句话说，Java 程序可以加载一个运行时才得知名称的 class，获悉其完整构造（但不包括 methods 定义），并生成其对象实体、或对其 fields 设值、或唤起其 methods。<br>反射：是一种机制，利用该机制可以在程序运行过程中对类进行解剖并操作类中的方法、属性、构造方法等成员。是另外一种调用构造方法、普通方法、属性的方式。<br>对比普通方法，反射功能更强，但是更麻烦，反射操作的统一步骤，获取 Class 字节码对象，<br>要操作什么就获取什么（getxxx()，getDeclaredXXX()），<br>要操作构造方法，就获取 Constructor 对象；<br>要操作普通方法，就获取 Method 对象；<br>要操作属性字段，就获取 Field 对象；<br>如果操作的类型是 private，就提前设置允许暴力反射：setAccessible(true)</p>
+</blockquote>
+<h3 id="反射基本概念与三种获取Class对象的方式"><a href="#反射基本概念与三种获取Class对象的方式" class="headerlink" title="反射基本概念与三种获取Class对象的方式"></a>反射基本概念与三种获取Class对象的方式</h3><p>Class类是一切的反射根源。<br>Class类表示什么？</p>
+<ul>
+<li>很多的人–可以定义一个Person类（有年龄，性别，姓名等）</li>
+<li>很多的车–可以定义一个Car类（有发动机，颜色，车轮等）</li>
+<li>很多的类–Class类（类名，构造方法，属性，方法）</li>
+</ul>
+<h3 id="Java-Reflection-API-简介"><a href="#Java-Reflection-API-简介" class="headerlink" title="Java Reflection API 简介"></a>Java Reflection API 简介</h3><ol>
+<li>Class 类：代表一个类【java.lang.Class】</li>
+<li>Field 类：代表类的成员变量（成员变量也称为类的属性）【java.lang.reflect.Field】</li>
+<li>Method 类：代表类的方法【java.lang.reflect.Method】</li>
+<li>Constructor 类：代表类的构造方法【java.lang.reflect.Constructor】</li>
+<li>Array 类：提供了动态创建数组，以及访问数组的元素的静态方法</li>
+<li>Modifier 类：【java.lang.reflect.Modifier】</li>
+</ol>
+<h3 id="反射获取-Class-类"><a href="#反射获取-Class-类" class="headerlink" title="反射获取 Class 类"></a>反射获取 Class 类</h3><p>Class 类没有共有的构造方法，被 jvm 调用的（简单理解：new 对象或者被类加载器加载的时候），在 Java 中，每个 class 都有一个相应的 Class 对象，也就是说，当我们编写一个类，编译完成后，在生成的 .class 文件中，就会产生一个 Class 对象，用于表示这个类的类型信息。<br>获取 Class 的三种方式：</p>
+<ol>
+<li>利用对象调用 getClass() 方法获取该对象的 Class 实例<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Person</span> <span class="variable">person</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Person</span>();</span><br><span class="line">Class&lt;? extend Person&gt; personClass01 = person.getClass();</span><br></pre></td></tr></table></figure></li>
+<li>使用 Class 类的静态方法 forName()，用类的名字获取一个 Class 实例<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    Class&lt;?&gt; personClass02 = Class.forName(<span class="string">&quot;Person&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>运用 .class 的方式来获取 Class 实例，对于基本数据类型的封装类，还可以采用 .TYPE 来获取相对应的基本数据类型的 Class 实例<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;? <span class="keyword">extends</span> <span class="title class_">Person</span>&gt; personClass03 = Person.class;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在运行期间，如果我们要产生某个类的对象，Java 虚拟机（JVM）会检查该类型的 Class 对象是否已被加载。如果没有被加载，JVM 会根据类的名称找到 .class 文件并加载它。一旦某个类型的 Class 对象已被加载到内存，就可以用它来产生该类型的所有对象。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="反射调用"><a href="#反射调用" class="headerlink" title="反射调用"></a>反射调用</h3><ul>
+<li><p>反射调用 Constructor：newInstance()；</p>
+</li>
+<li><p>反射调用 Method：invoke()；</p>
+</li>
+<li><p>反射调用 Field：set()，get()</p>
+</li>
+<li><p>etDeclaredMethods()	获取所有方法</p>
+</li>
+<li><p>getReturnType()	获取方法的返回类型</p>
+</li>
+<li><p>getParameterTypes()	获取方法的传入参数类型</p>
+</li>
+<li><p>getDeclaredMethod(“方法名”， 参数类型.class, ……)	获取特定的方法</p>
+</li>
+<li><p>getDeclaredConstructors()	获取所有的构造方法</p>
+</li>
+<li><p>getDeclaredConstructor(参数类型.class， ……)	获取特定的构造方法</p>
+</li>
+<li><p>getSuperclass()	获取某类的父类</p>
+</li>
+<li><p>getInterfaces()	获取某类实现的接口</p>
+</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/java/Java%20VM/">http://king-of-cement.gitee.io/blog/post/java/Java%20VM/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/java/IO/">IO</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/Android-%E5%91%A8%E8%BE%B9/Flutter/">Flutter</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

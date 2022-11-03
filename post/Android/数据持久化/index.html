@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>数据持久化 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">数据持久化</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/Android/">Android</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>#数据持久化</p>
+<p>@(不太重要)</p>
+<p>[toc]</p>
+<h2 id="文件"><a href="#文件" class="headerlink" title="文件"></a>文件</h2><h3 id="内部存储"><a href="#内部存储" class="headerlink" title="内部存储"></a>内部存储</h3><p>使用Context的openFileOutput方法获取FileOutputStream，然后按照Java的文件写入方式操作就行了</p>
+<h3 id="读取静态文件"><a href="#读取静态文件" class="headerlink" title="读取静态文件"></a>读取静态文件</h3><p>对于res&#x2F;raw文件夹下的数据，可以使用Resources的openRawResource方法读取</p>
+<blockquote>
+<p>在raw文件夹中，文件名只能包含小写字母、数字和下划线。</p>
+<h3 id="可用性检查"><a href="#可用性检查" class="headerlink" title="可用性检查"></a>可用性检查</h3></blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String state=Environment.getExternalStorageState();</span><br><span class="line"><span class="keyword">if</span>(Environment.MEDIA_MOUNTED.equals(state))&#123;</span><br><span class="line">    <span class="comment">//外部存储可写、可读</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">String state=Environment.getExternalStorageState();</span><br><span class="line"><span class="keyword">if</span>(Environment.MEDIA_MOUNTED.equals(state)||</span><br><span class="line">        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state))&#123;</span><br><span class="line">    <span class="comment">//外部存储至少可读</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>MEDIA_UNKNOWN：未知状态<br>MEDIA_REMOVED：移除状态（外部存储不存在）<br>MEDIA_UNMOUNTED：未装载状态（外部存储存在但是没有装载）<br>MEDIA_CHECKING：磁盘检测状态<br>MEDIA_NOFS：外部存储存在，但是磁盘为空或使用了不支持的文件系统<br>MEDIA_MOUNTED：就绪状态（可读、可写）<br>MEDIA_MOUNTED_READ_ONLY：只读状态<br>MEDIA_SHARED：共享状态（外部存储存在且正通过USB共享数据）<br>MEDIA_BAD_REMOVAL：异常移除状态（外部存储还没有正确卸载就被移除了）<br>MEDIA_UNMOUNTABLE：不可装载状态（外部存储存在但是无法被装载，一般是磁盘的文件系统损坏造成的）<br>###公共文件（共享文件）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title function_">getExternalStoragePublicDirectory</span><span class="params">(String type)</span>;</span><br></pre></td></tr></table></figure>
+<p>DIRECTORY_MUSIC：音乐类型<br>DIRECTORY_PICTURES：图片类型<br>DIRECTORY_MOVIES：电影类型<br>DIRECTORY_DCIM：照片类型<br>DIRECTORY_DOWNLOADS：下载文件类型<br>DIRECTORY_DOCUMENTS：文档类型<br>DIRECTORY_RINGTONES：铃声类型<br>DIRECTORY_ALARMS：闹钟提示音类型<br>DIRECTORY_NOTIFICATIONS：通知提示音类型<br>DIRECTORY_PODCASTS：播客音频类型<br>注意，返回的文件目录可能还不存在，因此在执行文件操作前应该确保相应的文件目录已经存在，否则使用File的mkdirs方法创建文件目录。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">String directoryName=<span class="string">&quot;PublicFileTest&quot;</span>;</span><br><span class="line">File publicDownloadDirectory=Environment.getExternalStoragePublicDirectory(</span><br><span class="line">        Environment.DIRECTORY_DOWNLOADS);</span><br><span class="line">File myDownloadDirectory=<span class="keyword">new</span> <span class="title class_">File</span>(publicDownloadDirectory,directoryName);</span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span>(!myDownloadDirectory.exists())&#123;<span class="comment">//确保指定目录已经创建</span></span><br><span class="line">    <span class="type">boolean</span> createResult=myDownloadDirectory.mkdirs();</span><br><span class="line">    <span class="keyword">if</span>(createResult)&#123;</span><br><span class="line">        Log.i(TAG,<span class="string">&quot;创建成功&quot;</span>);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        Log.i(TAG,<span class="string">&quot;创建失败&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>小技巧：如果不希望系统的媒体扫描器访问我们的媒体文件，可以在媒体文件所在的目录下新建一个名为.nomedia的空文件，这会阻止媒体扫描器归类我们的文件并提供给其他应用。</p>
+<h3 id="私有文件"><a href="#私有文件" class="headerlink" title="私有文件"></a>私有文件</h3><p>对于应用私有的文件，则应该使用Context的getExternalFilesDir方法访问外部存储中的私有存储目录，媒体扫描器不会扫描这些目录。可以为这个方法传入一个String类型的type参数，用于获取私有存储目录中相应的媒体文件子目录。当然，也可以传入null直接获取私有存储的根目录。这个方法的返回值也是一个File对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File <span class="title function_">getExternalFilesDir</span><span class="params">(String type)</span>;</span><br></pre></td></tr></table></figure>
+<p>注意，某些移动设备可能既提供了内置存储器作为外部存储空间，同时又提供了SD卡作为外部存储空间。也就是说，在这些设备中外部存储实际上包含了两块磁盘。在Android 4.3（API 18）及以下，Context的getExternalFilesDir方法仅仅会返回内置存储器对应的外部存储控件，而无法访问SD卡对应的存储空间。从Android 4.4（API 19）开始，Context新增了getExternalFilesDirs方法。这个方法的返回值是一个File数组，包含两个对象（可能为null），这样就可以实现对内置存储器和SD卡的访问。数组的第一个对象默认是外部主存储，官方的开发建议是除非这个位置已满或不可用，否则应该使用这个位置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File[] getExternalFilesDirs(String type);</span><br></pre></td></tr></table></figure>
+<p>另外，出于兼容性的考虑，可以使用ContextCompat的getExternalFilesDirs方法。这是一个静态方法，返回值也是一个File数组。在Android 4.4及以上，效果和Context的getExternalFilesDirs方法一致；而在Android 4.3及以下，返回的File数组始终只包含一个对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File[] getExternalFilesDirs(Context context, String type)</span><br></pre></td></tr></table></figure>
+<p>对于以上方法的type参数，有以下几种可选值（都是Environment中定义的常量）：</p>
+<p>DIRECTORY_MUSIC：音乐类型<br>DIRECTORY_PICTURES：图片类型<br>DIRECTORY_MOVIES：电影类型<br>DIRECTORY_RINGTONES：铃声类型<br>DIRECTORY_ALARMS：闹钟提示音类型<br>DIRECTORY_NOTIFICATIONS：通知提示音类型<br>DIRECTORY_PODCASTS：播客音频类型<br>注意，当应用卸载时，这些私有存储目录中的文件也会被删除。此外，虽然系统的媒体扫描器不会访问外部存储中的私有存储目录，但是其他具有READ_EXTERNAL_STORAGE或WRITE_EXTERNAL_STORAGE权限的应用依旧可以读&#x2F;写这些私有存储目录中的文件。因此对于真正重要的文件，还是应该保存在应用的内部存储中。</p>
+<p>补充：私有文件根目录的参考路径：Android&#x2F;data&#x2F;包名&#x2F;files&#x2F;</p>
+<h3 id="缓存文件"><a href="#缓存文件" class="headerlink" title="缓存文件"></a>缓存文件</h3><p>在外部存储中也有专门保存缓存文件的空间，可以通过Context的getExternalCacheDir方法访问缓存文件目录，返回值是一个File对象。上文曾说过，外部存储可能同时包含内置存储器和SD卡两个存储空间，因此在Android 4.4（API 19）及以上还可以通过Context的getExternalCacheDirs方法访问这两个存储空间。这个方法会返回一个File数组，包含两个对象，第一个对象默认是外部主存储对应的缓存文件目录。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File <span class="title function_">getExternalCacheDir</span><span class="params">()</span>;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File[] getExternalCacheDirs();</span><br></pre></td></tr></table></figure>
+<p>同样，为了兼容性，也可以使用ContextCompat的getExternalCacheDirs方法。这是一个静态方法，返回值也是一个File数组。在Android 4.4及以上，效果和Context的getExternalCacheDirs方法一致；而在Android 4.3及以下，返回的File数组始终只包含一个对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File[] getExternalCacheDirs(Context context);</span><br></pre></td></tr></table></figure>
+<p>注意，当应用卸载时，缓存目录下的文件也会被系统删除。当然，官方建议开发者应该主动移除不再需要的缓存文件，这有助于节省存储空间并保持应用性能。</p>
+<p>补充：缓存文件根目录的参考路径：Android&#x2F;data&#x2F;包名&#x2F;cache&#x2F;</p>
+<h3 id="其他常用API"><a href="#其他常用API" class="headerlink" title="其他常用API"></a>其他常用API</h3><p>除了以上提过的方法，Android文件系统还提供了其他可用的API，下面简单进行讲解：</p>
+<p>Context</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File[] getExternalMediaDirs();</span><br></pre></td></tr></table></figure>
+<p>该方法将以File数组的形式返回外部存储中所有可以保存媒体文件的目录。这些目录中的文件将会被系统媒体扫描器访问，并可以通过MediaStore提供给其他应用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File <span class="title function_">getDataDir</span><span class="params">()</span>;</span><br></pre></td></tr></table></figure>
+<p>这个方法以绝对路径的方式访问应用的私有文件目录（内部存储）。官方并不建议直接使用这个方法返回的路径，因为如果应用迁移到其他位置（如迁移到SD卡），文件路径将发生改变。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File <span class="title function_">getDir</span><span class="params">(String name, <span class="meta">@FileMode</span> <span class="type">int</span> mode)</span>;</span><br></pre></td></tr></table></figure>
+<p>以File形式返回一个文件目录，应用可以在这个目录中保存自己的数据文件。如果这个目录还不存在，系统将会自动创建它。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File <span class="title function_">getFilesDir</span><span class="params">()</span>;</span><br></pre></td></tr></table></figure>
+<p>以File形式返回openFileOutput方法所使用的文件目录（即内部存储根目录）。注意，这个方法是通过绝对路径进行文件访问的，因此应用发生迁移将导致返回的路径发生变化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File <span class="title function_">getFileStreamPath</span><span class="params">(String name)</span>;</span><br></pre></td></tr></table></figure>
+<p>以File形式返回通过openFileOutput方法存储的文件。注意，这个方法是通过绝对路径进行文件访问的，因此应用发生迁移将导致返回的路径发生变化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File <span class="title function_">getObbDir</span><span class="params">()</span>;</span><br></pre></td></tr></table></figure>
+<p>以File形式（绝对路径）返回应用Obb文件的存储目录。如果当前应用并不存在Obb文件，则这个目录也不存在，返回null。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> File[] getObbDirs();</span><br></pre></td></tr></table></figure>
+<p>和上一个方法类型，只不过返回的对象是File数组，因此得以访问SD卡中的Obb文件目录。这个方法在Android 4.4（API 19）及以上可用。</p>
+<p>ContextCompat</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title function_">getDataDir</span><span class="params">(Context context)</span>；</span><br></pre></td></tr></table></figure>
+<p>这是Context#getDataDir方法的兼容性版本。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File[] getObbDirs(Context context);</span><br></pre></td></tr></table></figure>
+<p>这是Context#getObbDirs方法的兼容性版本。</p>
+<p>Environment</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title function_">getDataDirectory</span><span class="params">()</span>;</span><br></pre></td></tr></table></figure>
+<p>以File形式返回用户数据目录，即&#x2F;data目录。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title function_">getDownloadCacheDirectory</span><span class="params">()</span>；</span><br></pre></td></tr></table></figure>
+<p>以File形式返回下载缓存数据目录，即&#x2F;cache目录。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title function_">getExternalStorageDirectory</span><span class="params">()</span>；</span><br></pre></td></tr></table></figure>
+<p>以File形式返回外部存储根目录。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> File <span class="title function_">getRootDirectory</span><span class="params">()</span>;</span><br></pre></td></tr></table></figure>
+<p>以File形式返回存放系统OS的文件根目录，即system目录。注意，这个分区始终处于只读状态。</p>
+<h2 id="SharedPreferences"><a href="#SharedPreferences" class="headerlink" title="SharedPreferences"></a>SharedPreferences</h2><p>只支持Java基本数据类型，不支持自定义数据类型；<br>应用内数据共享；<br>sp.edit()每次都会返回一个新的Editor对象，Editor的实现类EditorImpl里面会有一个缓存的Map，最后commit的时候先将缓存里面的Map写入内存中的Map，然后将内存中的Map写进XML文件中</p>
+<h2 id="MMKV"><a href="#MMKV" class="headerlink" title="MMKV"></a>MMKV</h2><h3 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a>mmap</h3><p>mmap函数是MMKV的干货之一了，如果没有这个函数的存在，或许就没有今天的MMKV了，下面说下这个函数的参数和使用方法。<br>mmap （一种内存映射文件的方法）<br>mmap将一个文件或者其它对象映射进内存。文件被映射到多个页上，如果文件的大小不是所有页的大小之和，最后一个页不被使用的空间将会清零。mmap在用户空间映射调用系统中作用很大。<br>头文件 &lt;sys&#x2F;mman.h&gt;</p>
+<h3 id="内存重组"><a href="#内存重组" class="headerlink" title="内存重组"></a>内存重组</h3><p>在跨进程读写的时候，进程A修改了一个数据，进程B去读的时候，就会校验内存的数据和文件的数据，一旦不相同，就说明有了跨进程的操作，这个时候就需要内存重组，清空原有数据，重新读最新的文件映射到内存中。<br>###&gt;&lt;!!!</p>
+<h2 id="SQLite"><a href="#SQLite" class="headerlink" title="SQLite"></a>SQLite</h2><p>SQLite 是 D. Richard Hipp 用 C 语言编写的开源嵌入式数据库引擎。它是完全独立的，不具有外部依赖性。它是作为 PHP V4.3 中的一个选项引入的，构建在 PHP V5 中。<br>标准的支持包括索引、限制、触发和查看。SQLite 不支持外键限制，但支持原子的、一致的、独立和持久 (ACID) 的事务<br>这意味着事务是原子的，因为它们要么完全执行，要么根本不执行。事务也是一致的，因为在不一致的状态中，该数据库从未被保留。事务还是独立的，所以，如果在同一时间在同一数据库上有两个执行操作的事务，那么这两个事务是互不干扰的。而且事务是持久性的，所以，该数据库能够在崩溃和断电时幸免于难，不会丢失数据或损坏。<br>###内部结构<br>在内部，SQLite 由以下几个组件组成：SQL 编译器、内核、后端以及附件。SQLite 通过利用虚拟机和虚拟数据库引擎（VDBE），使调试、修改和扩展 SQLite 的内核变得更加方便。所有 SQL 语句都被编译成易读的、可以在 SQLite 虚拟机中执行的程序集</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96/db29b52a-4203-432b-bfed-1381693b38d7.png" alt="db29b52a-4203-432b-bfed-1381693b38d7"></p>
+<p>SQLite 支持大小高达 2 TB 的数据库，每个数据库完全存储在单个磁盘文件中。这些磁盘文件可以在不同字节顺序的计算机之间移动。这些数据以 B+树（B+tree）数据结构的形式存储在磁盘上。SQLite 根据该文件系统获得其数据库权限。<br>SQLite 不支持静态数据类型，而是使用列关系。这意味着它的数据类型不具有表列属性，而具有数据本身的属性。当某个值插入数据库时，SQLite 将检查它的类型。如果该类型与关联的列不匹配，则 SQLite 会尝试将该值转换成列类型。如果不能转换，则该值将作为其本身具有的类型存储。<br>由于完全能够使用命令行界面来管理数据库，因此它可以为数据库管理员带来很大的方便。目前有许多优秀的基于 Web 的 SQLite 数据库管理系统。其中有一个是基于 PHP 的 <a target="_blank" rel="noopener" href="http://www.sqlitemanager.org/">SQLiteManager</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android/%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96/">http://king-of-cement.gitee.io/blog/post/Android/%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/%E5%85%B6%E4%BB%96/%E5%BE%85%E5%A4%84%E7%90%86/">待处理</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/%E5%85%B6%E4%BB%96/%E5%90%84%E7%A7%8D%E8%AF%AD%E8%A8%80&%E5%90%84%E7%A7%8D%E5%B9%B3%E5%8F%B0/">各种语言&各种平台</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

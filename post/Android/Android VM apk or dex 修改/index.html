@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>Android VM apk\dex 修改 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Android VM apk\dex 修改</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/Android/">Android</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Android-VM-apk-dex-修改"><a href="#Android-VM-apk-dex-修改" class="headerlink" title="Android VM apk\dex 修改"></a>Android VM apk\dex 修改</h1><p>[toc]</p>
+<h1 id="换肤"><a href="#换肤" class="headerlink" title="换肤"></a>换肤</h1><h2 id="思路："><a href="#思路：" class="headerlink" title="思路："></a>思路：</h2><ol>
+<li>可以悄悄从网上下一套皮肤apk文件，把它运行起来没有主界面，获取皮肤的时候就是利用反射；</li>
+<li><code>不需要运行直接可以获取本地的皮肤，前提已经从服务器上下载到本地。</code></li>
+<li>android suopprt libary 23.2 支持白天黑夜主题切换（最简单的）皮肤是在我们的apk里面的</li>
+</ol>
+<h3 id="选一套比较好的方式才开始"><a href="#选一套比较好的方式才开始" class="headerlink" title="选一套比较好的方式才开始"></a>选一套比较好的方式才开始</h3><p><code>反正要解决的问题就是如何去获取另一个apk中的资源</code></p>
+<h4 id="google资源加载源码"><a href="#google资源加载源码" class="headerlink" title="google资源加载源码"></a>google资源加载源码</h4><p>ImageView里面src图片最终是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mResources.loadDrawable(value, value.resourceId, mTheme);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其实都是通过mResources Resource对象去读的<br>既然资源的加载是通过Resource类，如果想去获取另外一个apk中的资源是不是可以自己实例化一个。</p>
+</blockquote>
+<h4 id="只要清楚是怎么去实例化的就好，怎么new的对象。"><a href="#只要清楚是怎么去实例化的就好，怎么new的对象。" class="headerlink" title="只要清楚是怎么去实例化的就好，怎么new的对象。"></a>只要清楚是怎么去实例化的就好，怎么new的对象。</h4><blockquote>
+<p>ImageView-&gt;mResources.loadDrawable()-&gt;new Resources(assets, dm, config, compatInfo)</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">r = <span class="keyword">new</span> <span class="title class_">Resources</span>(assets, dm, config, compatInfo);</span><br><span class="line"><span class="comment">//assets 是 AssetManager资源管理</span></span><br><span class="line">Resources(AssetManager assets, DisplayMetrics metrics, Configuration config)</span><br><span class="line"></span><br><span class="line"><span class="comment">//资源管理的创建</span></span><br><span class="line"><span class="type">AssetManager</span> <span class="variable">assets</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AssetManager</span>();</span><br><span class="line">assets.addAssetPath(resDir)<span class="comment">// resDir apk的目录</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Add an additional set of assets to the asset manager.  This can be</span></span><br><span class="line"><span class="comment"> * either a directory or ZIP file.  Not for use by applications.  Returns</span></span><br><span class="line"><span class="comment"> * the cookie of the added asset, or 0 on failure.</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@hide</span>&#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="type">int</span> <span class="title function_">addAssetPath</span><span class="params">(String path)</span> &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">res</span> <span class="operator">=</span> addAssetPathNative(path);</span><br><span class="line">        makeStringBlocks(mStringBlocks);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="资源加载的总结"><a href="#资源加载的总结" class="headerlink" title="资源加载的总结"></a>资源加载的总结</h4><p>所有的资源加载通过Resource  -&gt; 构建对象是直接new的对象  -&gt; AssetManager 其实是Resource的核心实例 -&gt; 最终是通过AssetManager获取AssetManager 实例化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">AssetManager</span> <span class="variable">asset</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AssetManager</span>();</span><br><span class="line">assets.addAssetPath(resDir)<span class="comment">// 可以是一个zip的路径</span></span><br></pre></td></tr></table></figure>
+<h2 id="Native层的AssetManager"><a href="#Native层的AssetManager" class="headerlink" title="Native层的AssetManager"></a>Native层的AssetManager</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">android_content_AssetManager_init</span><span class="params">(JNIEnv* env, jobject clazz, jboolean isSystem)</span></span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (isSystem) &#123;</span><br><span class="line">        <span class="built_in">verifySystemIdmaps</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    AssetManager* am = <span class="keyword">new</span> <span class="built_in">AssetManager</span>();</span><br><span class="line">    <span class="keyword">if</span> (am == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">jniThrowException</span>(env, <span class="string">&quot;java/lang/OutOfMemoryError&quot;</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 添加默认的资源</span></span><br><span class="line">    am-&gt;<span class="built_in">addDefaultAssets</span>();</span><br><span class="line">    <span class="built_in">ALOGV</span>(<span class="string">&quot;Created AssetManager %p for Java object %p\n&quot;</span>, am, clazz);</span><br><span class="line">    env-&gt;<span class="built_in">SetLongField</span>(clazz, gAssetManagerOffsets.mObject, <span class="built_in">reinterpret_cast</span>&lt;jlong&gt;(am));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">AssetManager::addDefaultAssets</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">// 先添加一个路径 framework/framework-res.apk  </span></span><br><span class="line">    <span class="comment">// 首先会加载系统提供好的资源文件  </span></span><br><span class="line">    path.<span class="built_in">appendPath</span>(kSystemAssets);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">addAssetPath</span>(path, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">AssetManager::addAssetPath</span><span class="params">(<span class="type">const</span> String8&amp; path, <span class="type">int32_t</span>* cookie)</span></span>&#123;</span><br><span class="line">    <span class="comment">// Check that the path has an AndroidManifest.xml</span></span><br><span class="line">    Asset* manifestAsset = <span class="built_in">const_cast</span>&lt;AssetManager*&gt;(<span class="keyword">this</span>)-&gt;<span class="built_in">openNonAssetInPathLocked</span>(</span><br><span class="line">            kAndroidManifest, Asset::ACCESS_BUFFER, ap);</span><br><span class="line">    <span class="keyword">if</span> (manifestAsset == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// This asset path does not contain any resources.</span></span><br><span class="line">        <span class="keyword">delete</span> manifestAsset;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">delete</span> manifestAsset;</span><br><span class="line">    mAssetPaths.<span class="built_in">add</span>(ap);</span><br><span class="line">    <span class="comment">// new paths are always added at the end</span></span><br><span class="line">    <span class="keyword">if</span> (cookie) &#123;</span><br><span class="line">        *cookie = <span class="built_in">static_cast</span>&lt;<span class="type">int32_t</span>&gt;(mAssetPaths.<span class="built_in">size</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (mResources != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">appendPathToResTable</span>(ap);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>apk打包会生成两个比较重要的跟资源有关系：<br>1 R.java(一些id)<br>2 resources.arsc (资源映射信息)image_src xh xxh,ResTable字符串的池信息，头信息</p>
+</blockquote>
+<h2 id="实现换肤："><a href="#实现换肤：" class="headerlink" title="实现换肤："></a>实现换肤：</h2><p>1.每一次打开的都是新的皮肤，<br>2.换肤之后所有的activity里面的View都要换肤，<br>3.每次从新进入app也需要换肤</p>
+<h2 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h2><p>1.每一个activity里面都把需要换肤的View给找出来，然后调用代码去换肤 （死板的方法）；<br>2.获取activity里面的根布局，然后通过不断的循环获取子View, 通过 tag；<br>3.拦截View的创建，这个目前是比较好的。系统怎么样去加载界面的</p>
+<blockquote>
+<p>extends Activity和AppCompateActivity的View的区别<br>AppCompateActivity创建View的时候会被拦截，不会走系统的LayoutInflater的创建，就会被替换掉一些特定的View</p>
+</blockquote>
+<h1 id="Dex加密"><a href="#Dex加密" class="headerlink" title="Dex加密"></a>Dex加密</h1><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606321487163.png" alt="Alt text"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606321509378.png" alt="Alt text"></p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>既然我们要加密，那么必然有解密，但是这个解密又必然是整个应用的一部分，但是连这部分都加密的话，那么系统就完全无法解析我们的应用，也就是完全无法安装了。所以我们需要将解密的部分提取出来单独作为一个module，且这个module是不能够被加密的。然后最好的解密时机就是首次启动应用的时候进行，所以Application自然成了我们负责解密的首选。那么是否意味着原apk中不能有这个module呢？答案是：错啦。原apk中同样要将这个解密module打包进去,否则原apk也无法编译通过啊。<br>我们都知道，系统在加载类的时候都是从我们apk的dex文件中加载的。ClassLoader会去维护一个这样的dex文件数组（这个在前面的热修复章节有介绍过）。而我们要做的就是将原apk中的dex都加密，然后将解密部分的代码单独编程成dex文件（我们称这样的dex为壳dex）连带着加密的dex一起加到新apk中。这样新apk安装后系统就能够找到我们应用启动的入口Application了，不至于由于加密导致系统找不到应用程序入口。而在这个程序入口中我们要做的就是解密被加密的dex文件，然后重新插入到ClassLoader维护的dex文件数组中（这里就涉及到大量的反射知识）。</p>
+<h2 id="加密实现"><a href="#加密实现" class="headerlink" title="加密实现"></a>加密实现</h2><p>先来看看我们加密工程未运行前的结构图<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606321661676.png" alt="Alt text"><br>再来看看工程运行后，工程结构的变化<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606321685071.png" alt="Alt text"><br>可以看到运行后原apk被加密和解密模块被放到一起重新打包成了新的apk。</p>
+<h3 id="初始化加密算法"><a href="#初始化加密算法" class="headerlink" title="初始化加密算法"></a>初始化加密算法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这里我们选择已封装好的Cipher加密。</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">DEFAULT_PWD</span> <span class="operator">=</span> <span class="string">&quot;abcdefghijklmnop&quot;</span>;<span class="comment">//加密和解密的key要一致，所以解密模块的key也要是同样的。</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">algorithmStr</span> <span class="operator">=</span> <span class="string">&quot;AES/ECB/PKCS5Padding&quot;</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Cipher encryptCipher;<span class="comment">//用来的加密的Cipher实例</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> Cipher decryptCipher;<span class="comment">//用来解密的Cipher实例</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  初始化加密算法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> password  这里的password对应DEFAULT_PWD</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">(String password)</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 生成一个实现指定转换的 Cipher 对象。</span></span><br><span class="line">        encryptCipher = Cipher.getInstance(algorithmStr);</span><br><span class="line">        decryptCipher = Cipher.getInstance(algorithmStr);<span class="comment">// algorithmStr</span></span><br><span class="line">        <span class="type">byte</span>[] keyStr = password.getBytes();</span><br><span class="line">        <span class="type">SecretKeySpec</span> <span class="variable">key</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SecretKeySpec</span>(keyStr, <span class="string">&quot;AES&quot;</span>);</span><br><span class="line">        encryptCipher.init(Cipher.ENCRYPT_MODE, key);</span><br><span class="line">        decryptCipher.init(Cipher.DECRYPT_MODE, key);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NoSuchAlgorithmException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NoSuchPaddingException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InvalidKeyException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="加密之前我们需要先创建两个目录用来存放原apk和解密模块压缩出来的源文件"><a href="#加密之前我们需要先创建两个目录用来存放原apk和解密模块压缩出来的源文件" class="headerlink" title="加密之前我们需要先创建两个目录用来存放原apk和解密模块压缩出来的源文件"></a>加密之前我们需要先创建两个目录用来存放原apk和解密模块压缩出来的源文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 分别在apk和aar目录下生成两个temp目录用来存放加密的未打包的apk文件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">File</span> <span class="variable">apkTemp</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;source/apk/temp&quot;</span>);</span><br><span class="line"><span class="keyword">if</span>(apkTemp.exists()) &#123;</span><br><span class="line">    File[] files = apkTemp.listFiles();</span><br><span class="line">    <span class="keyword">for</span>(File file:files) &#123;</span><br><span class="line">        <span class="keyword">if</span>(file.exists()) &#123;</span><br><span class="line">            file.delete();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">File</span> <span class="variable">aarTemp</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;source/aar/temp&quot;</span>);</span><br><span class="line"><span class="keyword">if</span>(aarTemp.exists()) &#123;</span><br><span class="line">    File[] files = aarTemp.listFiles();</span><br><span class="line">    <span class="keyword">for</span>(File file:files) &#123;</span><br><span class="line">        <span class="keyword">if</span>(file.exists()) &#123;</span><br><span class="line">            file.delete();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="解压原apk-并加密原apk中的dex文件。"><a href="#解压原apk-并加密原apk中的dex文件。" class="headerlink" title="解压原apk,并加密原apk中的dex文件。"></a>解压原apk,并加密原apk中的dex文件。</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**    </span></span><br><span class="line"><span class="comment">  * 解压原apk文件到apk/temp目录下,并加密dex文件</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="type">File</span> <span class="variable">sourceApk</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;source/apk/app-debug.apk&quot;</span>);</span><br><span class="line">    <span class="type">File</span> <span class="variable">newApkDir</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(sourceApk.getParent() + File.separator + <span class="string">&quot;temp&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span>(!newApkDir.exists()) &#123;</span><br><span class="line">        newApkDir.mkdirs();</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="comment">//解压原apk,加密dex</span></span><br><span class="line">    AESUtil.encryptAPKFile(sourceApk,newApkDir);</span><br><span class="line">    <span class="keyword">if</span> (newApkDir.isDirectory()) &#123;</span><br><span class="line">        File[] listFiles = newApkDir.listFiles();</span><br><span class="line">        <span class="keyword">for</span> (File file : listFiles) &#123;</span><br><span class="line">            <span class="keyword">if</span> (file.isFile()) &#123;</span><br><span class="line">                <span class="comment">//修改classes.dex名为classes_.dex,避免等会与aar中的classes.dex重名</span></span><br><span class="line">                <span class="keyword">if</span> (file.getName().endsWith(<span class="string">&quot;.dex&quot;</span>)) &#123;</span><br><span class="line">                    <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> file.getName();</span><br><span class="line">                    <span class="type">int</span> <span class="variable">cursor</span> <span class="operator">=</span> name.indexOf(<span class="string">&quot;.dex&quot;</span>);</span><br><span class="line">                    <span class="type">String</span> <span class="variable">newName</span> <span class="operator">=</span> file.getParent()+ File.separator + </span><br><span class="line">                            name.substring(<span class="number">0</span>, cursor) + <span class="string">&quot;_&quot;</span> + <span class="string">&quot;.dex&quot;</span>;</span><br><span class="line">                    file.renameTo(<span class="keyword">new</span> <span class="title class_">File</span>(newName));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="解压aar文件，并生成壳dex"><a href="#解压aar文件，并生成壳dex" class="headerlink" title="解压aar文件，并生成壳dex"></a>解压aar文件，并生成壳dex</h3><p>先解压aar文件，再利用dx工具将解压出来的classes.jar文件转换成壳dex,并拷贝到新apk的源目录下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解压aar文件(不能进行加密的部分),再利用dx将jar转换成dex,并将dex文件拷贝到apk/temp中来</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">File</span> <span class="variable">aarFile</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;source/aar/mylibrary-debug.aar&quot;</span>);</span><br><span class="line">     <span class="type">File</span> <span class="variable">sourceAarDex</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">//解压aar文件，并通过dx工具将jar文件转换成dex文件</span></span><br><span class="line">        sourceAarDex  = DxUtil.jar2Dex(aarFile);</span><br><span class="line">    &#125;<span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="type">File</span> <span class="variable">copyAarDex</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(newApkDir.getPath() + File.separator + <span class="string">&quot;classes.dex&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!copyAarDex.exists()) &#123;</span><br><span class="line">        copyAarDex.createNewFile();</span><br><span class="line">&#125;</span><br><span class="line">    <span class="comment">//拷贝aar/temp中的classes.dex到apk/temp中</span></span><br><span class="line">    <span class="type">FileOutputStream</span> <span class="variable">fos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(copyAarDex);</span><br><span class="line">    <span class="type">byte</span>[] fbytes = ByteUtil.getBytes(sourceAarDex);</span><br><span class="line">    fos.write(fbytes);</span><br><span class="line">    fos.flush();</span><br><span class="line">    fos.close();</span><br></pre></td></tr></table></figure>
+<h3 id="想看如何通过dx工具将jar转换成dex的核心代码？"><a href="#想看如何通过dx工具将jar转换成dex的核心代码？" class="headerlink" title="想看如何通过dx工具将jar转换成dex的核心代码？"></a>想看如何通过dx工具将jar转换成dex的核心代码？</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">dxCommand</span><span class="params">(File aarDex, File classes_jar)</span> <span class="keyword">throws</span> IOException, InterruptedException &#123;</span><br><span class="line">           <span class="type">Runtime</span> <span class="variable">runtime</span> <span class="operator">=</span> Runtime.getRuntime();</span><br><span class="line">           <span class="comment">//这里需要注意,commond中dx需要配置环境变量后才可以这样写,否则需要指定dx.bat的绝对路径</span></span><br><span class="line">           <span class="type">String</span> <span class="variable">commond</span> <span class="operator">=</span> <span class="string">&quot;cmd.exe /C dx --dex --output=&quot;</span> + aarDex.getAbsolutePath() + <span class="string">&quot; &quot;</span> +classes_jar.getAbsolutePath();</span><br><span class="line">           <span class="type">Process</span> <span class="variable">process</span> <span class="operator">=</span> runtime.exec(commond);</span><br><span class="line">           System.out.println(<span class="string">&quot;runtime  dxCommand&quot;</span>);</span><br><span class="line">            process.waitFor();</span><br><span class="line">            System.out.println(<span class="string">&quot;waitFor  dxCommand&quot;</span>);</span><br><span class="line">           &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">              System.out.println(<span class="string">&quot;InterruptedException  dxCommand&quot;</span>);</span><br><span class="line">               e.printStackTrace();</span><br><span class="line">               <span class="keyword">throw</span> e;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">if</span> (process.exitValue() != <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;getErrorStream  dxCommand&quot;</span>);</span><br><span class="line">               <span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> process.getErrorStream();</span><br><span class="line">               <span class="type">int</span> len;</span><br><span class="line">               <span class="type">byte</span>[] buffer = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2048</span>];</span><br><span class="line">               <span class="type">ByteArrayOutputStream</span> <span class="variable">bos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ByteArrayOutputStream</span>();</span><br><span class="line">               <span class="keyword">while</span>((len=inputStream.read(buffer)) != -<span class="number">1</span>)&#123;</span><br><span class="line">                   bos.write(buffer,<span class="number">0</span>,len);</span><br><span class="line">               &#125;</span><br><span class="line">                   <span class="comment">//输出出错信息</span></span><br><span class="line">               System.out.println(<span class="keyword">new</span> <span class="title class_">String</span>(bos.toByteArray(),<span class="string">&quot;GBK&quot;</span>));</span><br><span class="line">               <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;dx run failed&quot;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">           process.destroy();</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="一切就绪，打包apk-x2F-temp目录生成新的未签名apk文件"><a href="#一切就绪，打包apk-x2F-temp目录生成新的未签名apk文件" class="headerlink" title="一切就绪，打包apk&#x2F;temp目录生成新的未签名apk文件"></a>一切就绪，打包apk&#x2F;temp目录生成新的未签名apk文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">File</span> <span class="variable">unsignedApk</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;result/apk-unsigned.apk&quot;</span>);</span><br><span class="line"> unsignedApk.getParentFile().mkdirs();</span><br><span class="line"> ZipUtil.zip(newApkDir, unsignedApk);</span><br></pre></td></tr></table></figure>
+<h3 id="给加密后组合压缩成的新apk文件重新签名"><a href="#给加密后组合压缩成的新apk文件重新签名" class="headerlink" title="给加密后组合压缩成的新apk文件重新签名"></a>给加密后组合压缩成的新apk文件重新签名</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">File</span> <span class="variable">signedApk</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;result/apk-signed.apk&quot;</span>);</span><br><span class="line">SignatureUtil.signature(unsignedApk, signedApk);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 为加密后的apk文件添加签名</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> unsignedApk</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> signedApk</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> InterruptedException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">       <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">signature</span><span class="params">(File unsignedApk, File signedApk)</span> <span class="keyword">throws</span> InterruptedException, IOException &#123;</span><br><span class="line">            String cmd[] = &#123;<span class="string">&quot;cmd.exe&quot;</span>, <span class="string">&quot;/C&quot;</span>,<span class="string">&quot;jarsigner&quot;</span>,  <span class="string">&quot;-sigalg&quot;</span>, <span class="string">&quot;MD5withRSA&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;-digestalg&quot;</span>, <span class="string">&quot;SHA1&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;-keystore&quot;</span>, <span class="string">&quot;C:/Users/cizongfa/.android/debug.keystore&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;-storepass&quot;</span>, <span class="string">&quot;android&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;-keypass&quot;</span>, <span class="string">&quot;android&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;-signedjar&quot;</span>, signedApk.getAbsolutePath(),</span><br><span class="line">                    unsignedApk.getAbsolutePath(),</span><br><span class="line">                    <span class="string">&quot;androiddebugkey&quot;</span>&#125;;</span><br><span class="line">            <span class="type">Process</span> <span class="variable">process</span> <span class="operator">=</span> Runtime.getRuntime().exec(cmd);</span><br><span class="line">            System.out.println(<span class="string">&quot;start sign&quot;</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="type">int</span> <span class="variable">waitResult</span> <span class="operator">=</span> process.waitFor();</span><br><span class="line">                System.out.println(<span class="string">&quot;waitResult: &quot;</span> + waitResult);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                <span class="keyword">throw</span> e;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">&quot;process.exitValue() &quot;</span> + process.exitValue() );</span><br><span class="line">            <span class="keyword">if</span> (process.exitValue() != <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> process.getErrorStream();</span><br><span class="line">                <span class="type">int</span> len;</span><br><span class="line">                <span class="type">byte</span>[] buffer = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2048</span>];</span><br><span class="line">                <span class="type">ByteArrayOutputStream</span> <span class="variable">bos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ByteArrayOutputStream</span>();</span><br><span class="line">                <span class="keyword">while</span>((len=inputStream.read(buffer)) != -<span class="number">1</span>)&#123;</span><br><span class="line">                    bos.write(buffer,<span class="number">0</span>,len);</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="keyword">new</span> <span class="title class_">String</span>(bos.toByteArray(),<span class="string">&quot;GBK&quot;</span>));</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;签名执行失败&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">&quot;finish signed&quot;</span>);</span><br><span class="line">            process.destroy();</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="热修复"><a href="#热修复" class="headerlink" title="热修复"></a>热修复</h1><h2 id="插桩"><a href="#插桩" class="headerlink" title="插桩"></a>插桩</h2><h3 id="什么是插桩"><a href="#什么是插桩" class="headerlink" title="什么是插桩"></a>什么是插桩</h3><p>QQ 空间曾经发布的《热修复解决方案》中利用 Javaassist 库实现向类的构造函数中插入一段代码解决 CLASS_ISPREVERIFIED 问题。<br>包括了 Instant Run 的实现以及参照 Instant Run 实现的热修复美团 Robus 等都利用到了插桩技术。<br>插桩就是将一段代码插入或者替换原本的代码。字节码插桩顾名思义就是在我们编写的源码编译成字节码（Class）后，在 Android 下生成 dex 之前修改 Class 文件，修改或者增强原有代码逻辑的操作。</p>
+<h3 id="ASM"><a href="#ASM" class="headerlink" title="ASM"></a>ASM</h3><p>上面我们提到 QQ 空间使用了 Javaassist 来进行字节码插桩，除了 Javaassist 之外还有一个应用更为广泛的 ASM 框架同样也是字节码操作框架，Instant Run 包括 AspectJ 就是借助 ASM 来实现各自的功能。</p>
+<p>我们非常熟悉的 JSON 格式数据是基于文本的，我们只需要知道它的规则就能够轻松的生成、修改 JSON 数据。同样的 Class 字节码也有其自己的规则（格式）。操作 JSON 可以借助 GSON 来非常方便的生成、修改 JSON 数据。而字节码 Class，同样可以借助 Javaassist&#x2F;ASM 来实现对其修改。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606223916878.png" alt="Alt text"></p>
+<h2 id="AOT-x2F-JIT"><a href="#AOT-x2F-JIT" class="headerlink" title="AOT&#x2F;JIT"></a>AOT&#x2F;JIT</h2><p>一个程序的编译过程可以是步骤迭代式的，即每一轮步骤结束后得到的结果都可独立运行，比如，先构造AST再输出字节码，中间状态AST也是可以解释执行的。由于编译的本质就是代码转换，因此对一个语言可以有多个独立的编译器，每个负责一轮步骤</p>
+<p>AOT Compiler和JIT Compiler就是针对编译形式做的分类：<br>AOT：Ahead Of Time，指在运行前编译，比如普通的静态编译<br>JIT：Just In Time，指在运行时编译，边运行边编译，比如java虚拟机在运行时就用到JIT技术<br>JIT可能知道的人多些，AOT这个名词就相对少见一些了，其实除了JIT，剩下的都是AOT。wiki上JIT的解释也比AOT详尽很多，如果按wiki上的理解，一般来说，是从形式上来区分这两个概念，即看编译是不是在“运行时”进行</p>
+<p>然而，这两个概念又有模糊性，问题在于这个“运行时”怎么来区分，比方说，从这个概念来看，python是用到JIT技术的，因为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">... </span></span><br><span class="line"><span class="keyword">import</span> a </span><br><span class="line"><span class="meta">... </span></span><br></pre></td></tr></table></figure>
+<p>当执行到import a的时候，当然是运行时，这时候如果只找到了a.py，则会进行编译工作，并生成a.pyc，这就是python的JIT特性，但是一般来说，认为python的JIT是psyco、pypy之类，并不认为python本身的动态性属于JIT范畴，或者说，它的这种“形式上”的JIT特性不纳入讨论范围。其他脚本语言，动态语言也有类似的情况。具体原因我觉得有几点<br>首先被主流理论认定的JIT编译器对于被其编译的语言来说属于附加品，也就是说，就算去掉JIT，并不影响语言本身的运行，例如java，如果关闭JIT，依然可以解释执行，而上述python的运行时import的特性虽然形式上符合JIT，但这个机制是语言本身规定的，如果去掉，语言（的主流实现）就不完整了。反过来说，如果python采用源码直接解析执行，则编译为字节码的行为就可以看做是JIT，因为做不做都不影响解析执行过程<br>其次，python的这种编译并非每次执行都会进行，因为一般来说会生成字节码结果pyc文件存在磁盘，它更像是对java源代码转class文件这一过程的惰性化，在需要的时候进行<br>最后，JIT会消耗运行时资源，可能导致进程卡顿，<code>而java等语言之所以引入JIT，是因为JIT对字节码编译后能以更快的速度运行，卡顿的时间能补救回来</code>，因此从工程角度讲，JIT几乎就等于是运行时优化（虽然从概念和形式上并非如此），<code>而python的import就只有卡顿，对速度没啥好处</code><br>于是，虽然从概念来说，上面的例子的确符合JIT，但一般来说也不这么认为，出发角度问题，说python自带JIT特性或没有JIT都算说得通的<br>之所以先举这个例子，因为我觉得能体现AOT和JIT概念的对立和统一，对立是形式上的，以“运行”为分界线，而统一则是说，其实所有需要执行的指令序列，都是需要先编译再执行的，比如import a，这个相对于整个进程当然是JIT，但相对于a.py这个模块（python进程首次import某个模块时会执行它）不妨看做AOT，如果有人觉得这么做不妥，那换个更明显的例子，如果一个python程序的所有import都在进程开启时立即运行，然后才进入执行，那按照概念来说，这是JIT，因为进程已经开始运行了，但是，为什么不能看做是先编译再执行的AOT模式，只是整个过程被批处理化了呢？</p>
+<p>带着这个问题再考虑很多资料（包括wiki）对JIT的另一个描述，JIT是在运行时将解释执行的语言（比如字节码）编译成机器指令，以提高运行速度。这个看法在前面的某篇也提过，的确很多JIT编译器，比如java的就是这么干的（我们下面就拿java举例），但是，既然字节码编译成机器指令可以提高速度，为何一定要放在运行时进行，做成AOT模式不是可以运行得更流畅吗，而且还能一次编译，N次执行，为啥非要做成运行时做，JIT本来是要提高运行速度，但这岂不是降低了效率？</p>
+<p>这种看法是有道理的，事实上，java的确有一些AOT编译器，可以将字节码甚至java源码直接编译成机器指令的可执行文件，微软当初的VJ++似乎就这么搞的，和sun打了很久的架，sun还喊出了pure java（纯粹的java，即按照sun的设计理念和标准来实现java）的口号，有兴趣可以去搜一下这段历史，挺搞笑的</p>
+<p>另一方面，sun的jvm虽然采用了JIT编译，但同时也提供了client和server模式，在server模式下，虚拟机在一开始执行的时候会先尽可能多地对字节码进行编译，且优化程度也尽量高，这样可以使得服务器在运行过程中能尽量少卡顿，根据上面的讨论，这实际上相当于AOT批处理了。client模式下则不会这样做，主要是为了尽量缩短启动延迟，提高用户体验</p>
+<p>顺便说一句，对于JIT将字节码编译成机器指令，wiki的描述比较暧昧，有时候用machine code，有时候用native code，比方说我们用java实现一个A语言的虚拟机，解释A的字节码执行，并将字节码编译成java自己的字节码，这也是JIT，因为A跑在jvm上，则java字节码就看做是native code，而machine code这个machine也不见得是真实机器，jvm也是一种机器</p>
+<p>由于JIT编译耗费运行时间，则对于某些优化点就无法做到百分百支持，必须在代码优化和执行卡顿之间做一个权衡，AOT就没有这个问题，另外，AOT可以做到编译后持久化到存储，而JIT一般是每运行一次就会搞一遍重复的编译</p>
+<p>如果我们不考虑AOT本身耗费的时间（比如编译一次，N次运行），也不考虑使用上的方便性（AOT可能会有多次编译过程），那是不是可以认为，AOT编译可以完全替换JIT编译，JIT就完全没必要了，实际情况当然不是这样，JIT还是有它的优势和必要性的，否则研究它的那群人岂不都是傻子</p>
+<p>从动静态来看这个问题，AOT是静态编译，而JIT是运行时动态编译，则JIT的优势在于，它不但能看到静态信息（代码），还能看到运行时的情况，这就是JIT的优势。接下来讨论的JIT是一种狭义的JIT，即在AOT搞不定的地方使用的JIT，而非上述形式上的</p>
+<p>关于JIT的优势，wiki上给出了四点理由，但有意思的是，其中有两条连它自己都承认并非只有JIT能做，也就是说至少理论上，用AOT实现（或部分实现）是可行的，这四条是：<br>1、JIT可以根据当前的硬件情况实时编译成最优机器指令，比如cpu中如果含FPU，MMX，SSE2，或者Intel cpu的并行计算特性，则可以做到同一份字节码，在不同机器运行时最大限度利用硬件资源。而如果是AOT编译一个程序放出去给不同用户使用，就只能去兼容特性最少的cpu，或者内部实现多个版本<br>2、JIT可以根据当前进程实际运行状态，将字节码编译成适合最优化的机器指令序列。wiki认为静态编译也可以通过分析profile来实现这方面的优化（可能有点麻烦）<br>3、当程序需要支持动态链接时，即在静态编译阶段，可能不知道运行时会引入什么样的代码来和程序协作执行，这时候就只能依靠JIT<br>4、考虑到垃圾收集，JIT可以根据进程中的内存实际情况来调整代码，使得cache能更充分地使用，wiki认为静态编译也可以做到，但JIT做起来更容易实现</p>
+<p>对于第一条，JIT的确可以实现这种优化，但是AOT一样可以实现，虽然AOT编译一个程序给不同用户执行无法做到，但是可以编译字节码发布，用户使用时再根据当前机器再做一次AOT<br>对于第二条，首先我认为大多数程序的运行状态不会经常变动，比如同一个程序有时候是整数计算居多，有时候是浮点计算居多，一般来说程序应用场景是固定的；其次对于特定场景也可以AOT<br>对于第三条，的确动态链接的全文静态优化AOT无法做到，但是如上篇所说，必要时候我们可以直接砍掉语言的动态性，再者静态编译时候也不是什么都感知不到，比如C语言做静态链接时，至少是知道头文件的，动态性没那么强<br>对于第四条，AOT也是有可能实现的，虽然麻烦很多。另一方面，静态编译时也有指令乱序来提高cache使用效果，再者这块也和垃圾收集算法、程序本身的局部性有很大关系，如果程序本身写的烂，这个调整效果可能也比较有限</p>
+<p>所以我觉得，这四条虽然都有道理，但没精确说到点子上。再来审视这个问题，我们可以看出，从理论上讲，AOT可以完全代替JIT，因为一个进程的状态是有限的，AOT可以预测所有可能情况并进行优化，实际运行时的状态不会超出AOT的预测，采用最优代码执行即可，而JIT在这里的优势就是，它能精准地得知运行时状态，而不是像AOT那样预测，成本更低，如果一个AOT优化的成本过高，则应该选择JIT。AOT不是不能做，而是不可行</p>
+<p>JIT相关的资料，相比wiki我更推荐这篇论文：《Representation-based Just-in-time Specialization and the Psyco prototype for Python》 by Armin Rigo，这个论文是以python和其JIT插件库psyco为例来分析，论文题目中的单词Specialization可谓画龙点睛，它指出至少在动态类型语言中，JIT的关键作用之一是特化，用上篇的话说，就是动态行为静态化，而这些场景中AOT不可行的原因是它很难找到特化的方向，而枚举所有特化是不可行的</p>
+<p>一个典型的特化案例，也是论文中提到的，假设有一个函数f(x,y)，则对于x的输入x1,x2,x3…，我们可以特化这个函数为f1(y),f2(y),f3(y)…，其中fk(y)在功能上对应f(xk,y)，这样一来，每个fk可以单独地做优化，与其他函数无关，而特化后的函数列表至少不会比原来的f(x,y)慢。唯一的问题是，x的取值可能很多，比如x是一个int，则如果采用AOT方式来特化，则需要编译42亿多个函数，这显然是不现实的，但是JIT就有可能对这个场景做优化，原因在于，x的取值虽然很多，但在一个具体运行过程中范围相对小，甚至是很小，这符合二八定律</p>
+<p>于是，在运行时我们可以对函数f做监控，统计每次输入的x的值，如果发现这些值的分布不平均，比如x为123的情况占大多数，则动态特化一个f123(y)，对其进行高度优化，然后修改f函数为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">func <span class="title function_">f</span><span class="params">(x, y)</span>: </span><br><span class="line">    <span class="keyword">if</span> x == <span class="number">123</span>: </span><br><span class="line">        <span class="keyword">return</span> f123(y) </span><br><span class="line">    ... <span class="comment">//f的正常流程 </span></span><br></pre></td></tr></table></figure>
+<p>于是只需要一个特化函数，就能带来运行时效率的提升，这就是JIT特化的优势</p>
+<p>对很多程序来说，对这种数值做监控和特化可能性价比不高，因为不是每个函数的输入值范围都呈现不平衡状态，或者说不是那么明显，但上面这个例子中，x和y不一定是变量，也可以是类型，这样一来对动态类型语言就有很大的意义</p>
+<p>前面讲过，在C++中可以用模板来实现鸭子类型，实质是通过代码替换来实现类型静态化，C++这个方式虽然效率高，但渠道是通过静态编译中的全文分析，是AOT编译，如果改成稍微动态性强一些的语言，就用不上了。在动态类型中，一个函数如果有k个参数，有n个可能类型，则AOT需要将一个函数扩展为n^k个特化实例，n和k稍大一点就不可操作了，何况本身就是动态类型，n的范围都不一定在编译期能知道</p>
+<p>对这种场景，JIT就可以通过统计的方式来选择性地特化，这个的可行性和现实意义更大，原因在于，程序员在用动态类型写程序的时候，比如写一个函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">func <span class="title function_">f</span><span class="params">(x, y)</span>: </span><br><span class="line">    <span class="keyword">return</span> x + y </span><br></pre></td></tr></table></figure>
+<p>理论上，这个函数可以接受任意类型的x和y，只要x能和y相加即可，但具体到一个确定的程序，这个函数的业务意义一般是固定的，或者是做字符串拼接，或者是数值相加，很少说写一个函数，接收八竿子打不着的不同的类型还能运算，而且还是程序员刻意这么设计，就像前面讲过的C++模板的二义性一样，基本见不到这种需求，所以在函数的输入参数类型上，符合二八定律。于是对于上述代码，假设x和y绝大多数情况下都是整数，则进行特化（假设这个伪代码中不考虑整数溢出）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">func <span class="title function_">f</span><span class="params">(x, y)</span>: </span><br><span class="line">    <span class="keyword">if</span> <span class="title function_">not</span> <span class="params">(x <span class="keyword">instanceof</span> <span class="type">int</span> and y <span class="keyword">instanceof</span> <span class="type">int</span>)</span>: </span><br><span class="line">        <span class="comment">//有一个不是整数，走原有流程 </span></span><br><span class="line">        <span class="keyword">return</span> x + y </span><br><span class="line">    <span class="comment">//整数加法的特化流程 </span></span><br><span class="line">    internal_code: </span><br><span class="line">        <span class="type">int</span> <span class="variable">ix</span> <span class="operator">=</span> get_internal_int(x) </span><br><span class="line">        <span class="type">int</span> <span class="variable">iy</span> <span class="operator">=</span> get_internal_int(y) </span><br><span class="line">        <span class="type">int</span> iresult </span><br><span class="line">        asm: </span><br><span class="line">            push ... <span class="comment">//当前状态压栈 </span></span><br><span class="line">            mov eax, ix </span><br><span class="line">            mov ebx, iy </span><br><span class="line">            add eax, ebx </span><br><span class="line">            mov iresult, eax </span><br><span class="line">            pop ... <span class="comment">//状态出栈 </span></span><br><span class="line">        <span class="keyword">return</span> build_int_object(iresult)</span><br></pre></td></tr></table></figure>
+<p>当然这只是个例子，如果只是为了一个加法，这多少有点小题大做，但如果f的逻辑较为复杂，优化就很明显了</p>
+<p>还可以逆向思维一下，AOT难以实现特化的原因是无法考虑所有情况，但我们也没有必要考虑所有情况，实际上类型使用的二八定律本身也在另一个二八定律里，具体到int类型，一个绝大多数使用到的类型都是int的程序在所有程序中占绝大多数，至少在一个有限的领域是这样，因此干脆对于每个函数都只做int相关的特化，这样2k种情况还算能接受（实际情况数比2k低很多，因为很多参数如果被假定为int，会语法错误，就不用假设了），如果再做的好一点，还可以做成编译器选项，由用户来指定AOT的时候对哪个类型特化，这样就比较完美了</p>
+<p>除类型的动态性外，其他动态性也可以类似讨论，仅拿上篇的例子，不赘述了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i in <span class="title function_">range</span><span class="params">(n)</span>: </span><br><span class="line">    print(i) </span><br><span class="line">转换为： </span><br><span class="line"><span class="keyword">if</span> <span class="title function_">not</span> <span class="params">(range is builtins.range and print is builtins.print)</span>: </span><br><span class="line">    <span class="keyword">for</span> i in <span class="title function_">range</span><span class="params">(n)</span>: </span><br><span class="line">        print(i) </span><br><span class="line"><span class="keyword">else</span>: </span><br><span class="line">    internal_code: </span><br><span class="line">        <span class="type">long</span> <span class="variable">tmp</span> <span class="operator">=</span> get_internal_long(n) </span><br><span class="line">        <span class="type">long</span> i </span><br><span class="line">        <span class="comment">//这里应该用汇编，仅表个意思 </span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; tmp; ++ i): </span><br><span class="line">            print_long(i) </span><br></pre></td></tr></table></figure>
+<p>需要在程序启动时在builtins里面保存默认函数，用于检测当前运行环境是否被用户修改过，这样就兼顾了效率和动态性，跟上面一样，这里JIT或AOT实现都可以。</p>
+<h2 id="dexopt-与-dex2oat-区别"><a href="#dexopt-与-dex2oat-区别" class="headerlink" title="dexopt 与 dex2oat 区别"></a>dexopt 与 dex2oat 区别</h2><p>通过上图可以很明显的看出 dexopt 与 dex2oat 的区别，前者针对 Dalvik 虚拟机，后者针对 Art 虚拟机。</p>
+<p>dexopt 是对 dex 文件 进行 verification 和 optimization 的操作，其对 dex 文件的优化结果变成了 odex 文件，这个文件和 dex 文件很像，只是使用了一些优化操作码（譬如优化调用虚拟指令等）。</p>
+<p>dex2oat 是对 dex 文件的 AOT 提前编译操作，其需要一个 dex 文件，然后对其进行编译，结果是一个本地可执行的 ELF 文件，可以直接被本地处理器执行。</p>
+<p>除此之外在上图还可以看到 Dalvik 虚拟机中有使用 JIT 编译器，也就是说其也能将程序运行的热点 java 字节码编译成本地 code 执行，所以其与 Art 虚拟机还是有区别的。Art 虚拟机的 dex2oat 是提前编译所有 dex 字节码，而 Dalvik 虚拟机只编译使用启发式检测中最频繁执行的热点字节码。</p>
+<h2 id="CLASS-ISPREVERIFIED"><a href="#CLASS-ISPREVERIFIED" class="headerlink" title="CLASS_ISPREVERIFIED"></a>CLASS_ISPREVERIFIED</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103159570">制作demo</a></p>
+<h3 id="加载补丁"><a href="#加载补丁" class="headerlink" title="加载补丁"></a>加载补丁</h3><h4 id="思路-1"><a href="#思路-1" class="headerlink" title="思路"></a>思路</h4><p>通过上一篇博文，我们知道dex保存在这个位置<br>BaseDexClassLoader–&gt;pathList–&gt;dexElements</p>
+<p>apk的classes.dex可以从应用本身的DexClassLoader中获取。<br>path_dex的dex需要new一个DexClassLoader加载后再获取。<br>分别通过反射取出dex文件，重新合并成一个数组，然后赋值给盈通本身的ClassLoader的dexElements</p>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><p>加载外部dex，我们可以在Application中操作。<br>首先新建一个HotPatchApplication，然后在清单文件中配置，顺便加上读取sdcard的权限，因为补丁就保存在那里。</p>
+<p>HotPatchApplication代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.aitsuki.hotpatchdemo;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> android.app.Application;</span><br><span class="line"><span class="keyword">import</span> android.os.Environment;</span><br><span class="line"><span class="keyword">import</span> android.util.Log;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Array;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> dalvik.system.DexClassLoader;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by hp on 2016/4/6.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HotPatchApplication</span> <span class="keyword">extends</span> <span class="title class_">Application</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate();</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// 获取补丁，如果存在就执行注入操作</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">dexPath</span> <span class="operator">=</span> Environment.getExternalStorageDirectory().getAbsolutePath().concat(<span class="string">&quot;/patch_dex.jar&quot;</span>);</span><br><span class="line">        <span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(dexPath);</span><br><span class="line">        <span class="keyword">if</span> (file.exists()) &#123;</span><br><span class="line">            inject(dexPath);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Log.e(<span class="string">&quot;BugFixApplication&quot;</span>, dexPath + <span class="string">&quot;不存在&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 要注入的dex的路径</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> path</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">inject</span><span class="params">(String path)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 获取classes的dexElements</span></span><br><span class="line">            Class&lt;?&gt; cl = Class.forName(<span class="string">&quot;dalvik.system.BaseDexClassLoader&quot;</span>);</span><br><span class="line">            <span class="type">Object</span> <span class="variable">pathList</span> <span class="operator">=</span> getField(cl, <span class="string">&quot;pathList&quot;</span>, getClassLoader());</span><br><span class="line">            <span class="type">Object</span> <span class="variable">baseElements</span> <span class="operator">=</span> getField(pathList.getClass(), <span class="string">&quot;dexElements&quot;</span>, pathList);</span><br><span class="line"> </span><br><span class="line">            <span class="comment">// 获取patch_dex的dexElements（需要先加载dex）</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">dexopt</span> <span class="operator">=</span> getDir(<span class="string">&quot;dexopt&quot;</span>, <span class="number">0</span>).getAbsolutePath();</span><br><span class="line">            <span class="type">DexClassLoader</span> <span class="variable">dexClassLoader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DexClassLoader</span>(path, dexopt, dexopt, getClassLoader());</span><br><span class="line">            <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> getField(cl, <span class="string">&quot;pathList&quot;</span>, dexClassLoader);</span><br><span class="line">            <span class="type">Object</span> <span class="variable">dexElements</span> <span class="operator">=</span> getField(obj.getClass(), <span class="string">&quot;dexElements&quot;</span>, obj);</span><br><span class="line"> </span><br><span class="line">            <span class="comment">// 合并两个Elements</span></span><br><span class="line">            <span class="type">Object</span> <span class="variable">combineElements</span> <span class="operator">=</span> combineArray(dexElements, baseElements);</span><br><span class="line"> </span><br><span class="line">            <span class="comment">// 将合并后的Element数组重新赋值给app的classLoader</span></span><br><span class="line">            setField(pathList.getClass(), <span class="string">&quot;dexElements&quot;</span>, pathList, combineElements);</span><br><span class="line"> </span><br><span class="line">            <span class="comment">//======== 以下是测试是否成功注入 =================</span></span><br><span class="line">            <span class="type">Object</span> <span class="variable">object</span> <span class="operator">=</span> getField(pathList.getClass(), <span class="string">&quot;dexElements&quot;</span>, pathList);</span><br><span class="line">            <span class="type">int</span> <span class="variable">length</span> <span class="operator">=</span> Array.getLength(object);</span><br><span class="line">            Log.e(<span class="string">&quot;BugFixApplication&quot;</span>, <span class="string">&quot;length = &quot;</span> + length);</span><br><span class="line"> </span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchFieldException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过反射获取对象的属性值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Object <span class="title function_">getField</span><span class="params">(Class&lt;?&gt; cl, String fieldName, Object object)</span> <span class="keyword">throws</span> NoSuchFieldException, IllegalAccessException &#123;</span><br><span class="line">        <span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> cl.getDeclaredField(fieldName);</span><br><span class="line">        field.setAccessible(<span class="literal">true</span>);</span><br><span class="line">        <span class="keyword">return</span> field.get(object);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过反射设置对象的属性值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">setField</span><span class="params">(Class&lt;?&gt; cl, String fieldName, Object object, Object value)</span> <span class="keyword">throws</span> NoSuchFieldException, IllegalAccessException &#123;</span><br><span class="line">        <span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> cl.getDeclaredField(fieldName);</span><br><span class="line">        field.setAccessible(<span class="literal">true</span>);</span><br><span class="line">        field.set(object, value);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通过反射合并两个数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Object <span class="title function_">combineArray</span><span class="params">(Object firstArr, Object secondArr)</span> &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">firstLength</span> <span class="operator">=</span> Array.getLength(firstArr);</span><br><span class="line">        <span class="type">int</span> <span class="variable">secondLength</span> <span class="operator">=</span> Array.getLength(secondArr);</span><br><span class="line">        <span class="type">int</span> <span class="variable">length</span> <span class="operator">=</span> firstLength + secondLength;</span><br><span class="line"> </span><br><span class="line">        Class&lt;?&gt; componentType = firstArr.getClass().getComponentType();</span><br><span class="line">        <span class="type">Object</span> <span class="variable">newArr</span> <span class="operator">=</span> Array.newInstance(componentType, length);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (i &lt; firstLength) &#123;</span><br><span class="line">                Array.set(newArr, i, Array.get(firstArr, i));</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                Array.set(newArr, i, Array.get(secondArr, i - firstLength));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> newArr;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行一下Demo，报以下错误。（AndroidStudio 2.0可能不会报错，需要打包的时候才会出现错误，这是Instant run导致的）</p>
+<p>dexElements的length &#x3D; 2，看来我们的patch_dex已经成功添加进去了。<br>但是从黄色框框和黄色框上面那一段log提示中可以看出，MainActivity引用了Cat，但是发现他们在不同的Dex中。</p>
+<p>看到这里可能就会问：<br>为什么之前那么多项目都采用分包方案，但是却不会出现这个错误呢？<br>我在这里总结了一个过程，想知道详细分析过程的请看QQ空间开发团队的原文。</p>
+<p>在apk安装的时候，虚拟机会将dex优化成odex后才拿去执行。在这个过程中会对所有class一个校验。<br>校验方式：假设A该类在它的static方法，private方法，构造函数，override方法中直接引用到B类。如果A类和B类在同一个dex中，那么A类就会被打上CLASS_ISPREVERIFIED标记<br>被打上这个标记的类不能引用其他dex中的类，否则就会报图中的错误<br>在我们的Demo中，MainActivity和Cat本身是在同一个dex中的，所以MainActivity被打上了CLASS_ISPREVERIFIED。而我们修复bug的时候却引用了另外一个dex的Cat.class，所以这里就报错了<br>而普通分包方案则不会出现这个错误，因为引用和被引用的两个类一开始就不在同一个dex中，所以校验的时候并不会被打上CLASS_ISPREVERIFIED<br>补充一下第二条：A类如果还引用了一个C类，而C类在其他dex中，那么A类并不会被打上标记。换句话说，只要在static方法，构造方法，private方法，override方法中直接引用了其他dex中的类，那么这个类就不会被打上CLASS_ISPREVERIFIED标记。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>根据上面的第六条，我们只要让所有类都引用其他dex中的某个类就可以了。</p>
+<p>下面是QQ控件给出的解决方案<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606654631972.png" alt="Alt text"></p>
+<p>在所有类的构造函数中插入这行代码 System.out.println(AntilazyLoad.class);<br>这样当安装apk的时候，classes.dex内的类都会引用一个在不相同dex中的AntilazyLoad类，这样就防止了类被打上CLASS_ISPREVERIFIED的标志了，只要没被打上这个标志的类都可以进行打补丁操作。<br>hack.dex在应用启动的时候就要先加载出来，不然AntilazyLoad类会被标记为不存在，即使后面再加载hack.dex，AntilazyLoad类还是会提示不存在。该类只要一次找不到，那么就会永远被标上找不到的标记了。<br>我们一般在Application中执行dex的注入操作，所以在Application的构造中不能加上System.out.println(AntilazyLoad.class);这行代码，因为此时hack.dex还没有加载进来，AntilazyLoad并不存在。<br>之所以选择构造函数是因为他不增加方法数，一个类即使没有显式的构造函数，也会有一个隐式的默认构造函数。</p>
+<h3 id="插入代码的难点"><a href="#插入代码的难点" class="headerlink" title="插入代码的难点"></a>插入代码的难点</h3><p>1.首先在源码中手动插入不太可行，hack.dex此时并没有加载进来，AntilazyLoad.class并不存在，编译不通过。<br>2.所以我们需要在源码编译成字节码之后，在字节码中进行插入操作。对字节码进行操作的框架有很多，但是比较常用的则是ASM和javaassist<br>3.但AndroidStudio是使用Gradle构建项目，编译-打包都是自动化的，我们怎么操作呢。</p>
+<h2 id="Android-热修复"><a href="#Android-热修复" class="headerlink" title="Android 热修复"></a>Android 热修复</h2><p>在Android的热修复中主要用来替换类，资源，so的过程；<br>Java 虚拟机</p>
+<blockquote>
+<p>栈架构指令集的主要缺点是执行速度相对来说稍微慢一些;基于堆栈的机器需要更多指令，（内存）</p>
+</blockquote>
+<p>Android 虚拟机</p>
+<blockquote>
+<p>而基于寄存器（硬件在CPU内部）的机器指令更长</p>
+</blockquote>
+<p>速度： CPU - &gt; 寄存器 -&gt; 内存 -&gt; 外存<br><a target="_blank" rel="noopener" href="http://blog.csdn.net/ljtyzhr/article/details/39859659">http://blog.csdn.net/ljtyzhr/article/details/39859659</a></p>
+<p>Android 目前有2中虚拟机， Dalvik 和 ART 虚拟机；</p>
+<h3 id="Android-虚拟机和编译加载顺序"><a href="#Android-虚拟机和编译加载顺序" class="headerlink" title="Android 虚拟机和编译加载顺序"></a>Android 虚拟机和编译加载顺序</h3><p>Android 热修复其实主要是针对 Android 虚拟机加载类的一个过程，所以首先先我们应该知道 Android 常用的虚拟机是 Dalvik 虚拟和 ART 虚拟机；</p>
+<p>Android 4.0 之前是主要是的 Dalvik 虚拟机。 Android 4.4 之后开始支持 ART 虚拟机（可选）， Android 5.0 之后就是 ART 虚拟机；</p>
+<blockquote>
+<p>Android 4.0 –&gt; Android 4.4 –&gt; Android 5.0 —&gt; Android 7.0</p>
+</blockquote>
+<p> Dalvik 虚拟机在 Android 2.2 的时候引入了 JIT (Just in time), 也就是一边运行，一边编译成机器码在运行；这种编译成机器码的过程在应用重启的时候需要重新编译成机器码再运行，有点浪费性能（不是持久化），重复翻译，编译，运行；</p>
+<p>在 Android 5.0 之后就使用完全使用 ART 虚拟机；因为在 AOT (ahead of time) 的操作在安装的时候把 dex 优化成odex; 在Android N (7) 之前是全量dex 优化成 odex, 这样导致安装 apk 的时候，或者系统更新重启的时候非常耗时，特别的慢；</p>
+<p>所以在 Android N 后引入了 JIT 和 AOT 的混合模式; 可以理解为“全时段的编译”（All-Of-the-Time compilation， 也叫 AOT；是不是发现有2个 AOT, 一开始我也很懵逼的；其实和Android 5.0 中的 AOT 是不太一样的；还有要注意的是Android N 之后的 JIT 和 Davlik 虚拟机中的JIT是不一样的，简单理解就是高级版的JIT；这个高级版本的 JIT 过程会把处理后的odex缓存到 base.art （有些地方也叫 image ） 中；等下次app启动的时候，就先直接把这个优化后的 base.art 加载到内存中；这样就不会重复的 JIT了；</p>
+<h3 id="混合模式的理解"><a href="#混合模式的理解" class="headerlink" title="混合模式的理解"></a>混合模式的理解</h3><p>ART 初期是使用全量的 AOT (aheader of time) 变成机器码（指令）; 因为耗安装时间和系统升级后的启动时间；所以在 ART 的时候，先把dex 解释成中间态的，不编译成机器码。在运行的时候，或者充电的时候，只编译“热代码”</p>
+<p>引用infoq 的一篇文章 <a target="_blank" rel="noopener" href="http://www.infoq.com/cn/news/2016/04/android-n-aot-jit">http://www.infoq.com/cn/news/2016/04/android-n-aot-jit</a></p>
+<blockquote>
+<p>Android N（7.x）开发者预览版包含了一个混合模式的运行时。应用在安装时不做编译，而是解释字节码，所以可以快速启动。ART中有一种新的、更快的解释器，通过一种新的JIT完成，但是这种JIT的信息不是持久化的。取而代之的是，代码在执行期间被分析，分析结果保存起来。然后，当设备空转和充电的时候，ART会执行针对“热代码”进行的基于分析的编译，其他代码不做编译。为了得到更优的代码，ART采用了几种技巧包括深度内联。</p>
+</blockquote>
+<blockquote>
+<p>对同一个应用可以编译数次，或者找到变“热”的代码路径或者对已经编译的代码进行新的优化，这取决于分析器在随后的执行中的分析数据。这个步骤仍被简称为AOT，可以理解为“全时段的编译”（All-Of-the-Time compilation）。</p>
+</blockquote>
+<h3 id="源码类到机器执行的文件过程"><a href="#源码类到机器执行的文件过程" class="headerlink" title="源码类到机器执行的文件过程"></a>源码类到机器执行的文件过程</h3><p>主要过程： java - (dex, class) - opt&#x2F;oat – odex;</p>
+<p>Davlik 虚拟机: java - dex - opt – D 类型的 odex （优化过后的还是需要翻译）; JIT</p>
+<p>ART虚拟机: java – dex – oat – A 类型的 odex （机器码类型文件）; AOT ( Ahead of time)</p>
+<p>混合模式： java – dex – oat – (D类型的 odex, base.art: 热缓存，image) JIT（高级的JIT）; AOT （All-Of-the-Time compilation）可以理解为“全时段的编译” ,profile</p>
+<blockquote>
+<p>注意以上的 A 类型 odex 和 D 类型的 odex，只是用来代码 2 种是不同的 odex，便于理解；</p>
+</blockquote>
+<h3 id="补丁包"><a href="#补丁包" class="headerlink" title="补丁包"></a>补丁包</h3><p>补丁包主要有 class， 资源文件，so的改动；</p>
+<p>资源文件方案；替换 AssertManager， —&gt; 加载 resources.arsc<br>os 还不清楚，没研究过, 可能使用classLoader 加载放入so 目录<br>类 ：底层替换和类加载器方案<br>本文主要诉说类加载器的方案；</p>
+<h3 id="类补丁生效原理"><a href="#类补丁生效原理" class="headerlink" title="类补丁生效原理"></a>类补丁生效原理</h3><ol>
+<li>底层替换方案 （阿里系）AndFix，</li>
+<li>类加器载方案 （腾讯系）QFix, tinker(粒度太细了), Sophix 使用类的替换（粒度大一点）</li>
+</ol>
+<p>因为 Android 有 2 款虚拟机，所以应该针对 2 款虚拟机加载过程进行分析和处理；</p>
+<h3 id="Davlik-虚拟机的限制"><a href="#Davlik-虚拟机的限制" class="headerlink" title="Davlik 虚拟机的限制"></a>Davlik 虚拟机的限制</h3><p>Android 在编译的时候有个 65536 （2的16次方）问题。受限于Dlv 虚拟机的限制；不只是方法名有限制，其实字段也是有限制的；</p>
+<p>Davlik Class resolved by unexpected DEX: 限制和处理方式</p>
+<p>CLASS_ISPREVERIFIED 这个标记被打上的原理是，只要一个类里面和这个类的依赖都在一个dex中，那么这些类就被打上 PREVERIFIED 的标记；</p>
+<ol>
+<li><p>单独有个[特殊的.dex]这个 dex 里面只有一个类，且其他的dex中的类都引用一下这个单独 dex 里面的类，那么，项目中所有的类，就不会被打上 CLASS_ISPREVERIFIED 这个标记</p>
+<blockquote>
+<p>dex 数组： [ 1.dex, 2.dex, 3.dex, 特殊的.dex(插桩类)] </p>
+</blockquote>
+</li>
+<li><p>referrer-&gt;pDvmDex !&#x3D; resClassCheck-&gt;pDvmDex<br>补丁类和引用类应该在同一个dex里面；</p>
+</li>
+<li><p>fromUnverifiedConstant hook 使用 native 方式</p>
+</li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android/Android%20VM%20apk%20or%20dex%20%E4%BF%AE%E6%94%B9/">http://king-of-cement.gitee.io/blog/post/Android/Android%20VM%20apk%20or%20dex%20%E4%BF%AE%E6%94%B9/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/Android/ACTIVITY/">Activity</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/Android/Android%20%E8%BF%9B%E7%A8%8B%20or%20%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1/">Android 进程\线程间的通信</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

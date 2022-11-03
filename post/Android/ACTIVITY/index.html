@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>Activity | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Activity</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/Android/">Android</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>[toc]</p>
+<h2 id="ACTIVITY"><a href="#ACTIVITY" class="headerlink" title="ACTIVITY"></a>ACTIVITY</h2><h3 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h3><ul>
+<li>Activity&#x2F;Running：这个时候，Activity处于Activity栈的最顶层，可见，并与用户进行交互。</li>
+<li>Paused：Activity失去焦点，被一个新的非全屏的Activity或者一个透明的Activity放置在栈顶时，Activity就转换成了paused形态，<code>他是去了与用户交互的能力</code>，所有状态信息，成员变量都还保留着，只有在系统内存极底的情况下，才会被系统回收。</li>
+<li>Stopped：如果一个Activity被另一个Activity完全覆盖，那么Activity就会进入stop形态，此时他不在可见，但依然保留着所有的状态和成员变量。</li>
+<li>Killed：当Activity被系统回收或者Activity从来没有创建过，Activity就处于killed状态。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606394777674.png" alt="Alt text"><br>Activity启动和销毁过程<br>在系统调用onCreate方法之后，就会马上调用onStart，然后继续调用onResume来进图运行状态，最后都会停在onResume状态，完成启动，系统会调用onDestroy来结束一个Activity的生命周期让他毁掉kill状态。</li>
+</ul>
+<p>以上就是一个Activity的启动和销毁的过程。</p>
+<p>onCreate中创建基本的UI元素。<br>onPause和onStop：清除Acvtivity的资源，避免浪费。<br>onDestroy:因为引用会在Activity销毁的时候销毁，而线程不会，所以清除开启的线程。<br>Activity的暂停和恢复过程<br>当栈顶的Activity部分不可见的时候，就会倒置Activity进入onPause。</p>
+<p>onPause：释放系统资源。<br>onResume：需要重新初始化onPause释放的资源。<br>Activity的停止过程<br>栈顶的Activity部分不可见的时候，实际上后续会有两种可能，从部分不可见到可见，也就是恢复过程，从部分不可见到完全不可见，也就是停止过程，系统在当前Activity不可见的时候调用onPause。</p>
+<p>不过这里要注意的一点就是savedInstanceState方法并不是每次当Activity离开前台就会调用，如果用户使用finish方法结束，则不会调用</p>
+<p>当一个App启动时，如果当前环境下不存在该App的任务栈，那么系统就会创建一个任务栈，此后，这个App所启动的Activity都将在这个任务栈中被管理，这个栈也被称为一个Task，即表示若干个Activity的集合，他们组成在一起形成一个Task，特别要注意的是，一个Task中的Activity可以来自不同的App，同一个App的Activity也可能不在一个Task中。<br>栈的结构是后进先出的线性表，通过在AndroidManifest文件中的属性android:launchMode来设置或者是通过Intent的flag来设置的。</p>
+<h3 id="启动模式"><a href="#启动模式" class="headerlink" title="启动模式"></a>启动模式</h3><p>Android开发者可以在AndroidManifest文件中一共设计了四种启动模式：</p>
+<ul>
+<li>standard</li>
+<li>singleTop</li>
+<li>singleTask</li>
+<li>singleInstance</li>
+</ul>
+<p>singleTop（只判断顶是不是single）<br>判断当前栈顶Activity是不是要启动的那个，如果是则不创建新的Activity，如果不是则创建新的Activity<br>但是系统任然会在Activity启动的时候调用onNewIntent()方法</p>
+<p>singleTask（判断整个task是不是single）<br>如果存在，就将他置于栈顶，并且将以上的activity全部销毁，不过这里也是指在同一个APP中启动整个singleTask的Activity，如果是其他的程序以singleTask模式来启动整个Activity，那么他将创建一个新的任务栈，不过这里有一点需要注意的是，如果启动的模式为singleTask的activity已经在后台的一个栈中，那么启动后，后台的一个任务栈将一起被切换到前台，借助官网的一张图我们可能更好的理解。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606397625382.png" alt="Alt text"></p>
+<p>，他所在的task被切换到前台，且按返回键返回的时候，也会先返回ActivityY所在Task的Activity，这一点比较难理解，大家根据图去研究一下。</p>
+<p>singleInstance<br>申明为singleInstance的Activity会出现在一个新的任务栈中而且该任务栈中只存在这一个Activity</p>
+<p>关于singleTop和singleInstance这两种启动模式还有一点需要特殊说明：如果在一个singleTop或者singleInstance的Activity中通过startActivityForResult()方法来启动另一个ActivityB, 那么系统将直接返回Activity_RESULT_CANCELED而不会再去等待返回。这是由于系统在framework层做了对这两种启动模式的限制，因为Android开发者认为，不同的Task中，默认是不能传递数据的。如果一定要传递数据的话，那么只能通过Intent去绑定数据。</p>
+<h3 id="Intent-Flag启动模式"><a href="#Intent-Flag启动模式" class="headerlink" title="Intent Flag启动模式"></a>Intent Flag启动模式</h3><ul>
+<li>Intent.FLAG_ACTIVITY_NEW_TASK：使用一个新的Task来启动一个Activity，但启动的每个Activity都将在一个新的Task中，该Flag通常使用在从service中启动的activity场景，由于在Service中并不存在Activity栈，所以使用该Flag来创建一个新的Activity栈，并创建新的Activity实例。</li>
+<li>FLAG_ACTIVITY_SINGLE_TOP：使用singleTop模式来启动一个Activity，与指定android:launchMode&#x3D;”singleTop”效果相同。</li>
+<li>FLAG_ACTIVITY_CLEAR_TOP：使用SingleTask模式来启动一个Activity，与指定android:launchMode&#x3D;”singleTask”效果相同。</li>
+<li>FLAG_ACTIVITY_NO_HISTORY：使用这种模式启动Activity，当该Activity启动其他Activity后，该Activity就消失了，不会保留在Activity栈中，例如A-B，B中以这种模式启动C，C再启动D，则当前Activity栈为ABD。<br>清空任务栈<br>系统同样提供了清空任务栈的方法来让我们讲一个Task清空，通常情况下，我们可以在activity的标签上使用以下几种属性来清空任务栈。</li>
+</ul>
+<p>清空任务栈：</p>
+<p>clearTaskOnLaunch：每次返回Activity的时候，都将该Activity上的所有Activity都清除，通过这个属性，可以让这个Task每次初始化的时候，都只有一个Activity。<br>finishTaskOnLaunch：这个属性和clearTaskOnLaunch有点类似，只不过clearTaskOnLaunch作用在别人身上，而finishTaskOnLaunch作用在自己身上，通过这个属性，当离开这个Activity所处的Task，那么用户再返回的时候，该Activity会被finish掉。<br>alwaysRetainTaskState：Task的一道免死金牌，如果将Activity这个属性设置为true，那么该Activity所在的Task将不接受任何清除命令，一直保持当前Task的状态。</p>
+<h2 id="Fragment"><a href="#Fragment" class="headerlink" title="Fragment"></a>Fragment</h2><h3 id="Fragment事务管理源码分析"><a href="#Fragment事务管理源码分析" class="headerlink" title="Fragment事务管理源码分析"></a>Fragment事务管理源码分析</h3><p>在Fragment使用中，有时候需要对Fragment进行add、remove、show、hide、replace等操作来进行Fragment的显示隐藏等管理，这些管理是通过FragmentTransaction进行事务管理的。事务管理是对于一系列操作进行管理，一个事务包含一个或多个操作命令，是逻辑管理的工作单元。一个事务开始于第一次执行操作语句，结束于Commit。通俗地将，就是把多个操作缓存起来，等调用commit的时候，统一批处理。下面会对Fragmeng的事务管理做一个代码分析</p>
+<h3 id="FragmentManager"><a href="#FragmentManager" class="headerlink" title="FragmentManager"></a>FragmentManager</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606398406475.png" alt="Alt text"></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161336">源码分析</a></p>
+<h3 id="Fragment转场动画"><a href="#Fragment转场动画" class="headerlink" title="Fragment转场动画"></a>Fragment转场动画</h3><p>可以给Fragment指定标准的转场动画，通过setTransition(int transit)方法。</p>
+<p>该方法可传入的三个参数是：</p>
+<p>TRANSIT_NONE,<br>TRANSIT_FRAGMENT_OPEN,<br>TRANSIT_FRAGMENT_CLOSE</p>
+<p>分别对应无动画、打开形式的动画和关闭形式的动画。</p>
+<p>标准动画设置好后，在Fragment添加和移除的时候都会有。</p>
+<p>自定义转场动画是通过setCustomAnimations()方法，因为Fragment添加时可以指定加入到Back Stack中，所以转场动画有添加、移除、从Back stack中pop出来，还有进入四种情况。</p>
+<p>注意setCustomAnimations()方法必须在add、remove、replace调用之前被设置，否则不起作用。</p>
+<h3 id="android-app-Fragment"><a href="#android-app-Fragment" class="headerlink" title="android.app.Fragment"></a>android.app.Fragment</h3><p>不使用v4包的情况下(min API &gt;&#x3D;11)所对应的动画类型是Property Animation。</p>
+<p>即动画资源文件需要放在res\animator*目录下，且根标签是<set>, <objectAnimator>, or <valueAnimator>*三者之一。</p>
+<p>这一点也可以从Fragment中的这个方法看出：onCreateAnimator(int transit, boolean enter, int nextAnim)，返回值是Animator。</p>
+<p>自定义转场动画时，四个参数的形式setCustomAnimations (int enter, int exit, int popEnter, int popExit)是API Level 13才有的，11只引入了两个动画的形式，即无法指定Back Stack栈操作时的转场动画。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">addFragment</span><span class="params">()</span> &#123; <span class="keyword">if</span> (<span class="literal">null</span> == mFragmentManager) &#123;</span><br><span class="line">            mFragmentManager = getFragmentManager();</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        mTextFragmentOne = <span class="keyword">new</span> <span class="title class_">MyFragmentOne</span>();</span><br><span class="line">        <span class="type">FragmentTransaction</span> <span class="variable">fragmentTransaction</span> <span class="operator">=</span> mFragmentManager</span><br><span class="line">                .beginTransaction(); <span class="comment">// 标准动画 // fragmentTransaction // .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN); // fragmentTransaction // .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE); // fragmentTransaction // .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE); // 自定义动画 // API LEVEL 11</span></span><br><span class="line"> fragmentTransaction.setCustomAnimations(</span><br><span class="line">                R.animator.fragment_slide_left_enter,</span><br><span class="line">                R.animator.fragment_slide_right_exit); <span class="comment">// API LEVEL 13 // fragmentTransaction.setCustomAnimations( // R.animator.fragment_slide_left_enter, // R.animator.fragment_slide_left_exit, // R.animator.fragment_slide_right_enter, // R.animator.fragment_slide_right_exit);</span></span><br><span class="line"> fragmentTransaction.add(R.id.container, mTextFragmentOne); <span class="comment">// 加入到BackStack中</span></span><br><span class="line">        fragmentTransaction.addToBackStack(<span class="literal">null</span>);</span><br><span class="line">        fragmentTransaction.commit();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>fragment_slide_left_enter:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:interpolator</span>=<span class="string">&quot;@android:interpolator/decelerate_quint&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueFrom</span>=<span class="string">&quot;100dp&quot;</span> <span class="attr">android:valueTo</span>=<span class="string">&quot;0dp&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueType</span>=<span class="string">&quot;floatType&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:propertyName</span>=<span class="string">&quot;translationX&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:duration</span>=<span class="string">&quot;@android:integer/config_mediumAnimTime&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:interpolator</span>=<span class="string">&quot;@android:interpolator/decelerate_quint&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueFrom</span>=<span class="string">&quot;0.0&quot;</span> <span class="attr">android:valueTo</span>=<span class="string">&quot;1.0&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueType</span>=<span class="string">&quot;floatType&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:propertyName</span>=<span class="string">&quot;alpha&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:duration</span>=<span class="string">&quot;@android:integer/config_mediumAnimTime&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>fragment_slide_left_exit:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:interpolator</span>=<span class="string">&quot;@android:interpolator/decelerate_quint&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueFrom</span>=<span class="string">&quot;0dp&quot;</span> <span class="attr">android:valueTo</span>=<span class="string">&quot;-100dp&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueType</span>=<span class="string">&quot;floatType&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:propertyName</span>=<span class="string">&quot;translationX&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:duration</span>=<span class="string">&quot;@android:integer/config_mediumAnimTime&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:interpolator</span>=<span class="string">&quot;@android:interpolator/decelerate_quint&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueFrom</span>=<span class="string">&quot;1.0&quot;</span> <span class="attr">android:valueTo</span>=<span class="string">&quot;0.0&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueType</span>=<span class="string">&quot;floatType&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:propertyName</span>=<span class="string">&quot;alpha&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:duration</span>=<span class="string">&quot;@android:integer/config_mediumAnimTime&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>fragment_slide_right_enter:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:interpolator</span>=<span class="string">&quot;@android:interpolator/decelerate_quint&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueFrom</span>=<span class="string">&quot;-100dp&quot;</span> <span class="attr">android:valueTo</span>=<span class="string">&quot;0dp&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueType</span>=<span class="string">&quot;floatType&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:propertyName</span>=<span class="string">&quot;translationX&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:duration</span>=<span class="string">&quot;@android:integer/config_mediumAnimTime&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:interpolator</span>=<span class="string">&quot;@android:interpolator/decelerate_quint&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueFrom</span>=<span class="string">&quot;0.0&quot;</span> <span class="attr">android:valueTo</span>=<span class="string">&quot;1.0&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueType</span>=<span class="string">&quot;floatType&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:propertyName</span>=<span class="string">&quot;alpha&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:duration</span>=<span class="string">&quot;@android:integer/config_mediumAnimTime&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>fragment_slide_right_exit:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;utf-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:interpolator</span>=<span class="string">&quot;@android:interpolator/decelerate_quint&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueFrom</span>=<span class="string">&quot;0dp&quot;</span> <span class="attr">android:valueTo</span>=<span class="string">&quot;100dp&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueType</span>=<span class="string">&quot;floatType&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:propertyName</span>=<span class="string">&quot;translationX&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:duration</span>=<span class="string">&quot;@android:integer/config_mediumAnimTime&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:interpolator</span>=<span class="string">&quot;@android:interpolator/decelerate_quint&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueFrom</span>=<span class="string">&quot;1.0&quot;</span> <span class="attr">android:valueTo</span>=<span class="string">&quot;0.0&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:valueType</span>=<span class="string">&quot;floatType&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:propertyName</span>=<span class="string">&quot;alpha&quot;</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:duration</span>=<span class="string">&quot;@android:integer/config_mediumAnimTime&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Fragment嵌套Fragment要用getChildFragmentManager"><a href="#Fragment嵌套Fragment要用getChildFragmentManager" class="headerlink" title="Fragment嵌套Fragment要用getChildFragmentManager"></a>Fragment嵌套Fragment要用getChildFragmentManager</h3><p>Fragment放ViewPager，ViewPager里面是fragment。第一次进入没问题，再次进入ViewPager的fragment时里面内容就没了,数据丢失。<br>解决方案：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">FragmentManager</span> <span class="variable">childFragmentManager</span> <span class="operator">=</span> getChildFragmentManager();</span><br><span class="line"><span class="type">ViewPager_Adapter</span> <span class="variable">viewPager_adapter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ViewPager_Adapter</span>(childFragmentManager, fragments);    <span class="comment">//FragmentPagerAdapter</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h2><h3 id="startService与bindService的区别"><a href="#startService与bindService的区别" class="headerlink" title="startService与bindService的区别"></a>startService与bindService的区别</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606398967636.png" alt="Alt text"></p>
+<blockquote>
+<p>执行startService时，Service会经历onCreate-&gt;onStartCommand。当执行stopService时，直接调用onDestroy方法。调用者如果没有stopService，Service会一直在后台运行，下次调用者再起来仍然可以stopService。<br>执行bindService时，Service会经历onCreate-&gt;onBind。这个时候调用者和Service绑定在一起。调用者调用unbindService方法或者调用者Context不存在了（如Activity被finish了），Service就会调用onUnbind-&gt;onDestroy。这里所谓的绑定在一起就是说两者共存亡了。<br>多次调用startService，该Service只能被创建一次，即该Service的onCreate方法只会被调用一次。但是每次调用startService，onStartCommand方法都会被调用。Service的onStart方法在API 5时被废弃，替代它的是onStartCommand方法。<br>第一次执行bindService时，onCreate和onBind方法会被调用，但是多次执行bindService时，onCreate和onBind方法并不会被多次调用，即并不会多次创建服务和绑定服务。</p>
+</blockquote>
+<p>onBind回调方法将返回给客户端一个IBinder接口实例，IBinder允许客户端回调服务的方法，比如得到Service运行的状态或其他操作。我们需要IBinder对象返回具体的Service对象才能操作，所以说具体的Service对象必须首先实现Binder对象。</p>
+<h4 id="既使用startService又使用bindService的情况"><a href="#既使用startService又使用bindService的情况" class="headerlink" title="既使用startService又使用bindService的情况"></a>既使用startService又使用bindService的情况</h4><p>如果一个Service又被启动又被绑定，则该Service会一直在后台运行。首先不管如何调用，onCreate始终只会调用一次。对应startService调用多少次，Service的onStart方法便会调用多少次。<code>Service的终止，需要unbindService和stopService同时调用才行。不管startService与bindService的调用顺序</code>，如果先调用unbindService，此时服务不会自动终止，再调用stopService之后，服务才会终止；如果先调用stopService，此时服务也不会终止，而再调用unbindService或者之前调用bindService的Context不存在了（如Activity被finish的时候）之后，服务才会自动停止。</p>
+<p>那么，什么情况下既使用startService，又使用bindService呢？</p>
+<p>如果你只是想要启动一个后台服务长期进行某项任务，那么使用startService便可以了。如果你还想要与正在运行的Service取得联系，那么有两种方法：一种是使用broadcast，另一种是使用bindService。前者的缺点是如果交流较为频繁，容易造成性能上的问题，而后者则没有这些问题。因此，这种情况就需要startService和bindService一起使用了。</p>
+<p>另外，如果你的服务只是公开一个远程接口，供连接上的客户端（Android的Service是C&#x2F;S架构）远程调用执行方法，这个时候你可以不让服务一开始就运行，而只是bindService，这样在第一次bindService的时候才会创建服务的实例运行它，这会节约很多系统资源，特别是如果你的服务是远程服务，那么效果会越明显（当然在Servcie创建的是偶会花去一定时间，这点需要注意）。    </p>
+<h4 id="本地服务与远程服务"><a href="#本地服务与远程服务" class="headerlink" title="本地服务与远程服务"></a>本地服务与远程服务</h4><p>本地服务依附在主进程上，在一定程度上节约了资源。本地服务因为是在同一进程，因此不需要IPC，也不需要AIDL。相应bindService会方便很多。缺点是主进程被kill后，服务变会终止。</p>
+<p>远程服务是独立的进程，对应进程名格式为所在包名加上你指定的android:process字符串。由于是独立的进程，因此在Activity所在进程被kill的是偶，该服务依然在运行。缺点是该服务是独立的进程，会占用一定资源，并且使用AIDL进行IPC稍微麻烦一点。</p>
+<p>对于startService来说，不管是本地服务还是远程服务，我们需要做的工作都一样简单。</p>
+<p>android:name　　————-　　服务类名<br>android:label　　————–　　服务的名字，如果此项不设置，那么默认显示的服务名则为类名<br>android:icon　　————–　　服务的图标<br>android:permission　　——-　　申明此服务的权限，这意味着只有提供了该权限的应用才能控制或连接此服务<br>android:process　　———-　　表示该服务是否运行在另外一个进程，如果设置了此项，那么将会在包名后面加上这段字符串表示另一进程的名字<br>android:enabled　　———-　　表示是否能被系统实例化，为true表示可以，为false表示不可以，默认为true<br>android:exported　　———　　表示该服务是否能够被其他应用程序所控制或连接，不设置默认此项为 false</p>
+<h3 id="多线程IntentService的工作原理-amp-源码分析"><a href="#多线程IntentService的工作原理-amp-源码分析" class="headerlink" title="多线程IntentService的工作原理 &amp; 源码分析"></a>多线程IntentService的工作原理 &amp; 源码分析</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606400330574.png" alt="Alt text"></p>
+<p>IntentService如何单独开启1个新的工作线程</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">Override</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="built_in">super</span>.onCreate();</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 1\. 通过实例化andlerThread新建线程 &amp; 启动；故 使用IntentService时，不需额外新建线程</span></span><br><span class="line">    <span class="comment">// HandlerThread继承自Thread，内部封装了 Looper</span></span><br><span class="line">    <span class="type">HandlerThread</span> <span class="variable">thread</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HandlerThread</span>(<span class="string">&quot;IntentService[&quot;</span> + mName + <span class="string">&quot;]&quot;</span>);</span><br><span class="line">    thread.start();</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 2\. 获得工作线程的 Looper &amp; 维护自己的工作队列</span></span><br><span class="line">    mServiceLooper = thread.getLooper();</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 3\. 新建mServiceHandler &amp; 绑定上述获得Looper</span></span><br><span class="line">    <span class="comment">// 新建的Handler 属于工作线程 -&gt;&gt;分析1</span></span><br><span class="line">    mServiceHandler = <span class="keyword">new</span> <span class="title class_">ServiceHandler</span>(mServiceLooper); </span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/** </span></span><br><span class="line"><span class="comment">     * 分析1：ServiceHandler源码分析</span></span><br><span class="line"><span class="comment">     **/</span> </span><br><span class="line">     <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">ServiceHandler</span> <span class="keyword">extends</span> <span class="title class_">Handler</span> &#123;</span><br><span class="line"> </span><br><span class="line">         <span class="comment">// 构造函数</span></span><br><span class="line">         <span class="keyword">public</span> <span class="title function_">ServiceHandler</span><span class="params">(Looper looper)</span> &#123;</span><br><span class="line">         <span class="built_in">super</span>(looper);</span><br><span class="line">       &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// IntentService的handleMessage（）把接收的消息交给onHandleIntent()处理</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">         <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleMessage</span><span class="params">(Message msg)</span> &#123;</span><br><span class="line"> </span><br><span class="line">          <span class="comment">// onHandleIntent 方法在工作线程中执行</span></span><br><span class="line">          <span class="comment">// onHandleIntent() = 抽象方法，使用时需重写 -&gt;&gt;分析2</span></span><br><span class="line">          onHandleIntent((Intent)msg.obj);</span><br><span class="line">          <span class="comment">// 执行完调用 stopSelf() 结束服务</span></span><br><span class="line">          stopSelf(msg.arg1);</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">   <span class="comment">/** </span></span><br><span class="line"><span class="comment">     * 分析2： onHandleIntent()源码分析</span></span><br><span class="line"><span class="comment">     * onHandleIntent() = 抽象方法，使用时需重写</span></span><br><span class="line"><span class="comment">     **/</span> </span><br><span class="line">      <span class="meta">@WorkerThread</span></span><br><span class="line">      <span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">onHandleIntent</span><span class="params">(Intent intent)</span>;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<p>IntentService 如何通过onStartCommand() 将Intent 传递给服务 &amp; 依次插入到工作队列中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">  * onStartCommand（）源码分析</span></span><br><span class="line"><span class="comment">  * onHandleIntent() = 抽象方法，使用时需重写</span></span><br><span class="line"><span class="comment">  **/</span> </span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">onStartCommand</span><span class="params">(Intent intent, <span class="type">int</span> flags, <span class="type">int</span> startId)</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 调用onStart（）-&gt;&gt;分析1</span></span><br><span class="line">    onStart(intent, startId);</span><br><span class="line">    <span class="keyword">return</span> mRedelivery ? START_REDELIVER_INTENT : START_NOT_STICKY;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">  * 分析1：onStart(intent, startId)</span></span><br><span class="line"><span class="comment">  **/</span> </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onStart</span><span class="params">(Intent intent, <span class="type">int</span> startId)</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 1\. 获得ServiceHandler消息的引用</span></span><br><span class="line">    <span class="type">Message</span> <span class="variable">msg</span> <span class="operator">=</span> mServiceHandler.obtainMessage();</span><br><span class="line">    msg.arg1 = startId;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 2\. 把 Intent参数 包装到 message 的 obj 发送消息中，</span></span><br><span class="line">    <span class="comment">//这里的Intent  = 启动服务时startService(Intent) 里传入的 Intent</span></span><br><span class="line">    msg.obj = intent;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// 3\. 发送消息，即 添加到消息队列里</span></span><br><span class="line">    mServiceHandler.sendMessage(msg);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>从上面源码可看出：IntentService本质 &#x3D; Handler + HandlerThread：</p>
+<ol>
+<li>通过HandlerThread 单独开启1个工作线程：IntentService</li>
+<li>创建1个内部 Handler ：ServiceHandler</li>
+<li>绑定 ServiceHandler 与 IntentService</li>
+<li>通过 onStartCommand() 传递服务intent 到ServiceHandler 、依次插入Intent到工作队列中 &amp; 逐个发送给 onHandleIntent()</li>
+<li>通过onHandleIntent() 依次处理所有Intent对象所对应的任务</li>
+</ol>
+<blockquote>
+<p>因此我们通过复写onHandleIntent() &amp; 在里面 根据Intent的不同进行不同线程操作即可</p>
+</blockquote>
+<h2 id="notification-前台服务与通知"><a href="#notification-前台服务与通知" class="headerlink" title="notification 前台服务与通知"></a>notification 前台服务与通知</h2><p>Notification:通知信息类，它里面对应了通知栏的各个属性。<br>NotificationManager : 状态栏通知的管理类，负责发通知、清除通知等操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 获取状态通知栏管理类实例</span><br><span class="line"><span class="type">NotificationManager</span> <span class="variable">mNotificationManager</span> <span class="operator">=</span> (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);  </span><br><span class="line"><span class="number">2.</span> 实例化通知栏构造器NotificationCompat.Builder</span><br><span class="line">NotificationCompat.<span class="type">Builder</span> <span class="variable">mBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">NotificationCompat</span>.Builder(context);  </span><br><span class="line"> <span class="number">3.</span> 对Builder进行配置</span><br><span class="line"> <span class="comment">// 设置通知的基本信息：icon、标题、内容</span></span><br><span class="line">mBuilder .setSmallIcon(R.drawable.notification_icon)</span><br><span class="line">mBuilder .setContentTitle(<span class="string">&quot;My notification&quot;</span>)</span><br><span class="line">mBuilder .setContentText(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line"> <span class="number">4.</span> 设置通知栏PendingIntent（点击动作事件等都包含在这里）</span><br><span class="line"> <span class="comment">// 设置通知的点击行为：这里启动一个 Activity</span></span><br><span class="line"><span class="type">Intent</span> <span class="variable">intent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(<span class="built_in">this</span>, ResultActivity.class);</span><br><span class="line"><span class="type">PendingIntent</span> <span class="variable">pendingIntent</span> <span class="operator">=</span> PendingIntent.getActivity(context, <span class="number">0</span>, intent, PendingIntent.FLAG_UPDATE_CURRENT);</span><br><span class="line">mBuilder .setContentIntent(pendingIntent);</span><br><span class="line"> <span class="comment">//5. 发送通知请求</span></span><br><span class="line"> mNotificationManager.notify(notifyId, mBuilder.build());  </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>更新通知<br>要想更新通知，需要利用NotificationManager.notify()<br>的id参数，该id在应用内需要唯一。要想更新特定id的通知，只需要创建新的Notification，并发出与之前所用 id 相同的 Notification。如果之前的通知仍然可见，则系统会根据新的 Notification 对象的内容更新该通知。相反，如果之前的通知已被清除，系统则会创建一个新通知。</p>
+<p>删除通知<br>删除通知可以有多种方式：<br>1.通过NotificationCompat.Builder设置setAutoCancel(true)，这样当用户点击通知后，通知自动删除。<br>2.通过NotificationManager.cancel(id)方法，删除指定 id 的通知<br>3.通过 NotificationManager.cancelAll()方法，删除该应用的所有通知</p>
+<h2 id="相互通信"><a href="#相互通信" class="headerlink" title="相互通信"></a>相互通信</h2><h3 id="Activity与Fragment之间的通信交互"><a href="#Activity与Fragment之间的通信交互" class="headerlink" title="Activity与Fragment之间的通信交互"></a>Activity与Fragment之间的通信交互</h3><h3 id="Service和Activity的相互通信"><a href="#Service和Activity的相互通信" class="headerlink" title="Service和Activity的相互通信"></a>Service和Activity的相互通信</h3><h4 id="第一种方式：通过MyBinder方式调用Service方法"><a href="#第一种方式：通过MyBinder方式调用Service方法" class="headerlink" title="第一种方式：通过MyBinder方式调用Service方法"></a>第一种方式：通过MyBinder方式调用Service方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BanZhengService</span> <span class="keyword">extends</span> <span class="title class_">Service</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//把我定义的中间人对象返回 </span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> IBinder <span class="title function_">onBind</span><span class="params">(Intent intent)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyBinder</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//办证的方法</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">banZheng</span><span class="params">(<span class="type">int</span> money)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (money&gt;<span class="number">1000</span>) &#123;</span><br><span class="line">            Toast.makeText(getApplicationContext(), <span class="string">&quot;我是领导 把证给你办了&quot;</span>, <span class="number">1</span>).show();</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            Toast.makeText(getApplicationContext(), <span class="string">&quot;这点钱 还想办事....&quot;</span>, <span class="number">1</span>).show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//[1]定义中间人对象(IBinder)</span></span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyBinder</span> <span class="keyword">extends</span> <span class="title class_">Binder</span>&#123;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">callBanZheng</span><span class="params">(<span class="type">int</span> money)</span>&#123;</span><br><span class="line">            <span class="comment">//调用办证的方法</span></span><br><span class="line">            banZheng(money);</span><br><span class="line">        &#125;&#125;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainActivity</span> <span class="keyword">extends</span> <span class="title class_">Activity</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> MyConn conn;</span><br><span class="line">    <span class="keyword">private</span> MyBinder myBinder;<span class="comment">//我定义的中间人对象</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line"> </span><br><span class="line">        <span class="type">Intent</span> <span class="variable">intent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(<span class="built_in">this</span>,BanZhengService.class);</span><br><span class="line">        <span class="comment">//连接服务 </span></span><br><span class="line">        conn = <span class="keyword">new</span> <span class="title class_">MyConn</span>();</span><br><span class="line">        bindService(intent, conn, BIND_AUTO_CREATE);</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="comment">//点击按钮调用服务里面办证的方法</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">click</span><span class="params">(View v)</span> &#123;</span><br><span class="line"> </span><br><span class="line">        myBinder.callBanZheng(<span class="number">10000000</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//监视服务的状态</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">class</span> <span class="title class_">MyConn</span> <span class="keyword">implements</span> <span class="title class_">ServiceConnection</span>&#123;</span><br><span class="line"> </span><br><span class="line">        <span class="comment">//当服务连接成功调用</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> &#123;</span><br><span class="line">            <span class="comment">//获取中间人对象</span></span><br><span class="line">            myBinder = (MyBinder) service;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//失去连接</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onServiceDisconnected</span><span class="params">(ComponentName name)</span> &#123;</span><br><span class="line"> </span><br><span class="line">        &#125;&#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onDestroy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//当activity 销毁的时候 解绑服务 </span></span><br><span class="line">        unbindService(conn);</span><br><span class="line">        <span class="built_in">super</span>.onDestroy();</span><br><span class="line">    &#125;&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<h4 id="第二种方式：通过接口Iservice调用Service方法"><a href="#第二种方式：通过接口Iservice调用Service方法" class="headerlink" title="第二种方式：通过接口Iservice调用Service方法"></a>第二种方式：通过接口Iservice调用Service方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Iservice</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//把领导想暴露的方法都定义在接口里</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">callBanZheng</span><span class="params">(<span class="type">int</span> money)</span>;</span><br><span class="line"><span class="comment">//  public void callPlayMaJiang();</span></span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<h3 id="Intent传递数据大小限制"><a href="#Intent传递数据大小限制" class="headerlink" title="Intent传递数据大小限制"></a>Intent传递数据大小限制</h3><p>在sendBroadcast，startActivity时，我们会用到Intent。<br>Intent可以携带一些数据，比如基本类型数据int、Boolean，或是String，或是序列化对象，Parcelable与Serializable。<br>Intent传递数据时，如果数据太大，可能会出现异常。比如App闪退，或是Intent发送不成功，logcat报错等等。<br>这就牵涉到一个问题：Intent 传递数据大小限制。<br>Intent到底能够携带多少数据呢？<br>使用Intent传送数据时，可能会出现异常<br>在Intent中传入一个Parcelable对象；例如传入一个bitmap对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Bitmap</span> <span class="variable">b1</span> <span class="operator">=</span> Bitmap.createScaledBitmap(srcBmp, dstWid, dstHeight, <span class="literal">false</span>); </span><br><span class="line"><span class="type">Intent</span> <span class="variable">intent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(MSG_INTENT); </span><br><span class="line">intent.putExtra(K_PIC, b1); </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"> V/ActivityManager: Broadcast: Intent &#123; act=intent_bi flg=0x10 (has extras) &#125; ordered=false userid=0 callerApp=ProcessRecord&#123;27aeaaf5 31217:com.rustfisher.basic4/u0a113&#125;</span><br><span class="line"> E/JavaBinder: !!! FAILED BINDER TRANSACTION !!!</span><br><span class="line"> W/BroadcastQueue: Failure sending broadcast Intent &#123; act=intent_bi flg=0x10 (has extras) &#125;</span><br><span class="line">        android.os.TransactionTooLargeException</span><br><span class="line">            at android.os.BinderProxy.transactNative(Native Method)</span><br><span class="line">            at android.os.BinderProxy.transact(Binder.java:504)      </span><br><span class="line">atandroid.app.ApplicationThreadProxy.scheduleRegisteredReceiver(ApplicationThreadNative.java:1170)            atcom.android.server.am.BroadcastQueue.performReceiveLocked(BroadcastQueue.java:576        atcom.android.server.am.BroadcastQueue.deliverToRegisteredReceiverLocked(BroadcastQueue.java:848)       atcom.android.server.am.BroadcastQueue.processNextBroadcast(BroadcastQueue.java:91  atcom.android.server.am.BroadcastQueue$BroadcastHandler.handleMessage(BroadcastQueue.java:254)</span><br><span class="line">            at android.os.Handler.dispatchMessage(Handler.java:111)</span><br><span class="line">            at android.os.Looper.loop(Looper.java:194)</span><br><span class="line">            at android.os.HandlerThread.run(HandlerThread.java:61)</span><br><span class="line">            at com.android.server.ServiceThread.run(ServiceThread.java:46)</span><br><span class="line"></span><br><span class="line">package android.os; public class TransactionTooLargeException extends RemoteException &#123;   </span><br><span class="line"></span><br><span class="line">public TransactionTooLargeException() &#123;     </span><br><span class="line">super();   </span><br><span class="line">&#125;     </span><br><span class="line">public TransactionTooLargeException(String msg) &#123;     </span><br><span class="line">super(msg);   </span><br><span class="line">  &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">package android.os; public class TransactionTooLargeException extends RemoteException &#123;   </span><br><span class="line">public TransactionTooLargeException() &#123;     </span><br><span class="line">super();   </span><br><span class="line">&#125;     </span><br><span class="line">public TransactionTooLargeException(String msg) &#123;     </span><br><span class="line">super(msg);   </span><br><span class="line">  &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">public native boolean transactNative(int code, Parcel data, Parcel reply,       </span><br><span class="line">int flags) throws RemoteException; </span><br></pre></td></tr></table></figure>
+
+<p>抛出异常与Binder有关。</p>
+<p>Intent携带信息的大小受Binder限制</p>
+<p>Intent携带信息的大小其实是受Binder限制。本文标题也可以改为“Binder传递数据大小限制”。</p>
+<p>数据以Parcel对象的形式存放在Binder传递缓存中。</p>
+<p>如果数据或返回值比传递buffer大，则此次传递调用失败并抛出TransactionTooLargeException异常。</p>
+<p>Binder传递缓存有一个限定大小，通常是1Mb。但同一个进程中所有的传输共享缓存空间。</p>
+<p>多个地方在进行传输时，即时它们各自传输的数据不超出大小限制，TransactionTooLargeException异常也可能会被抛出。</p>
+<p>在使用Intent传递数据时，1Mb并不是安全上限。因为Binder中可能正在处理其它的传输工作。</p>
+<p>不同的机型和系统版本，这个上限值也可能会不同。</p>
+<p>在其它地方，例如onSaveInstanceState(@NonNull Bundle outState)，也可能会遇到与Binder有关的类似问题。</p>
+<p>为什么Binder要限制传输数据的大小</p>
+<p>个人推测，作为一种IPC的方式，Binder并不是为传输大量数据而设计。</p>
+<p>传输大量数据，可以考虑URL之类的方法。</p>
+<h3 id="ViewModel-与-View-的通信"><a href="#ViewModel-与-View-的通信" class="headerlink" title="ViewModel 与 View 的通信"></a>ViewModel 与 View 的通信</h3><blockquote>
+<p>Presenter 和 ViewModel 不应持有 View 的引用。</p>
+</blockquote>
+<p>但是，在 MVVM 架构中，ViewModel 不再持有 View 的引用，而是通过 LiveData 或 RxJava 向 View 层暴露数据。一旦 View 订阅了 ViewModel，它就开始接收数据更新。这看似很完美，但当 ViewModel 想要更新 View 状态，比如显示和取消 Loading，将数据校验或服务器结果反馈到 UI 界面上，会变得非常困难。</p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>ViewModel 中的 LiveData 或 Observable 越少越好。因此我们最好找到一种方法，可以封装需要传递给 View 层的数据和信息。在多数情况下，ViewModel 需要向 View 层暴露以下三种数据：</p>
+<ol>
+<li>Data<br>Data – 就是需要在 View 上展示的内容，比如用户信息的 User 实体类，或社交 Feed 流中的列表项。</li>
+<li>Status – 可以是任何仅需传递一次的信息，如校验错误，网络异常，或者服务器错误。<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="keyword">class</span> <span class="title class_">Status</span> &#123;</span><br><span class="line">    SUCCESS,</span><br><span class="line">    ERROR,</span><br><span class="line">    NO_NETWORK,</span><br><span class="line">    EMPTY_FIRST_NAME,</span><br><span class="line">    EMPTY_LAST_NAME,</span><br><span class="line">    EMPTY_CITY,</span><br><span class="line">    INVALID_URI</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>LiveData 没有提供任何开箱即用的方法，但在 Google 的官方示例中，有一个 <a target="_blank" rel="noopener" href="https://github.com/android/architecture-samples/blob/dev-todo-mvvm-live/todoapp/app/src/main/java/com/example/android/architecture/blueprints/todoapp/SingleLiveEvent.java">SingleLiveEvent</a> 的实现，可以解决这个问题。</p>
+<blockquote>
+<p>一个生命周期感知的被观察者，仅在订阅后发送新的更新，常用于导航和 Snackbar 消息等事件。<br>这可以避免一些常见问题：在配置变更（如屏幕旋转）期间，如果观察者处于活动动态，SingleLiveEvent 将会发送更新事件。<br>它继承于 MutableLiveData，是一个被观察者，即使对外暴露了 SingleLiveEvent#setValue() 或 SingleLiveEvent#call() 方法，<br>注意：只有一个观察者会受到更新通知。</p>
+</blockquote>
+<p>新建一个 SingleLiveEvent 用来向 View 层暴露 Status 数据。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> status = SingleLiveEvent&lt;Status&gt;()</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">getStatus</span><span class="params">()</span></span>: LiveData&lt;Status&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> status</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">handleImage</span><span class="params">(intent: <span class="type">Intent</span>?)</span></span> &#123;</span><br><span class="line">    intent?.<span class="keyword">data</span>?.let &#123;</span><br><span class="line">        avatar.value = it.toString()</span><br><span class="line">    &#125; ?: run &#123; status.value = Status.INVALID_URI &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<p>View 只关心 Status 数据，并根据不同的状态或错误执行对应的逻辑。如下实例，我们能很方便地根据每个错误显示不同的 Toast 或 Snackbar。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">viewModel.getStatus().observe(<span class="keyword">this</span>, Observer &#123; handleStatus(it) &#125;)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">handleStatus</span><span class="params">(status: <span class="type">Status</span>?)</span></span> &#123;</span><br><span class="line">    <span class="keyword">when</span> (status) &#123;</span><br><span class="line">        Status.EMPTY_FIRST_NAME -&gt; Toast.makeText(activity, <span class="string">&quot;Please enter your first name!&quot;</span>, Toast.LENGTH_SHORT).show()</span><br><span class="line">        Status.EMPTY_LAST_NAME -&gt; Toast.makeText(activity, <span class="string">&quot;Please enter your last name&quot;</span>, Toast.LENGTH_SHORT).show()</span><br><span class="line">        Status.EMPTY_CITY -&gt; Toast.makeText(activity, <span class="string">&quot;Please choose your home city&quot;</span>, Toast.LENGTH_SHORT).show()</span><br><span class="line">        Status.INVALID_URI -&gt; Toast.makeText(activity, <span class="string">&quot;Unable to load the photo&quot;</span>, Toast.LENGTH_SHORT).show()</span><br><span class="line">        Status.SUCCESS -&gt; &#123;</span><br><span class="line">            startActivity(HomeFragment.newIntent(activity))</span><br><span class="line">            activity.finish()</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> -&gt; Toast.makeText(activity, <span class="string">&quot;Something went wrong, please try again!&quot;</span>, Toast.LENGTH_SHORT).show()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>state  即 UI 状态，比如加载进度条和 Dialog 等，每次开始订阅 ViewModel 的数据时，ViewModel 应该把这些 UI 状态通知给 View 层。一种简单的做法是，我们可以创建一个数据类来保存这些状态。<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="keyword">class</span> <span class="title class_">EditProfileState</span>(</span><br><span class="line">    <span class="keyword">var</span> isProgressIndicatorShown: <span class="built_in">Boolean</span> = <span class="literal">false</span>,</span><br><span class="line">    <span class="keyword">var</span> isCityDialogShown: <span class="built_in">Boolean</span> = <span class="literal">false</span>,</span><br><span class="line">    <span class="keyword">var</span> isGenderDialogShown: <span class="built_in">Boolean</span> = <span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+然后在 ViewModel 中创建一个 MutableLiveData，用来包装这个 EditProfileState。由于 ViewModel 只会暴露 LiveData 给 View 层，因此我们应该提供 setter 方法，便于 View 更新此状态。</li>
+</ol>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">val</span> state = MutableLiveData&lt;EditProfileState&gt;()</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">getState</span><span class="params">()</span></span>: LiveData&lt;EditProfileState&gt; &#123;</span><br><span class="line">    <span class="keyword">return</span> state</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">setProgressIndicator</span><span class="params">(isProgressIndicatorShown: <span class="type">Boolean</span>)</span></span> &#123;</span><br><span class="line">    state.value?.isProgressIndicatorShown = isProgressIndicatorShown</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">setCityDialogState</span><span class="params">(isCityDialogShown: <span class="type">Boolean</span>)</span></span> &#123;</span><br><span class="line">    state.value?.isCityDialogShown = isCityDialogShown</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">setGenderDialogState</span><span class="params">(isGenderDialogShown: <span class="type">Boolean</span>)</span></span> &#123;</span><br><span class="line">    state.value?.isGenderDialogShown = isGenderDialogShown</span><br><span class="line">&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<p>最后，根据上面的 State 状态数据，决定 Dialog 的显示和取消。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">viewModel.getState().observe(<span class="keyword">this</span>, Observer &#123; handleState(it) &#125;)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">handleState</span><span class="params">(state: <span class="type">EditProfileState</span>?)</span></span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (state?.isCityDialogShown == <span class="literal">true</span>) &#123;</span><br><span class="line">        showCitySelectionDialog()</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (state?.isGenderDialogShown == <span class="literal">true</span>) &#123;</span><br><span class="line">        showGenderSelectionDialog()</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="EventBus"><a href="#EventBus" class="headerlink" title="EventBus"></a>EventBus</h3><h4 id="EventBus优势"><a href="#EventBus优势" class="headerlink" title="EventBus优势"></a>EventBus优势</h4><h5 id="对比Java监听器接口（Listener-Interfaces）"><a href="#对比Java监听器接口（Listener-Interfaces）" class="headerlink" title="对比Java监听器接口（Listener Interfaces）"></a>对比Java监听器接口（Listener Interfaces）</h5><p>在Java中，特别是Android，一个常用的模式就是使用“监听器（Listeners）”接口。在此模式中，一个实现了监听器接口的类必须将自身注册到它想要监听的类中去。这就意味着<code>监听与被监听之间属于强关联关系</code>。这种关系就使得单元测试很难进行开展。</p>
+<h5 id="对比本地广播管理器（LocalBroadcastManager）"><a href="#对比本地广播管理器（LocalBroadcastManager）" class="headerlink" title="对比本地广播管理器（LocalBroadcastManager）"></a>对比本地广播管理器（LocalBroadcastManager）</h5><p>另一项技术就是在组件间通过本地广播管理器（LocalBroadcastManager）进行消息的发送与监听。虽然这对于解耦有很好的帮助，但它的API不如EventBus那样简洁。此外，如果你不注意保持Intent extras类型的一致，它还可能引发潜在的运行时&#x2F;类型检测错误。</p>
+<p>使用EventBus不仅使代码变得清晰，而且增强了类型安全（type-safe）。当用Intent传递数据时，在编译时并不能检查出所设的extra类型与收到时的类型一致。所以一个很常见的错误便是你或者你团队中的其他人改变了Intent所传递的数据，但忘记了对全部的接收器（receiver）进行更新。这种错误在编译时是无法被发现的，只有在运行时才会发现问题。</p>
+<p>而使用EventBus所传递的消息则是通过你所定义的Event类。由于接收者方法是直接与这些类实例打交道，所以所有的数据均可以进行类型检查，这样任何由于类型不一致所导致的错误都可以在编译时刻被发现。</p>
+<p>另外就是你的Event类可以定义成任何类型。通常会为了表示事件而显式地创建明确命名的类，你也通过EventBus发送&#x2F;接收任何类。通过这种方法，你就不必受限于那些只能添加到Intent extras中的简单数据类型了。例如，你可以发送一个和ORM模型类实例，并且在接收端直接处理与ORM操作相关的类实例。</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606402642338.png" alt="Alt text"><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606402681840.png" alt="Alt text"><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606402686129.png" alt="Alt text"><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606402690216.png" alt="Alt text"><br>前一篇给大家装简单演示了EventBus的onEventMainThread（）函数的接收，其实EventBus还有另外有个不同的函数，他们分别是：</p>
+<p>1、onEvent<br>2、onEventMainThread<br>3、onEventBackgroundThread<br>4、onEventAsync</p>
+<p>onEvent:如果使用onEvent作为订阅函数，那么该事件在哪个线程发布出来的，onEvent就会在这个线程中运行，也就是说发布事件和接收事件线程在同一个线程。使用这个方法时，在onEvent方法中不能执行耗时操作，如果执行耗时操作容易导致事件分发延迟。<br>onEventMainThread****:如果使用onEventMainThread作为订阅函数，那么不论事件是在哪个线程中发布出来的，onEventMainThread都会在UI线程中执行，接收事件就会在UI线程中运行，这个在Android中是非常有用的，因为在Android中只能在UI线程中更新UI，所以在onEvnetMainThread方法中是不能执行耗时操作的。<br>onEventBackground:如果使用onEventBackgrond作为订阅函数，那么如果事件是在UI线程中发布出来的，那么onEventBackground就会在子线程中运行，如果事件本来就是子线程中发布出来的，那么onEventBackground函数直接在该子线程中执行。<br>onEventAsync****：使用这个函数作为订阅函数，那么无论事件在哪个线程发布，都会创建新的子线程在执行onEventAsync.</p>
+<h4 id="EvetntBus3-0"><a href="#EvetntBus3-0" class="headerlink" title="EvetntBus3.0"></a>EvetntBus3.0</h4><p>注册一般是在 onCreate 和 onStart 里注册，尽量不要在 onResume，可能出现多次注册的情况，比如下面这个异常：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606402776852.png" alt="Alt text"><br>取消注册 要写到 onDestroy 方法里，不要写到 onStop 里，有时会出现异常的哦<br>EventBus 3 和之前版本的 EventBus 不兼容，这里采用注解的方法来接收事件，四种注解 @Subscrible、@Subscrible(threadMode &#x3D; ThreadMode.ASYNC)、@Subscribe(threadMode &#x3D; ThreadMode.BACKGROUND)、@Subscribe(threadMode &#x3D; ThreadMode.MAIN)分别对应之前的 onEvent()、onEventAsync()、onEventBackground()、onEventMainThread()。</p>
+<p>EventBus 3 采用注解后，方法名没有限制了，参数只有一个，和发送者 post 的参数对应配对，在未声明 threadMode 时，默认的线程模式为 ThreadMode.POSTING，只有在该模式下才可以取消线程。</p>
+<h4 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161315">解析</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android/ACTIVITY/">http://king-of-cement.gitee.io/blog/post/Android/ACTIVITY/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/Android/Activity%E6%B5%81%E7%A8%8B%E5%9B%BE/">Activity流程图</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/Android/Android%20VM%20apk%20or%20dex%20%E4%BF%AE%E6%94%B9/">Android VM apk\dex 修改</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>Android消息总线的演进之路：用LiveDataBus替代RxBus、EventBus | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Android消息总线的演进之路：用LiveDataBus替代RxBus、EventBus</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/Android/">Android</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Android消息总线的演进之路：用LiveDataBus替代RxBus、EventBus"><a href="#Android消息总线的演进之路：用LiveDataBus替代RxBus、EventBus" class="headerlink" title="Android消息总线的演进之路：用LiveDataBus替代RxBus、EventBus"></a>Android消息总线的演进之路：用LiveDataBus替代RxBus、EventBus</h1><p>[toc]</p>
+<p>从最早使用的Handler、BroadcastReceiver、接口回调，到近几年流行的通信总线类框架EventBus、RxBus。Android消息传递框架，总在不断的演进之中。</p>
+<h2 id="EventBus"><a href="#EventBus" class="headerlink" title="EventBus"></a>EventBus</h2><p>EventBus是一个Android事件发布&#x2F;订阅框架，通过解耦发布者和订阅者简化Android事件传递。EventBus可以代替Android传统的Intent、Handler、Broadcast或接口回调，在Fragment、Activity、Service线程之间传递数据，执行方法。</p>
+<p>EventBus最大的特点就是：简洁、解耦。在没有EventBus之前我们通常用广播来实现监听，或者自定义接口函数回调，有的场景我们也可以直接用Intent携带简单数据，或者在线程之间通过Handler处理消息传递。但无论是广播还是Handler机制远远不能满足我们高效的开发。EventBus简化了应用程序内各组件间、组件与后台线程间的通信。EventBus一经推出，便受到广大开发者的推崇。</p>
+<p>现在看来，EventBus给Android开发者世界带来了一种新的框架和思想，就是消息的发布和订阅。这种思想在其后很多框架中都得到了应用。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606898905714.png" alt="Alt text"></p>
+<p>发布&#x2F;订阅模式<br>订阅发布模式定义了一种“一对多”的依赖关系，让多个订阅者对象同时监听某一个主题对象。这个主题对象在自身状态变化时，会通知所有订阅者对象，使它们能够自动更新自己的状态。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606898924186.png" alt="Alt text"></p>
+<h2 id="RxBus"><a href="#RxBus" class="headerlink" title="RxBus"></a>RxBus</h2><p>RxBus不是一个库，而是一个文件，实现只有短短30行代码。RxBus本身不需要过多分析，它的强大完全来自于它基于的RxJava技术。响应式编程（Reactive Programming）技术这几年特别火，RxJava是它在Java上的实作。RxJava天生就是发布&#x2F;订阅模式，而且很容易处理线程切换。所以，RxBus凭借区区30行代码，就敢挑战EventBus江湖老大的地位。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>在RxJava中有个Subject类，它继承Observable类，同时实现了Observer接口，因此Subject可以同时担当订阅者和被订阅者的角色，我们使用Subject的子类PublishSubject来创建一个Subject对象（PublishSubject只有被订阅后才会把接收到的事件立刻发送给订阅者），在需要接收事件的地方，订阅该Subject对象，之后如果Subject对象接收到事件，则会发射给该订阅者，此时Subject对象充当被订阅者的角色。</p>
+<p>完成了订阅，在需要发送事件的地方将事件发送给之前被订阅的Subject对象，则此时Subject对象作为订阅者接收事件，然后会立刻将事件转发给订阅该Subject对象的订阅者，以便订阅者处理相应事件，到这里就完成了事件的发送与处理。</p>
+<p>最后就是取消订阅的操作了，RxJava中，订阅操作会返回一个Subscription对象，以便在合适的时机取消订阅，防止内存泄漏，如果一个类产生多个Subscription对象，我们可以用一个CompositeSubscription存储起来，以进行批量的取消订阅。</p>
+<p>RxBus有很多实现，如：</p>
+<p>AndroidKnife&#x2F;RxBus（<a target="_blank" rel="noopener" href="https://github.com/AndroidKnife/RxBus%EF%BC%89">https://github.com/AndroidKnife/RxBus）</a> Blankj&#x2F;RxBus（<a target="_blank" rel="noopener" href="https://github.com/Blankj/RxBus%EF%BC%89">https://github.com/Blankj/RxBus）</a></p>
+<p>其实正如前面所说的，RxBus的原理是如此简单，我们自己都可以写出一个RxBus的实现：</p>
+<h3 id="基于RxJava1的RxBus实现："><a href="#基于RxJava1的RxBus实现：" class="headerlink" title="基于RxJava1的RxBus实现："></a>基于RxJava1的RxBus实现：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">RxBus</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Subject&lt;Object, Object&gt; bus;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">RxBus</span><span class="params">()</span> &#123;</span><br><span class="line">        bus = <span class="keyword">new</span> <span class="title class_">SerializedSubject</span>&lt;&gt;(PublishSubject.create());</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SingletonHolder</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">RxBus</span> <span class="variable">defaultRxBus</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RxBus</span>();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> RxBus <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.defaultRxBus;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 发送</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">post</span><span class="params">(Object o)</span> &#123;</span><br><span class="line">        bus.onNext(o);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 是否有Observable订阅</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">hasObservable</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> bus.hasObservers();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 转换为特定类型的Obserbale</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; Observable&lt;T&gt; <span class="title function_">toObservable</span><span class="params">(Class&lt;T&gt; type)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> bus.ofType(type);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<p>基于RxJava2的RxBus实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">RxBus2</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Subject&lt;Object&gt; bus;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">RxBus2</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// toSerialized method made bus thread safe</span></span><br><span class="line">        bus = PublishSubject.create().toSerialized();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> RxBus2 <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Holder.BUS;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Holder</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">RxBus2</span> <span class="variable">BUS</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RxBus2</span>();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">post</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">        bus.onNext(obj);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; Observable&lt;T&gt; <span class="title function_">toObservable</span><span class="params">(Class&lt;T&gt; tClass)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> bus.ofType(tClass);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> Observable&lt;Object&gt; <span class="title function_">toObservable</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> bus;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">hasObservers</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> bus.hasObservers();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<h2 id="引入LiveDataBus的想法"><a href="#引入LiveDataBus的想法" class="headerlink" title="引入LiveDataBus的想法"></a>引入LiveDataBus的想法</h2><h3 id="从LiveData谈起"><a href="#从LiveData谈起" class="headerlink" title="从LiveData谈起"></a>从LiveData谈起</h3><p>LiveData是Android Architecture Components提出的框架。LiveData是一个可以被观察的数据持有类，它可以感知并遵循Activity、Fragment或Service等组件的生命周期。正是由于LiveData对组件生命周期可感知特点，因此可以做到仅在组件处于生命周期的激活状态时才更新UI数据。</p>
+<p>LiveData需要一个观察者对象，一般是Observer类的具体实现。当观察者的生命周期处于STARTED或RESUMED状态时，LiveData会通知观察者数据变化；在观察者处于其他状态时，即使LiveData的数据变化了，也不会通知。</p>
+<h3 id="LiveData的优点"><a href="#LiveData的优点" class="headerlink" title="LiveData的优点"></a>LiveData的优点</h3><ul>
+<li>UI和实时数据保持一致 因为LiveData采用的是观察者模式，这样一来就可以在数据发生改变时获得通知，更新UI。</li>
+<li>避免内存泄漏 观察者被绑定到组件的生命周期上，当被绑定的组件销毁（destroy）时，观察者会立刻自动清理自身的数据。</li>
+<li>不会再产生由于Activity处于stop状态而引起的崩溃</li>
+</ul>
+<p>例如：当Activity处于后台状态时，是不会收到LiveData的任何事件的。</p>
+<ul>
+<li>不需要再解决生命周期带来的问题 LiveData可以感知被绑定的组件的生命周期，只有在活跃状态才会通知数据变化。</li>
+<li>实时数据刷新 当组件处于活跃状态或者从不活跃状态到活跃状态时总是能收到最新的数据。</li>
+<li>解决Configuration Change问题 在屏幕发生旋转或者被回收再次启动，立刻就能收到最新的数据。</li>
+</ul>
+<h3 id="谈一谈Android-Architecture-Components"><a href="#谈一谈Android-Architecture-Components" class="headerlink" title="谈一谈Android Architecture Components"></a>谈一谈Android Architecture Components</h3><blockquote>
+<p>Android Architecture Components的核心是Lifecycle、LiveData、ViewModel 以及 Room，通过它可以非常优雅的让数据与界面进行交互，并做一些持久化的操作，高度解耦，自动管理生命周期，而且不用担心内存泄漏的问题。</p>
+</blockquote>
+<ul>
+<li><p>Room 一个强大的SQLite对象映射库。</p>
+</li>
+<li><p>ViewModel 一类对象，它用于为UI组件提供数据，在设备配置发生变更时依旧可以存活。</p>
+</li>
+<li><p>LiveData 一个可感知生命周期、可被观察的数据容器，它可以存储数据，还会在数据发生改变时进行提醒。</p>
+</li>
+<li><p>Lifecycle 包含LifeCycleOwer和LifecycleObserver，分别是生命周期所有者和生命周期感知者。</p>
+<h3 id="Android-Architecture-Components的特点"><a href="#Android-Architecture-Components的特点" class="headerlink" title="Android Architecture Components的特点"></a>Android Architecture Components的特点</h3></li>
+<li><p>数据驱动型编程 变化的永远是数据，界面无需更改。</p>
+</li>
+<li><p>感知生命周期，防止内存泄漏。</p>
+</li>
+<li><p>高度解耦 数据，界面高度分离。</p>
+</li>
+<li><p>数据持久化 数据、ViewModel不与UI的生命周期挂钩，不会因为界面的重建而销毁。</p>
+</li>
+</ul>
+<h3 id="重点：为什么使用LiveData构建数据通信总线LiveDataBus"><a href="#重点：为什么使用LiveData构建数据通信总线LiveDataBus" class="headerlink" title="重点：为什么使用LiveData构建数据通信总线LiveDataBus"></a>重点：为什么使用LiveData构建数据通信总线LiveDataBus</h3><p>使用LiveData的理由</p>
+<ul>
+<li>LiveData具有的这种可观察性和生命周期感知的能力，使其非常适合作为Android通信总线的基础构件。</li>
+<li>使用者不用显示调用反注册方法。<blockquote>
+<p>由于LiveData具有生命周期感知能力，所以LiveDataBus只需要调用注册回调方法，而不需要显示的调用反注册方法。这样带来的好处不仅可以编写更少的代码，而且可以完全杜绝其他通信总线类框架（如EventBus、RxBus）忘记调用反注册所带来的内存泄漏的风险。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="为什么要用LiveDataBus替代EventBus和RxBus"><a href="#为什么要用LiveDataBus替代EventBus和RxBus" class="headerlink" title="为什么要用LiveDataBus替代EventBus和RxBus"></a>为什么要用LiveDataBus替代EventBus和RxBus</h3><ul>
+<li>LiveDataBus的实现及其简单 相对EventBus复杂的实现，LiveDataBus只需要一个类就可以实现。</li>
+<li>LiveDataBus可以减小APK包的大小 由于LiveDataBus只依赖Android官方Android Architecture Components组件的LiveData，没有其他依赖，本身实现只有一个类。作为比较，EventBus JAR包大小为57kb，RxBus依赖RxJava和RxAndroid，其中RxJava2包大小2.2MB，RxJava1包大小1.1MB，RxAndroid包大小9kb。使用LiveDataBus可以大大减小APK包的大小。</li>
+<li>LiveDataBus依赖方支持更好 LiveDataBus只依赖Android官方Android Architecture Components组件的LiveData，相比RxBus依赖的RxJava和RxAndroid，依赖方支持更好。</li>
+<li>LiveDataBus具有生命周期感知 LiveDataBus具有生命周期感知，在Android系统中使用调用者不需要调用反注册，相比EventBus和RxBus使用更为方便，并且没有内存泄漏风险。</li>
+</ul>
+<h3 id="LiveDataBus的设计和架构"><a href="#LiveDataBus的设计和架构" class="headerlink" title="LiveDataBus的设计和架构"></a>LiveDataBus的设计和架构</h3><h4 id="LiveDataBus的组成"><a href="#LiveDataBus的组成" class="headerlink" title="LiveDataBus的组成"></a>LiveDataBus的组成</h4><ul>
+<li>消息 消息可以是任何的Object，可以定义不同类型的消息，如Boolean、String。也可以定义自定义类型的消息。</li>
+<li>消息通道 LiveData扮演了消息通道的角色，不同的消息通道用不同的名字区分，名字是String类型的，可以通过名字获取到一个LiveData消息通道。</li>
+<li>消息总线 消息总线通过单例实现，不同的消息通道存放在一个HashMap中。</li>
+<li>订阅 订阅者通过getChannel获取消息通道，然后调用observe订阅这个通道的消息。</li>
+<li>发布 发布者通过getChannel获取消息通道，然后调用setValue或者postValue发布消息。<br>LiveDataBus原理图<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606899524141.png" alt="Alt text"><br>第一个实现：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">LiveDataBus</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, MutableLiveData&lt;Object&gt;&gt; bus;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">LiveDataBus</span><span class="params">()</span> &#123;</span><br><span class="line">        bus = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SingletonHolder</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">LiveDataBus</span> <span class="variable">DATA_BUS</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LiveDataBus</span>();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> LiveDataBus <span class="title function_">get</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.DATA_BUS;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; MutableLiveData&lt;T&gt; <span class="title function_">getChannel</span><span class="params">(String target, Class&lt;T&gt; type)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!bus.containsKey(target)) &#123;</span><br><span class="line">            bus.put(target, <span class="keyword">new</span> <span class="title class_">MutableLiveData</span>&lt;&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (MutableLiveData&lt;T&gt;) bus.get(target);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> MutableLiveData&lt;Object&gt; <span class="title function_">getChannel</span><span class="params">(String target)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> getChannel(target, Object.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+短短二十行代码，就实现了一个通信总线的全部功能，并且还具有生命周期感知功能，并且使用起来也及其简单：</li>
+</ul>
+<p>注册订阅：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">LiveDataBus.get().getChannel(<span class="string">&quot;key_test&quot;</span>, Boolean.class)</span><br><span class="line">        .observe(<span class="built_in">this</span>, <span class="keyword">new</span> <span class="title class_">Observer</span>&lt;Boolean&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onChanged</span><span class="params">(<span class="meta">@Nullable</span> Boolean aBoolean)</span> &#123;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<p>发送消息：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LiveDataBus.get().getChannel(<span class="string">&quot;key_test&quot;</span>).setValue(<span class="literal">true</span>);</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<p>我们发送了一个名为”key_test”，值为true的事件。</p>
+<p>这个时候订阅者就会收到消息，并作相应的处理，非常简单。</p>
+<h3 id="问题出现"><a href="#问题出现" class="headerlink" title="问题出现"></a>问题出现</h3><p>对于LiveDataBus的第一版实现，我们发现，在使用这个LiveDataBus的过程中，订阅者会收到订阅之前发布的消息。对于一个消息总线来说，这是不可接受的。无论EventBus或者RxBus，订阅方都不会收到订阅之前发出的消息。对于一个消息总线，LiveDataBus必须要解决这个问题。</p>
+<h3 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h3><p>怎么解决这个问题呢？先分析下原因：</p>
+<p>当LifeCircleOwner的状态发生变化的时候，会调用LiveData.ObserverWrapper的activeStateChanged函数，如果这个时候ObserverWrapper的状态是active，就会调用LiveData的dispatchingValue。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606899642722.png" alt="Alt text"><br>在LiveData的dispatchingValue中，又会调用LiveData的considerNotify方法。</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606899653555.png" alt="Alt text"><br>在LiveData的considerNotify方法中，红框中的逻辑是关键，如果ObserverWrapper的mLastVersion小于LiveData的mVersion，就会去回调mObserver的onChanged方法。而每个新的订阅者，其version都是-1，LiveData一旦设置过其version是大于-1的（每次LiveData设置值都会使其version加1），这样就会导致LiveDataBus每注册一个新的订阅者，这个订阅者立刻会收到一个回调，即使这个设置的动作发生在订阅之前。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606899679719.png" alt="Alt text"><br>###问题原因总结<br>对于这个问题，总结一下发生的核心原因。对于LiveData，其初始的version是-1，当我们调用了其setValue或者postValue，其vesion会+1；对于每一个观察者的封装ObserverWrapper，其初始version也为-1，也就是说，每一个新注册的观察者，其version为-1；当LiveData设置这个ObserverWrapper的时候，如果LiveData的version大于ObserverWrapper的version，LiveData就会强制把当前value推送给Observer。</p>
+<h3 id="如何解决这个问题"><a href="#如何解决这个问题" class="headerlink" title="如何解决这个问题"></a>如何解决这个问题</h3><p>明白了问题产生的原因之后，我们来看看怎么才能解决这个问题。很显然，根据之前的分析，只需要在注册一个新的订阅者的时候把Wrapper的version设置成跟LiveData的version一致即可。</p>
+<p>那么怎么实现呢，看看LiveData的observe方法，他会在步骤1创建一个LifecycleBoundObserver，LifecycleBoundObserver是ObserverWrapper的派生类。然后会在步骤2把这个LifecycleBoundObserver放入一个私有Map容器mObservers中。无论ObserverWrapper还是LifecycleBoundObserver都是私有的或者包可见的，所以无法通过继承的方式更改LifecycleBoundObserver的version。</p>
+<p>那么能不能从Map容器mObservers中取到LifecycleBoundObserver，然后再更改version呢？答案是肯定的，通过查看SafeIterableMap的源码我们发现有一个protected的get方法。因此，在调用observe的时候，我们可以通过反射拿到LifecycleBoundObserver，再把LifecycleBoundObserver的version设置成和LiveData一致即可。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606899742475.png" alt="Alt text"><br>对于非生命周期感知的observeForever方法来说，实现的思路是一致的，但是具体的实现略有不同。observeForever的时候，生成的wrapper不是LifecycleBoundObserver，而是AlwaysActiveObserver（步骤1），而且我们也没有机会在observeForever调用完成之后再去更改AlwaysActiveObserver的version，因为在observeForever方法体内，步骤3的语句，回调就发生了。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606899761621.png" alt="Alt text"><br>那么对于observeForever，如何解决这个问题呢？既然是在调用内回调的，那么我们可以写一个ObserverWrapper，把真正的回调给包装起来。把ObserverWrapper传给observeForever，那么在回调的时候我们去检查调用栈，如果回调是observeForever方法引起的，那么就不回调真正的订阅者。</p>
+<h3 id="LiveDataBus最终实现"><a href="#LiveDataBus最终实现" class="headerlink" title="LiveDataBus最终实现"></a>LiveDataBus最终实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">LiveDataBus</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, BusMutableLiveData&lt;Object&gt;&gt; bus;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">LiveDataBus</span><span class="params">()</span> &#123;</span><br><span class="line">        bus = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SingletonHolder</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">LiveDataBus</span> <span class="variable">DEFAULT_BUS</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LiveDataBus</span>();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> LiveDataBus <span class="title function_">get</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.DEFAULT_BUS;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; MutableLiveData&lt;T&gt; <span class="title function_">with</span><span class="params">(String key, Class&lt;T&gt; type)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!bus.containsKey(key)) &#123;</span><br><span class="line">            bus.put(key, <span class="keyword">new</span> <span class="title class_">BusMutableLiveData</span>&lt;&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (MutableLiveData&lt;T&gt;) bus.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> MutableLiveData&lt;Object&gt; <span class="title function_">with</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> with(key, Object.class);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">ObserverWrapper</span>&lt;T&gt; <span class="keyword">implements</span> <span class="title class_">Observer</span>&lt;T&gt; &#123;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">private</span> Observer&lt;T&gt; observer;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">ObserverWrapper</span><span class="params">(Observer&lt;T&gt; observer)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.observer = observer;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onChanged</span><span class="params">(<span class="meta">@Nullable</span> T t)</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (observer != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (isCallOnObserve()) &#123;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                observer.onChanged(t);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">isCallOnObserve</span><span class="params">()</span> &#123;</span><br><span class="line">            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();</span><br><span class="line">            <span class="keyword">if</span> (stackTrace != <span class="literal">null</span> &amp;&amp; stackTrace.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (StackTraceElement element : stackTrace) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (<span class="string">&quot;android.arch.lifecycle.LiveData&quot;</span>.equals(element.getClassName()) &amp;&amp;</span><br><span class="line">                            <span class="string">&quot;observeForever&quot;</span>.equals(element.getMethodName())) &#123;</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">BusMutableLiveData</span>&lt;T&gt; <span class="keyword">extends</span> <span class="title class_">MutableLiveData</span>&lt;T&gt; &#123;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">private</span> Map&lt;Observer, Observer&gt; observerMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"> </span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">observe</span><span class="params">(<span class="meta">@NonNull</span> LifecycleOwner owner, <span class="meta">@NonNull</span> Observer&lt;T&gt; observer)</span> &#123;</span><br><span class="line">            <span class="built_in">super</span>.observe(owner, observer);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                hook(observer);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">observeForever</span><span class="params">(<span class="meta">@NonNull</span> Observer&lt;T&gt; observer)</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (!observerMap.containsKey(observer)) &#123;</span><br><span class="line">                observerMap.put(observer, <span class="keyword">new</span> <span class="title class_">ObserverWrapper</span>(observer));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">super</span>.observeForever(observerMap.get(observer));</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">removeObserver</span><span class="params">(<span class="meta">@NonNull</span> Observer&lt;T&gt; observer)</span> &#123;</span><br><span class="line">            <span class="type">Observer</span> <span class="variable">realObserver</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">if</span> (observerMap.containsKey(observer)) &#123;</span><br><span class="line">                realObserver = observerMap.remove(observer);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                realObserver = observer;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="built_in">super</span>.removeObserver(realObserver);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">hook</span><span class="params">(<span class="meta">@NonNull</span> Observer&lt;T&gt; observer)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">            <span class="comment">//get wrapper&#x27;s version</span></span><br><span class="line">            Class&lt;LiveData&gt; classLiveData = LiveData.class;</span><br><span class="line">            <span class="type">Field</span> <span class="variable">fieldObservers</span> <span class="operator">=</span> classLiveData.getDeclaredField(<span class="string">&quot;mObservers&quot;</span>);</span><br><span class="line">            fieldObservers.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            <span class="type">Object</span> <span class="variable">objectObservers</span> <span class="operator">=</span> fieldObservers.get(<span class="built_in">this</span>);</span><br><span class="line">            Class&lt;?&gt; classObservers = objectObservers.getClass();</span><br><span class="line">            <span class="type">Method</span> <span class="variable">methodGet</span> <span class="operator">=</span> classObservers.getDeclaredMethod(<span class="string">&quot;get&quot;</span>, Object.class);</span><br><span class="line">            methodGet.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            <span class="type">Object</span> <span class="variable">objectWrapperEntry</span> <span class="operator">=</span> methodGet.invoke(objectObservers, observer);</span><br><span class="line">            <span class="type">Object</span> <span class="variable">objectWrapper</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">if</span> (objectWrapperEntry <span class="keyword">instanceof</span> Map.Entry) &#123;</span><br><span class="line">                objectWrapper = ((Map.Entry) objectWrapperEntry).getValue();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (objectWrapper == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>(<span class="string">&quot;Wrapper can not be bull!&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            Class&lt;?&gt; classObserverWrapper = objectWrapper.getClass().getSuperclass();</span><br><span class="line">            <span class="type">Field</span> <span class="variable">fieldLastVersion</span> <span class="operator">=</span> classObserverWrapper.getDeclaredField(<span class="string">&quot;mLastVersion&quot;</span>);</span><br><span class="line">            fieldLastVersion.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            <span class="comment">//get livedata&#x27;s version</span></span><br><span class="line">            <span class="type">Field</span> <span class="variable">fieldVersion</span> <span class="operator">=</span> classLiveData.getDeclaredField(<span class="string">&quot;mVersion&quot;</span>);</span><br><span class="line">            fieldVersion.setAccessible(<span class="literal">true</span>);</span><br><span class="line">            <span class="type">Object</span> <span class="variable">objectVersion</span> <span class="operator">=</span> fieldVersion.get(<span class="built_in">this</span>);</span><br><span class="line">            <span class="comment">//set wrapper&#x27;s version</span></span><br><span class="line">            fieldLastVersion.set(objectWrapper, objectVersion);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//注册订阅</span></span><br><span class="line">LiveDataBus.get()</span><br><span class="line">        .with(<span class="string">&quot;key_test&quot;</span>, String.class)</span><br><span class="line">        .observe(<span class="built_in">this</span>, <span class="keyword">new</span> <span class="title class_">Observer</span>&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onChanged</span><span class="params">(<span class="meta">@Nullable</span> String s)</span> &#123;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"> </span><br><span class="line"><span class="comment">//发送消息：</span></span><br><span class="line">LiveDataBus.get().with(<span class="string">&quot;key_test&quot;</span>).setValue(s);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>源码说明<br>LiveDataBus的源码可以直接拷贝使用，也可以前往作者的GitHub仓库查看下载： <a target="_blank" rel="noopener" href="https://github.com/JeremyLiao/LiveDataBus">https://github.com/JeremyLiao/LiveDataBus</a> 。</p>
+<p>总结<br>本文提供了一个新的消息总线框架——LiveDataBus。订阅者可以订阅某个消息通道的消息，发布者可以把消息发布到消息通道上。利用LiveDataBus，不仅可以实现消息总线功能，而且对于订阅者，他们不需要关心何时取消订阅，极大减少了因为忘记取消订阅造成的内存泄漏风险。</p>
+<p>作者介绍<br>海亮，美团高级工程师，2017年加入美团，目前主要负责美团轻收银、美团收银零售版等App的相关业务及模块开发工作。<br>原文链接<a target="_blank" rel="noopener" href="https://tech.meituan.com/2018/07/26/android-livedatabus.html">https://tech.meituan.com/2018/07/26/android-livedatabus.html</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android/Android%E6%B6%88%E6%81%AF%E6%80%BB%E7%BA%BF%E7%9A%84%E6%BC%94%E8%BF%9B%E4%B9%8B%E8%B7%AF%EF%BC%9A%E7%94%A8LiveDataBus%E6%9B%BF%E4%BB%A3RxBus%E3%80%81EventBus/">http://king-of-cement.gitee.io/blog/post/Android/Android%E6%B6%88%E6%81%AF%E6%80%BB%E7%BA%BF%E7%9A%84%E6%BC%94%E8%BF%9B%E4%B9%8B%E8%B7%AF%EF%BC%9A%E7%94%A8LiveDataBus%E6%9B%BF%E4%BB%A3RxBus%E3%80%81EventBus/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/Android/Android-RxJava%20&%20ioC%20DI%20&%20AOP/">Android-RxJava & ioC DI & AOP</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/java/IO/">IO</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

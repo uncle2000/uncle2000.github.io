@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>设计模式 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">设计模式</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/%E5%9F%BA%E7%A1%80/">基础</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="设计模式（design-pattern）"><a href="#设计模式（design-pattern）" class="headerlink" title="设计模式（design pattern）"></a>设计模式（design pattern）</h1><ul>
+<li>以下所讲设计模式，默认为<strong>计算机</strong>的设计模式。</li>
+</ul>
+<p>[toc]</p>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F_(%E8%AE%A1%E7%AE%97%E6%9C%BA)">引用wiki</a></p>
+<blockquote>
+<p><strong>设计模式</strong>（design pattern）是对<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%BB%9F%E4%BB%B6%E8%A8%AD%E8%A8%88">软件设计</a>中普遍存在（反复出现）的各种问题，所提出的解决方案。这个术语是由<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9F%83%E9%87%8C%E5%B8%8C%C2%B7%E4%BC%BD%E7%91%AA">埃里希·伽玛</a>（Erich Gamma）等人在1990年代从<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%BB%BA%E7%AD%91%E8%AE%BE%E8%AE%A1">建筑设计</a>领域引入到<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8">计算机科学</a>的。</p>
+<ul>
+<li>设计模式并不直接用来完成<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%A8%8B%E5%BC%8F%E7%A2%BC">代码</a>的编写，而是描述在各种不同情况下，要怎么解决问题的一种方案。</li>
+<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1">面向对象</a>设计模式通常以<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%B1%BB_(%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6)">类别</a>或<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%89%A9%E4%BB%B6_(%E9%9B%BB%E8%85%A6%E7%A7%91%E5%AD%B8)">对象</a>来描述其中的关系和相互作用，但不涉及用来完成应用程序的特定类别或对象。</li>
+<li>设计模式能使不稳定依赖于相对稳定、具体依赖于相对抽象，避免会引起麻烦的紧耦合，以增强软件设计面对并适应变化的能力。</li>
+<li>并非所有的软件模式都是设计模式，设计模式特指软件“设计”层次上的问题。还有其他非设计模式的模式，如<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%BC%8F">架构模式</a>。同时，<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%BC%94%E7%AE%97%E6%B3%95">算法</a>不能算是一种设计模式，因为算法主要是用来解决计算上的问题，而非设计上的问题。</li>
+</ul>
+<blockquote>
+<p><strong>架构模式</strong>（architectural pattern）是<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84">软件架构</a>中在给定环境下，针对常遇到的问题的、通用且可重用的解决方案。[<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%BC%8F#cite_note-TMD-1">1]</a>类似于<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F">软件设计模式</a>但覆盖范围更广，致力于<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B">软件工程</a>中不同问题，如<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A1%AC%E4%BB%B6">计算机硬件</a>性能限制、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%AB%98%E5%8F%AF%E7%94%A8%E6%80%A7">高可用性</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E9%A3%8E%E9%99%A9">业务风险</a>极小化。[<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%BC%8F#cite_note-2">2]</a>[<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%BC%8F#cite_note-3">3]</a>一些架构模式会透过<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%BD%AF%E4%BB%B6%E6%A1%86%E6%9E%B6">软件框架</a>实现。</p>
+</blockquote>
+<p>1991年&#96;&#96;&#96;出版了《<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%EF%BC%9A%E5%8F%AF%E5%A4%8D%E7%94%A8%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BD%AF%E4%BB%B6%E7%9A%84%E5%9F%BA%E7%A1%80">设计模式：可复用面向对象软件的基础</a>》（Design Patterns - Elements of Reusable Object-Oriented Software） 一书，在此书中共收录了 23 种<strong>设计模式</strong>。</p>
+<p>一些结论（利于区别于其他，防止错误的定义）：</p>
+<ul>
+<li>架构模式，算法不是设计模式，设计模式解决的是‘设计层面’的问题，所以实现模式的代码，没有固定规范，只要满足条件即可。甚至应该要想到:实现设计模式的代码，自身也不是设计模式，只是代码而已。（特别说明，由于我遇到的一些人，盲目理解设计模式，知识越学越死，知识学的越多是应该越有包容性的（违反定义和原则除外），而不是走向极端。）</li>
+<li>模式是什么？</li>
+</ul>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%A8%A1%E5%BC%8F">引用:模式的定义</a> :<strong>模式</strong>（英语：Pattern）是存在于人们感知到的世界、人造设计或抽象思想中的规律。因此，模式的元素以可预测的方式重复。</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%B9%BE%E4%BD%95">几何</a>图案是一种由几何形状形成的图案，通常像壁纸设计一样重复。</p>
+<p>任何<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%84%9F%E5%AE%98">感官</a>都可以直接<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A7%80%E5%AF%9F">观察</a>模式。相反，<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E7%A7%91%E5%AD%B8">科学</a>、<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%B8%E5%AD%B8">数学</a>或<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%AA%9E%E8%A8%80">语言</a>中的抽象模式可能只有透过分析才能观察到。实践中的直接观察，意味着看到在自然界和艺术中普遍存在的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%96%E8%A6%BA">视觉</a>模式。自然界中的视觉模式通常是混乱的，很少完全重复，并且经常涉及<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%88%86%E5%BD%A2">分形</a>。自然图案包括螺旋、曲折、波浪、泡沫、瓷砖、裂缝，以及由旋转和反射的对称性产生的图案。模式有一个潜在的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%B0%E5%AD%A6%E7%BB%93%E6%9E%84">数学结构</a>[<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%A8%A1%E5%BC%8F#cite_note-1">1]</a>；事实上，数学可以被看作是对<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A6%8F%E5%BE%8B">规律</a>的探索，任何<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%87%BD%E6%95%B8">函数</a>的输出都是一个数学模式。同样在科学中，理论解释和预测世界的规律。</p>
+<p>在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%97%9D%E8%A1%93">艺术</a>和<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%BB%BA%E7%AF%89">建筑</a>中，装饰或视觉图案可以组合和重复以形成设计用于对观看者产生选定效果的图案。在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%A8%88%E7%AE%97%E6%A9%9F%E7%A7%91%E5%AD%B8">计算机科学</a>中，<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%BB%9F%E4%BB%B6%E8%A8%AD%E8%A8%88%E6%A8%A1%E5%BC%8F">软件设计模式</a>是对一类编程问题的已知解决方案。在<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%97%B6%E5%B0%9A">时尚</a>界，图案是用于创建任意数量的类似服装的模板。</p>
+<p>在模式之中，某些固定的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%85%83%E7%B4%A0">元素</a>不断以可预测的方式周期性重现。…找寻出固定模式是人类基本的<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%AA%8D%E7%9F%A5">认知</a>功能之一。</p>
+<p>模式的概念可以被应用在许多不同的领域。——《Head First 设计模式》（中文版）第13章，604页</p>
+<ul>
+<li>架构模式：用来建立生气勃勃的建筑，城镇和城市的架构。</li>
+<li>应用模式：建立系统级架构的模式，许多多层的架构都属于这一类目。</li>
+<li>领域特定模式：关注特定领域的问题，例如并发系统或实时系统。</li>
+<li>业务流程模式：描述业务，顾客和数据之间的交互，此模式能够处理如“如何有效决策并沟通决策”之类的问题。</li>
+<li>组织模式：描述了人类组织的结构以及实践。到目前为止大多数努力聚焦于制造或支持软件的组织。</li>
+<li>用户界面设计模式：致力解决设计交互式软件时的问题。</li>
+</ul>
+</blockquote>
+<ul>
+<li>所以计算机的设计模式，具有一些确定的特点：抽象的（不受具体事物的限制。代码本身是工具，是具体的），已知的，是一种解决方案（先有问题，才有解决问题的方案），重复的（就像蓝图，模子一样）</li>
+</ul>
+<p>掌握以上的定义，用来区分什么是设计模式，什么不是设计模式。（从来没有定义过，设计模式只能用于设计OO，设计模式是和语言无关的。也有人说：狭义的设计模式是针对OO语言的。广义的是针对一种编程范式中的模式。<a target="_blank" rel="noopener" href="https://lwn.net/Articles/336224/">用C写kernel</a>）</p>
+</blockquote>
+<p>ps:以下只要是实现了设计模式的定义的，就是该类设计模式。</p>
+<p>ps:以下设计模式，一律用oo语言来写。</p>
+<h2 id="1单例设计模式-Singleton"><a href="#1单例设计模式-Singleton" class="headerlink" title="1单例设计模式(Singleton)"></a>1单例设计模式(Singleton)</h2><blockquote>
+<p>确保一个类只有一个实例，并提供全局访问点。</p>
+</blockquote>
+<p>以下代码都有一个get方法来get单例，要不要这么写不重要，理解设计模式不要受语言的束缚。</p>
+<p>而将构造器私有化是为了这个类不被实例化，所以在其他语言下，或者某种其他方法下可以做到不违法单例的原则，那么就不必受这些束缚！一定要想通，不要把“为了成为单例”的限制，变成了，单例的“原则”来遵守。</p>
+<p>“小心，你如果使用多个类加载器，可能导致单件失效而产生多个实例。”——《Head First 设计模式》（中文版）第五章，186页</p>
+<h3 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h3><blockquote>
+<p>优点：代码量少，线程安全</p>
+<p>缺点：很多场景下不推荐</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton1</span> &#123;    </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton1</span><span class="params">()</span> &#123;&#125;    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">Singleton1</span> <span class="variable">mInstance</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Singleton1</span>();    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton1 <span class="title function_">getInstance</span><span class="params">()</span> &#123;        </span><br><span class="line">        <span class="keyword">return</span> mInstance;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="懒汉式"><a href="#懒汉式" class="headerlink" title="懒汉式"></a>懒汉式</h3><blockquote>
+<p>优点：最普通的懒汉式，只有使用时才new</p>
+<p>缺点：相对饿汉式肯定是代码量多了一点点。</p>
+<p>有人会说它有某种其他问题，怎么怎么样。我个人认为。</p>
+<blockquote>
+<p>假设将此懒汉式成为懒汉式基础版，其他解决了懒汉自身问题的版本称之为懒汉式升级版或者懒汉式+版等等。</p>
+<p>1.那么，我认为，基础版是一个参照版，它自身本来是为了实现单例，这是对基础版唯一的要求，“它只要实现了懒汉式的单例就足够了”，任何额外的要求都是画蛇填足，为什么？比如，你的孩子今年刚上小学一年级，你对他的要求自然是对一个初来人世的不经世事的孩子的要求，“他只要能写汉语，会学数学就行了”，你会要求你的孩子上完小学就可以找到工作？你会要求他上完小学就会高数？</p>
+<p>2.因为在使用基础版的时候，有了更多的需求需要满足，而基础版满足不了使用者的需求，或者基础版有自身的缺陷及问题，从而需要升级版来补足这些缺陷，否则，懒汉式只用一套代码即可，为什么懒汉式有这么多写法呢？那是因为，各个懒汉式都有其适合的应用范围，就像单例有这么多种算法，为什么不合成一种呢？道理是一样的。</p>
+</blockquote>
+<p>所以，学习让人更具有包容性（是对知识，并不是对人，对人是情商的事），而不是越学越死。所以我认为，不可以把它的升级版的优点，作为基础版的缺点来说，但却可以拿来和其他比如饿汉式来“互相”对比（这称之为水平对比），而和升级版对比应该只言本版本比前一个版本优化了什么，而不是把所有升级版能实现的点当作基础版的缺点（这称之为垂直对比）。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton2</span> &#123;    </span><br><span class="line">    <span class="comment">// 只有使用的时候才会去 new 对象 ，可能更加高效    </span></span><br><span class="line">    <span class="comment">// 但是会有一些问题？多线程并发的问题,如果多线程调用还是会存在多个实例</span></span><br><span class="line">    <span class="comment">// 所以如果使用场景无关线程，比如android的大多数情况下，那就应该用最轻量的版本</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton2 mInstance;   </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton2</span><span class="params">()</span> &#123;&#125;    </span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton2 <span class="title function_">getInstance</span><span class="params">()</span> &#123;        </span><br><span class="line">        <span class="keyword">if</span> (mInstance == <span class="literal">null</span>) &#123;            </span><br><span class="line">            mInstance = <span class="keyword">new</span> <span class="title class_">Singleton2</span>();        </span><br><span class="line">        &#125;       </span><br><span class="line">        <span class="keyword">return</span> mInstance;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="懒汉式-1"><a href="#懒汉式-1" class="headerlink" title="懒汉式+"></a>懒汉式+</h3><blockquote>
+<p>优点：解决了基础版多线程并发的问题</p>
+<p>缺点：效率，每次都要判断</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton3</span> &#123;</span><br><span class="line">    <span class="comment">// 只有使用的时候才会去 new 对象 ，可能更加高效</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton3 mInstance;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton3</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 虽说解决了线程安全的问题，但是又会出现效率的问题，</span></span><br><span class="line">    <span class="comment">// 又会显得比较低，每次获取都要经过同步锁的判断</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> Singleton3 <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (mInstance == <span class="literal">null</span>) &#123;</span><br><span class="line">            mInstance = <span class="keyword">new</span> <span class="title class_">Singleton3</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mInstance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="懒汉式-2"><a href="#懒汉式-2" class="headerlink" title="懒汉式++"></a>懒汉式++</h3><blockquote>
+<p>优点：解决了上个版本每次都要判断，判断经过低效的synchronized的区域的问题</p>
+<blockquote>
+<p>也被称之为DCL(double-checked locking)，双重检验加锁</p>
+</blockquote>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton4</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton4 mInstance;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton4</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 这种方式其实还是会有问题</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton4 <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (mInstance == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton4.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (mInstance == <span class="literal">null</span>) &#123;</span><br><span class="line">                    mInstance = <span class="keyword">new</span> <span class="title class_">Singleton4</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mInstance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="懒汉式-3"><a href="#懒汉式-3" class="headerlink" title="懒汉式+++"></a>懒汉式+++</h3><blockquote>
+<p>优点：volatile了&#x2F;&#x2F;TODO</p>
+<blockquote>
+<p> 注意：以上几个都是在解决语言自身的问题，加入了某种语言，没有这些问题，就不会有这么多种升级版</p>
+</blockquote>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton5</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singleton5 mInstance;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton5</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton5 <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (mInstance == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Singleton5.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (mInstance == <span class="literal">null</span>) &#123;</span><br><span class="line">                    mInstance = <span class="keyword">new</span> <span class="title class_">Singleton5</span>();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mInstance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="静态内部类-常用"><a href="#静态内部类-常用" class="headerlink" title="静态内部类(常用)"></a>静态内部类(常用)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton6</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton6</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton6 <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.mInstance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SingletonHolder</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> Singleton6 mInstance=<span class="keyword">new</span> <span class="title class_">Singleton6</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="容器管理，系统用法"><a href="#容器管理，系统用法" class="headerlink" title="容器管理，系统用法"></a>容器管理，系统用法</h3><blockquote>
+<p>常见于android Api</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton7</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton7</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> HashMap&lt;String, Object&gt; maps = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 即static块，在类被加载的时候执行且仅会执行一次，一般用来初始化静态变量和静态方法。</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        maps.put(<span class="string">&quot;activity_services&quot;</span>, <span class="keyword">new</span> <span class="title class_">Singleton7</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">getService</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> maps.get(name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="自成一派"><a href="#自成一派" class="headerlink" title="自成一派"></a>自成一派</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Singleton8</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">Singleton8</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Singleton8 mInstance;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 即static块，在类被加载的时候执行且仅会执行一次，一般用来初始化静态变量和静态方法。</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        mInstance = <span class="keyword">new</span> <span class="title class_">Singleton8</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Singleton8 <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> mInstance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2建造者-x2F-生成器（builder）"><a href="#2建造者-x2F-生成器（builder）" class="headerlink" title="2建造者&#x2F;生成器（builder）"></a>2建造者&#x2F;生成器（builder）</h2><blockquote>
+<p>简介：封装一个产品的构造过程，并容许按步骤构造</p>
+<ul>
+<li>将一个复杂对象的创建过程封装起来</li>
+<li>允许对象通过多个步骤来创建，并且可以改变过程（这和只有一个步骤的工厂模式不同）</li>
+<li>向客户隐藏产品内部的实现</li>
+<li>产品的实现可以被替换因为客户只看到一个抽象的接口</li>
+<li>缺点：与工厂模式相比，采用这个模式创建对象的客户，需要具备更多的领域知识。</li>
+</ul>
+</blockquote>
+<h2 id="3工厂（factory）"><a href="#3工厂（factory）" class="headerlink" title="3工厂（factory）"></a>3工厂（factory）</h2><blockquote>
+<p>处理创建对象的细节</p>
+<ul>
+<li>如何创建，在哪创建，创建多少，为谁创建等</li>
+<li>注意：这里讲的是创建对象，但是我说过设计模式与面向对象无关，所以针对c语言是创建结构体，其他语言请自行查阅。</li>
+<li>但是我们所说的工厂方法和抽象工厂是特定条件下的解决方案，我们把它目前局限在java派来讲</li>
+</ul>
+</blockquote>
+<h3 id="简单工厂"><a href="#简单工厂" class="headerlink" title="简单工厂"></a>简单工厂</h3><blockquote>
+<p>简单工厂其实不是一个设计模式，反而比较像是一种编程习惯。——《Head First 设计模式》（中文版）第四章，117页</p>
+<ul>
+<li>其实就是把创建对象的代码移动到某个统一调用的地方</li>
+</ul>
+</blockquote>
+<h3 id="工厂方法"><a href="#工厂方法" class="headerlink" title="工厂方法"></a>工厂方法</h3><blockquote>
+<p>定义了一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类把实例化推迟到子类。</p>
+<ul>
+<li>实现方式就是把创建对象的类作为父类，由子类来实现创建行为</li>
+<li>面试可能会问到：工厂方法中，什么是具体创建者，什么是抽象创建者（具体创建者是抽象创建者的子类，是具体的实现创建行为的地方，抽象创建者不负责创建对象，一律由具体创建者创建），答案不重要，但是千万不要说：“创建者一定是抽象的”，这是错的，工长方法模式中，创建者和工厂方法不一定是抽象的——《Head First 设计模式》（中文版）第四章，135页</li>
+<li>参数化工厂可以使工厂产出多种产品。（在java中，（排除 kotlin，python等具有默认参数的语言不说）必须父类方法有参，子类才能有参，多态可以解决这个问题，但是一般情况下，抽象创建者的创建方法是抽象的，那么子类就必须实现方法，如果有两个，一个有参，一个无参，那子类必须实现两个方法，建议将某一个方法设计为默认方法，比如：不传参则产出默认对象）</li>
+<li>工厂方法很像简单工厂，区别在于，工厂方法产生的对象是由子类决定的，而简单工厂只能创建特定数量类型的对象，不具有拓展性。</li>
+</ul>
+</blockquote>
+<h3 id="抽象工厂"><a href="#抽象工厂" class="headerlink" title="抽象工厂"></a>抽象工厂</h3><blockquote>
+<p>提供一个接口，用于创建相关或依赖对象的家族，而不需要明确指定具体类。</p>
+<ul>
+<li>抽象工厂定义里，不需要明确制定具体类，这也是和工厂方法的核心区别，工厂方法创造的是固定的具体的类，而抽象工厂创造的是一堆有关联的类（1.（一堆类）实现的时候肯定要通过抽象或者接口的方式，2.（有关联的）就是说类和类之间的关系，所以可以称之为“家族”）</li>
+<li>如果把工厂方法定义为：F个工厂，创建P种类型的产品，其产品不同种类&#x3D;F×P.那抽象工厂可以定义为F个工厂，创建P种类型的产品，每种产品有D种不同的属性，其产品不同的种类&#x3D;F×P×D，(那简单工厂是不是可以想想为：1个工厂创建P种类型的产品？)。所以我个人认为抽象工长和工厂方法的区别在于<strong>维度的不同产生不同数量的结果</strong>，（为了证实我的想法，可以想象一下Excel表格，行是工厂，列是产品，或者想象成九九乘法表，而抽象工厂可以详细为一个 3维的笛卡尔坐标轴，xyz分别表示：工厂，不同的产品种类，每种产品的不同属性（ps,三维坐标轴这种方式其实不正确，因为不同种产品的属性是各特异的，但是这样可以方便你理解抽象工厂和工长方法的区别，正确的其实是工厂方法的每个P都是一个深度为2度为无限的树））</li>
+<li>由上条可以证明，抽象工厂的拓展性强于工厂方法（但使用的时候还是要看“维度”，如果就俩维度就应该用工厂方法，并且工厂方法改为抽象工厂也不难）</li>
+</ul>
+</blockquote>
+<h2 id="4装饰（dedcorator）"><a href="#4装饰（dedcorator）" class="headerlink" title="4装饰（dedcorator）"></a>4装饰（dedcorator）</h2><blockquote>
+<p>简介：动态的将责任附加到对象上。想要扩展功能，装饰者提供有别于继承的另一种选择。</p>
+<p>重点：切记这个模式是拓展功能的，也是常见模式中唯一一个可以代替继承的模式，说白了就是不用继承就达到继承的效果。</p>
+<ul>
+<li><p>继承是编译器确定的，是静态的。装饰器模式是用组合的方式动态的拓展功能。</p>
+</li>
+<li><p>在java的相关博客中，你可能会看到这样的描述：“装饰器模式分为装饰者和被装饰者，而这两者必须继承自同一个父类”。其实也没错，但你要明白，之所以这里用继承，其目的是——统一行为，那么知道了目的，你就明白，即使不用继承，用接口也是一样的，父类是抽象的也可以（甚至不用，大家约定俗成的有一个方法处理一些行为都可以）。所以装饰器就是通过组合拓展行为这么一种简单的模式。</p>
+</li>
+</ul>
+<p>okhttp</p>
+<p>java中的steam</p>
+</blockquote>
+<h2 id="5模板方法（template）"><a href="#5模板方法（template）" class="headerlink" title="5模板方法（template）"></a>5模板方法（template）</h2><blockquote>
+<p>简介：在一个方法中定义一套算法的骨架。而将一些步骤延迟到子类中。模版方法使得之类可以在不改变算法结构的情况下，重新定义算法中的某些步骤。</p>
+<p>核心：通过继承的方式，由子类去实现父的方法（模板）就像是一个hook，后面父类负责调用这个方法，而方法一定是一个步骤（逻辑先后），其目的是创建一个算法的模板</p>
+<ul>
+<li><p>和hook的区别是，hook可以实现，可以不实现，但是模板“方法”必须实现，所以在java中，模板“方法”是抽象的，hook是具体的。</p>
+</li>
+<li><p>hook理应出现在模板方法中，成为一个可选项，使得你的算法更灵活和可拓展，也可以避免模板“方法”太多。</p>
+</li>
+<li><p>所有的拥有生命周期的类（且可以由子类改写的）都一定是模板方法这个可能是面向对象里最长见的模式之一</p>
+</li>
+<li><p>模板方法极其简单也极其常见，android中的Activety和Fragment就是。这里或许有人有疑问，说这两个类都不是抽象的，没有抽象方法，我凭什么说他是实现了模板方法设计模式？是这样的，抽不抽象，用不用继承，是面向对象的东西，而该模式的核心在于，A做一些有逻辑步骤的事情，B来实现其中的一些步骤，然后保证A能达到目的。A和B的关系不重要。Activity和Fragment的生命周期方法的确不是抽象的，看起来更像是一个hook，但是实际中，谁会用默认的onCreate(…)和onCreateView(…)?几乎所有的情况下，我们都会重写他们，那无论它怎么定义，在我们的行为中，他是抽象的而不是具体的。</p>
+</li>
+<li><p>以此类推， 常见的模板方法模式java中：Arrays.sort(Comparable)，InputStream,java.util包下的很多都是，比如Observable.工厂方法模式也是一种特殊的模板方法，Glide.with(context).load(…).xxx也是一种模板方法。（是不是大吃一惊？什么鬼？一种模式还能是另一种模式？Glide的使用是Build设计模式，也同样是模板方法模式？）</p>
+</li>
+</ul>
+</blockquote>
+<h2 id="6策略（strategy）"><a href="#6策略（strategy）" class="headerlink" title="6策略（strategy）"></a>6策略（strategy）</h2><blockquote>
+<p>简介：定义算法族，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户<br>别看描述起来复杂，其实策略模式也是极其常用的模式之一，你肯定写过策略模式！！！其核心在于：A组合B，通过设置不同的B的行为，A给出不同的结果。</p>
+<p>比如，我们经常用到XXManager.class我们常让它组合其他类，然后xXManager.setB(b1:B)或xXManager.setB(b2:B)，b1,b2决定了xXManager的一些行为。</p>
+<p>再比如，DialogManager有多种样式，它只负责展示，而它组合一个DisplayStyle类，由传入的DisplayStyle来决定DialogManager最终如何展示。在这里，不同的DisplayStyle就是一个一个策略。</p>
+</blockquote>
+<h2 id="7适配器（adapter）"><a href="#7适配器（adapter）" class="headerlink" title="7适配器（adapter）"></a>7适配器（adapter）</h2><blockquote>
+<p>简介：将一个类的接口转换成客户期望另一个接口。适配器让原本不兼容的类，可以合作无间。<br>适配器也是极其常见极其简单的类，其核心就是，适配器A，传入B，传出C。</p>
+<p>最长见的就是ListView和RecyclerView的Adapter,传入数据M，传出View</p>
+</blockquote>
+<h2 id="8观察者（observer）"><a href="#8观察者（observer）" class="headerlink" title="8观察者（observer）"></a>8观察者（observer）</h2><blockquote>
+<p>简介：在对象之间定义一个一对多的依赖，当一个对象改变状态，依赖它的对象都会收到通知，并自动更新。</p>
+<p>其核心在于A和B以某种方式影响到对方，既然会影响（单向或双向），一般就会用到组合，根据影响的方向又分为“推”和“拉”，我们都晓得，即使不用组合，也能“推”给对方，或从对方那里“拉”到消息。（我相信大家可以认同我的说法，但是你们是如何从OO思想突然转变成非OO思想的？因为A与B可能隔着一堆阻碍，甚至另一方根本不是OO语言，甚至可能压根用不到软件（比如拿个大喇叭在小区喊，下楼做核酸）请问这和面向对象有关系么？和软件有关系么？没有！但是你们都能理解观察者模式，为什么？因为太常用了！所以我希望大家能看透设计模式的本质，不要被语言和面向对象思想所困住，思想要有包容性）</p>
+<ul>
+<li>java自身实现了观察者模式,在java.util下，但其实我们更喜欢用第三方的，因为功能更强大，比如Event Bus,RxJava,ViewModel。但是如果只是想了解观察者模式这一种模式，还是建议从简。</li>
+<li>java的观察者模式源码非常简单，请自行查阅。</li>
+</ul>
+</blockquote>
+<h2 id="9代理（proxy）"><a href="#9代理（proxy）" class="headerlink" title="9代理（proxy）"></a>9代理（proxy）</h2><blockquote>
+<p>简介：为另一个对象提供一个替身或占位符以访问这个对象。</p>
+<p>其核心在于“拦截”！！！A组合B，所有对B的访问转接到A，A“拦截”了所有对B的访问，而根据拦截之后的不同行为，代理的变种也不同。</p>
+<ul>
+<li>远程代理，拦截后实现远程的链接和互通的行为。（网络请求框架，CAN信号的交互调用）</li>
+<li>虚拟代理，拦截，控制对开销大的资源。（弱引用，GC的实现者，所有操作系统的文件管理系统）</li>
+<li>缓存代理，拦截，视情况选择返回缓存。（图片加载框架，网络请求的断网加载本地缓存的机制，）</li>
+<li>保护代理，拦截，有权限才可通过。（各种权限相关的地方，比如sudo，比如android动态权限，比如文件的读写）</li>
+</ul>
+<p>android使用okhttp的过程中，先打开网络权限（否则会被保护代理拦截），然后建立链接（远程代理负责联通），然后每一次数据的往返都会经过拦截器（就叫代理吧，毕竟行为种类很多），然后刷着刷着断网了，再刷（在实现了okhtp的缓存的前提下，会显示缓存数据，这里是缓存代理）出现了老数据，但并不是空白&#x2F;error页，体验感良好。</p>
+<p>区别注意：装饰器模式，策略模式</p>
+<p>java api实现了动态代理，在java.lang.reflect包下。</p>
+</blockquote>
+<h2 id="10原型（prototype）"><a href="#10原型（prototype）" class="headerlink" title="10原型（prototype）"></a>10原型（prototype）</h2><blockquote>
+<p>简介：当创建给定类的实例过程很昂贵的或很复杂的时候，就使用原型模式</p>
+<p>在一个复杂的系统中，当系统必须从其中的许多类型创建新对象时，可以考虑原型。</p>
+<p>原型在android应用层我暂时举不出什么例子，但是有一个关键就是，原型一般会用clone()方法，或者反序列化。从理论上讲，在游戏中一定大量存在原型模式，因为大量的数目，草，敌人，这些实例适合随机产生。</p>
+<ul>
+<li>向客户隐藏制造新实例的复杂性</li>
+<li>提供让客户能够产生未知类型对象的选项</li>
+<li>在某些环境下，复制对象比创建对象更有效</li>
+<li>缺点：复制有时很复杂</li>
+</ul>
+</blockquote>
+<h2 id="11迭代器（iterator）"><a href="#11迭代器（iterator）" class="headerlink" title="11迭代器（iterator）"></a>11迭代器（iterator）</h2><blockquote>
+<p>简介：提供一种方法顺序访问一个聚合对象中的各个元素，而又不暴露其内部的表示。</p>
+<p>其核心在于使代码高内聚，各司其职，外部逻辑只关心外部逻辑，对于内部的元素有统一的访问方式，无论数据是哪种（容器或一堆数据），所以说不暴露内部的表示。</p>
+<p>注意它常依赖一个统一的接口：里面有两个方法1hasNext()2next()</p>
+<p>注意迭代器不关心元素之间的关系，只为了挨个取出所有的元素</p>
+<p>android中迭代器模使用的人少，注意区别java.util.Iterator,java的Iterator的用处是用于迭代访问容器中的元素，可以充当迭代器模式中的访问元素统一的“接口”，而java中的Cursor，file的read line中指针的移动，seek()等可以说是一种迭代器模式。</p>
+<p>所以说，迭代器模式给你的感觉应该是：你调用的接口会一个一个的给你数据，但是你不知道里面的数据到底是容器还是数据聚合体</p>
+</blockquote>
+<h2 id="12责任链（chain-of-responsibility）"><a href="#12责任链（chain-of-responsibility）" class="headerlink" title="12责任链（chain of responsibility）"></a>12责任链（chain of responsibility）</h2><blockquote>
+<p>简介：当你想让一个以上的对象有机会能处理某个请求的时候，就使用这个模式。<br>经常被使用在窗口系统中，处理鼠标和键盘之类的事件。比如拖动文件到飞书&#x2F;QQ界面，一步一步的去处理文件（不同的类型做不同的事情，由链来确认）</p>
+<ul>
+<li>将请求的发送者与和接受者解耦</li>
+<li>可以简化你的对象，因为他不需要知道链的结构。</li>
+<li>通过改变链内成员或调动它们的次序，允许你动态的新增或删除责任。</li>
+</ul>
+</blockquote>
+<h2 id="13门面-x2F-外观（facede）"><a href="#13门面-x2F-外观（facede）" class="headerlink" title="13门面&#x2F;外观（facede）"></a>13门面&#x2F;外观（facede）</h2><blockquote>
+<p>简介：提供了一个统一的接口用来访问子系统中的一群接口。外观定义了一个高层接口，让子系统更容易使用。</p>
+<p>其核心就是，比如你家装修，你需要联系水电工泥瓦匠等等人，你要来主动调用他们，给他们分时间分任务，但是有了外观模式后，你只需要找一个公司，他来负责所有的事情，你向公司提要求即可。（有没有想到代理模式？公司同时是水电工代理，泥瓦匠代理，设计师代理）</p>
+<p>外观模式其实也是非常常见的模式，也非常简单，简单的像简单工厂一样简单。它其实就是封装的一种特例。</p>
+</blockquote>
+<h2 id="14命令（command）"><a href="#14命令（command）" class="headerlink" title="14命令（command）"></a>14命令（command）</h2><blockquote>
+<p>简介：将请求封装成对象，这可以让你使用不同的请求、队列、或者日志请求来参数化其他对象。命令模式也支持撤销操作。<br>核心：命令模式分为发出请求方和执行命令方(接收方)，互相解偶，通过命令来沟通。命令本身一般要封装接受者，调用者调用命令对象的execute()方法。</p>
+<p>所以说，有时候你看到代码里有execute()&#x2F;run()&#x2F;do()&#x2F;等“执行”方法的时候，你就要问自己：“这里是不是用的命令模式？”</p>
+<p>命令模式可以让你的场景回到之前的一种状态&#x2F;环境，因为命令模式的执行都是执行do()…等，那么用undo()来返回到do()的初始状态并不难。这里也支持，一系列的命令do()和一系列的undo()。比如很多IDE都有撤销&#x2F;反撤销操作，用命令模式去封装用户的每一次操作就非常适合。</p>
+<p>execute的时候执行的是一组命令则称之为宏命令。</p>
+<p>命令模式可以没有接收者，这样的话，执行的行为直接有命令来执行，但是为了解耦，还是应该划分清楚。</p>
+</blockquote>
+<h2 id="15享元-x2F-蝇量（flyweight）"><a href="#15享元-x2F-蝇量（flyweight）" class="headerlink" title="15享元&#x2F;蝇量（flyweight）"></a>15享元&#x2F;蝇量（flyweight）</h2><blockquote>
+<p>简介：如果想让某个类的一个实例能用来提供许多“虚拟实例”，就使用这个模式<br>当一个类有许多的实例，而这些实例能被统一方法控制的时候，我们就可以用这个模式。</p>
+<p>其核心在于重用，读缓存，能不new就不new。比如Message.obtain()</p>
+<ul>
+<li>减少运行时对象实例的个数，节省内存</li>
+<li>将许多“虚拟”对象的状态集中管理</li>
+<li>缺点：一旦实现了它，那么单个的逻辑实例将无法拥有独立而不同的行为</li>
+</ul>
+</blockquote>
+<h2 id="16桥接（bridge）"><a href="#16桥接（bridge）" class="headerlink" title="16桥接（bridge）"></a>16桥接（bridge）</h2><blockquote>
+<p>简介：不止改变你的实现，也改变你的抽象<br>当需要用不同的方式改变接口和实现时，你会发现桥接很好用</p>
+<ul>
+<li>将实现解耦，让它和界面之间不再永久绑定</li>
+<li>抽象和实现可以独立拓展，不会影响到对方</li>
+<li>对于具体的抽象类所做的改变，不会影响到客户</li>
+<li>缺点：增加了复杂度</li>
+</ul>
+</blockquote>
+<h2 id="17中介者（mediator）"><a href="#17中介者（mediator）" class="headerlink" title="17中介者（mediator）"></a>17中介者（mediator）</h2><blockquote>
+<p>简介：集中相关对象之间复杂的沟通和控制方式。</p>
+<p>其目的是通过解耦增加对象的复用性。简化系统维护，</p>
+<ul>
+<li>可以让对象之间所传递的消息变得简单而且大幅度减小。</li>
+<li>中介者常常被用来协调相关的GUI组建</li>
+<li>缺点：如果设计不当，中介者会变得过于复杂</li>
+</ul>
+</blockquote>
+<h2 id="18状态（state）"><a href="#18状态（state）" class="headerlink" title="18状态（state）"></a>18状态（state）</h2><blockquote>
+<p>简介：对象在内部状态改变时改变他的行为，对象看起来好像修改了他的类。<br>重点：其类图与策略模式相同，区别在于意图。封装基于状态的行为，并将行为委托到当前状态。</p>
+<p>该模式的使用场景非常常见，但是程序员一般不这么写，比如用到Enum的地方，区别在于行为是被直接执行还是放在状态类里。</p>
+<p>使用此模式会使得类的数量便多，更多人会使用“static final X x &#x3D; 0”这种来代替状态 </p>
+</blockquote>
+<h2 id="19备忘录（Memento）"><a href="#19备忘录（Memento）" class="headerlink" title="19备忘录（Memento）"></a>19备忘录（Memento）</h2><blockquote>
+<p>简介：让对象返回之前的状态</p>
+<p>备忘录本身是为了存储状态的。这是可以让对象返回的本质。比如游戏存档，比如服务器回档。比如安卓上你随手写的SharepeferenceManager。</p>
+<ul>
+<li>将被储存的状态放在外面，不要和关键对象混在一起，这个可以帮助维护对象内聚。</li>
+<li>保持关键对象的数据封装</li>
+<li>提供了容易实现的恢复能力</li>
+<li>缺点：储存和恢复状态的过程可能相当耗时</li>
+</ul>
+</blockquote>
+<h2 id="20组合（Composite）"><a href="#20组合（Composite）" class="headerlink" title="20组合（Composite）"></a>20组合（Composite）</h2><blockquote>
+<p>简介：容许你将对象组成树形结构来表现“整体&#x2F;部分”的层次结构。组合能让客户以一致的方式处理个别对象和对象组合。<br>其核心在于，我们可以用相同的方式处理所有类型的对象，忽略了其中的区别，为了达到这个目的，被处理的对象需要被处理成某种结构，而且实现统一接口来被调用。</p>
+<p>组合模式在android的日常中并不常用，也不好写，layout的view tree就是组合模式，因为 无论是 X layout还是view 都是继承自view的，我们可以统一的当作是view来处理或调用。以此类推，如果你能看到某些对象有“getParents() 和 getChild()”那么很有可能就是组合模式。</p>
+</blockquote>
+<h2 id="21反模式"><a href="#21反模式" class="headerlink" title="21反模式"></a>21反模式</h2><blockquote>
+<p>简介：告诉你如何采用一个不好的解决方案解决一个问题</p>
+<p>一般看起来是一个好的解决方案，一旦使用，就会带来麻烦。俗话说的“画蛇填足”也是其中一种。</p>
+</blockquote>
+<h2 id="22复合设计模式"><a href="#22复合设计模式" class="headerlink" title="22复合设计模式"></a>22复合设计模式</h2><blockquote>
+<p>简介：复合模式结合两个或以上的模式，组成一个解决方案，解决一再发生的一般性问题。<br>包括MVC，MVP，MVVM，Model2等</p>
+</blockquote>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/%E5%9F%BA%E7%A1%80/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">http://king-of-cement.gitee.io/blog/post/%E5%9F%BA%E7%A1%80/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/%E6%A8%A1%E6%9D%BF/%E7%BA%A6%E6%9D%9F%E8%8C%83%E5%9B%B4/">MD read me</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/%E6%A8%A1%E6%9D%BF/%E6%AC%A2%E8%BF%8E%E4%BD%BF%E7%94%A8%E9%A9%AC%E5%85%8B%E9%A3%9E%E8%B1%A1/">MD 马克飞象</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

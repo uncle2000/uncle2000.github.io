@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>优化 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">优化</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/Android/">Android</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h1><p>[toc]</p>
+<h2 id="启动优化"><a href="#启动优化" class="headerlink" title="启动优化"></a>启动优化</h2><h3 id="冷启动和热启动解析"><a href="#冷启动和热启动解析" class="headerlink" title="冷启动和热启动解析"></a>冷启动和热启动解析</h3><h3 id="启动方式"><a href="#启动方式" class="headerlink" title="启动方式"></a>启动方式</h3><p>通常来说，在安卓中应用的启动方式分为两种：冷启动和热启动。</p>
+<blockquote>
+<p>1、冷启动：当启动应用时。后台没有该应用的进程，这时系统会又一次创建一个新的进程分配给该应用，这个启动方式就是冷启动。<br>2、热启动：当启动应用时，后台已有该应用的进程（例：按back键、home键，应用尽管会退出，可是该应用的进程是依旧会保留在后台，可进入任务列表查看）。所以在已有进程的情况下。这样的启动会从已有的进程中来启动应用。这个方式叫热启动。</p>
+</blockquote>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>1、冷启动：冷启动由于系统会又一次创建一个新的进程分配给它。所以会先创建和初始化Application类，再创建和初始化MainActivity类（包含一系列的測量、布局、绘制），最后显示在界面上。</p>
+<p>2、热启动：热启动由于会从已有的进程中来启动，所以热启动就不会走Application这步了，而是直接走MainActivity（包含一系列的測量、布局、绘制）。所以热启动的过程仅仅须要创建和初始化一个MainActivity即可了。而不必创建和初始化Application，由于一个应用从新进程的创建到进程的销毁。Application仅仅会初始化一次。</p>
+<p>上面说的启动是点击app的启动图标来启动的。而第二种方式是进入近期使用的列表界面来启动应用，这样的不应该叫启动，应该叫恢复。</p>
+<h3 id="应用启动的流程"><a href="#应用启动的流程" class="headerlink" title="应用启动的流程"></a>应用启动的流程</h3><p>在安卓系统上，应用在没有进程的情况下，应用的启动都是这样一个流程：当点击app的启动图标时。安卓系统会从Zygote进程中fork创建出一个新的进程分配给该应用。之后会依次创建和初始化Application类、创建MainActivity类、载入主题样式Theme中的windowBackground等属性设置给MainActivity以及配置Activity层级上的一些属性、再inflate布局、当onCreate&#x2F;onStart&#x2F;onResume方法都走完了后最后才进行contentView的measure&#x2F;layout&#x2F;draw显示在界面上，所以直到这里，应用的第一次启动才算完毕，这时候我们看到的界面也就是所说的第一帧。</p>
+<p>所以，总结一下，应用的启动流程例如以下：</p>
+<blockquote>
+<p>Application的构造器方法——&gt;attachBaseContext()——&gt;onCreate()——&gt;Activity的构造方法——&gt;onCreate()——&gt;配置主题中背景等属性——&gt;onStart()——&gt;onResume()——&gt;測量布局绘制显示在界面上。</p>
+</blockquote>
+<h3 id="測量应用启动的时间"><a href="#測量应用启动的时间" class="headerlink" title="測量应用启动的时间"></a>測量应用启动的时间</h3><p>从点击应用的启动图标開始创建出一个新的进程直到我们看到了界面的第一帧，这段时间就是应用的启动时间。</p>
+<p>我们要測量的也就是这段时间。測量这段时间能够通过adb shell命令的方式进行測量，这样的方法測量的最为精确。命令为：</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell am <span class="built_in">start</span> -W [packageName]/[packageName.MainActivity]</span><br></pre></td></tr></table></figure>
+<p>运行成功后将返回三个測量到的时间：<br>1、ThisTime:一般和TotalTime时间一样。除非在应用启动时开了一个透明的Activity预先处理一些事再显示出主Activity，这样将比TotalTime小。<br>2、TotalTime:应用的启动时间。包含创建进程+Application初始化+Activity初始化到界面显示。</p>
+<p>3、WaitTime:一般比TotalTime大点，包含系统影响的耗时。</p>
+<p>以下是測量一个应用冷启动和热启动的时间：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606568568742.png" alt="Alt text"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606568573100.png" alt="Alt text"></p>
+<h3 id="降低应用启动时的耗时"><a href="#降低应用启动时的耗时" class="headerlink" title="降低应用启动时的耗时"></a>降低应用启动时的耗时</h3><p>针对冷启动时候的一些耗时，如上測得这个应用算是中型的app，在冷启动的时候耗时已经快700ms了，假设项目再大点在Application中配置了很多其它的初始化操作，这样将可能达到1s，这样每次启动都明显感觉延迟。所以在进行应用初始化的时候採取以下策略：<br>1、在Application的构造器方法、attachBaseContext()、onCreate()方法中不要进行耗时操作的初始化，一些数据预取放在异步线程中，能够採取Callable实现。<br>2、对于sp的初始化，由于sp的特性在初始化时候会对数据所有读出来存在内存中，所以这个初始化放在主线程中不合适，反而会延迟应用的启动速度，对于这个还是须要放在异步线程中处理。</p>
+<p>3、对于MainActivity，由于在获取到第一帧前。须要对contentView进行測量布局绘制操作，尽量降低布局的层次。考虑StubView的延迟载入策略。当然在onCreate、onStart、onResume方法中避免做耗时操作。</p>
+<p>遵循上面三种策略可明显提高app启动速度。</p>
+<h3 id="优化应用启动时的体验"><a href="#优化应用启动时的体验" class="headerlink" title="优化应用启动时的体验"></a>优化应用启动时的体验</h3><p>对于应用的启动时间，仅仅能是尽量的避免一些耗时的、非必要的操作在主线程中，这样相对能够缩减一部分启动的耗时，另外一方面在等待第一帧显示的时间里，能够增加一些配置以增加体验，比方增加Activity的background，这个背景会在显示第一帧前提前显示在界面上。</p>
+<p>1、先为主界面单独写一个主题style，设置一张待显示的图片，这里我设置了一个颜色，然后在manifest中设置给MainActivity：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">		<span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">&quot;AppTheme.Launcher&quot;</span>&gt;</span><span class="language-xml"></span></span><br><span class="line"><span class="language-xml">		    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">&quot;android:windowBackground&quot;</span>&gt;</span>@drawable/bule<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">		</span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">--------------------------------------------------------------------------------------</span><br><span class="line">        <span class="tag">&lt;<span class="name">activity</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:name</span>=<span class="string">&quot;.MainActivity&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:label</span>=<span class="string">&quot;@string/app_name&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">android:theme</span>=<span class="string">&quot;@style/AppTheme.Launcher&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.action.MAIN&quot;</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.category.LAUNCHER&quot;</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>2、然后在MainActivity中载入布局前把AppTheme又一次设置给MainActivity：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">	Override</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line">        setTheme(R.style.AppTheme);</span><br><span class="line">        <span class="built_in">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">&#125;        </span><br></pre></td></tr></table></figure>
+<p>这样在启动时会先显示background，然后待界面绘制完毕再显示主界面</p>
+<h3 id="APP启动黑白屏解决办法"><a href="#APP启动黑白屏解决办法" class="headerlink" title="APP启动黑白屏解决办法"></a>APP启动黑白屏解决办法</h3><h4 id="1把启动白屏的背景换成一张图片"><a href="#1把启动白屏的背景换成一张图片" class="headerlink" title="1把启动白屏的背景换成一张图片"></a>1把启动白屏的背景换成一张图片</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">&quot;android:windowBackground&quot;</span>&gt;</span>@color/background_material_light<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>换成</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">&quot;android:windowBackground&quot;</span>&gt;</span>@drawable/xx.png<span class="tag">&lt;/<span class="name">item</span>&gt;</span>      </span><br></pre></td></tr></table></figure>
+<p>这种是伪优化，并没有解决加载速度。</p>
+<h4 id="2把启动白屏背景变透明"><a href="#2把启动白屏背景变透明" class="headerlink" title="2把启动白屏背景变透明"></a>2把启动白屏背景变透明</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">&quot;android:windowIsTranslucent&quot;</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>style下面加上一句，意思是把启动背景变透明，这两种方法最好新建一个样式，只在引导页中引用，如果在application节点中引用，会导致所有的页面启动都会有这种效果。</p>
+<h4 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">&quot;AppTheme.Launcher&quot;</span>&gt;</span><span class="language-xml"></span></span><br><span class="line"><span class="language-xml">	<span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">&quot;android:windowBackground&quot;</span>&gt;</span>@drawable/xx<span class="tag">&lt;/<span class="name">item</span>&gt;</span> </span></span><br><span class="line"><span class="language-xml"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">Activity</span> <span class="attr">Theme</span>=<span class="string">&quot;AppTheme.Launcher&quot;</span>&quot;&gt;</span>...<span class="tag">&lt;/<span class="name">Activity</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>如何在引导页启动后恢复样式呢？<br>在引导页的onCreate(…)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    setTheme(R.style.AppTheme);</span><br><span class="line">    <span class="built_in">super</span>.onCreate(...);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="卡顿优化"><a href="#卡顿优化" class="headerlink" title="卡顿优化"></a>卡顿优化</h2><h3 id="16ms原则"><a href="#16ms原则" class="headerlink" title="16ms原则"></a>16ms原则</h3><p>Android 在不同的版本都会优化“UI的流畅性”问题，但是直到在android 4.1版本中做了有效的优化，这就是Project Butter。<br>Project Butter 加入了三个核心元素: VSYNC、Triple Buffer 和 Choreographer。其中，VSYNC 是理解Project Buffer的核心。</p>
+<ul>
+<li>VSYNC：产生一个中断信号</li>
+<li>Triple Buffer：当双 Buffer 不够使用时，该系统可分配第三块 Buffer</li>
+<li>Choreographer：这个用来接受一个 VSYNC 信号来统一协调UI更新</li>
+</ul>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606569184345.png" alt="Alt text"></p>
+<p>CPU 会先把 Layout 中的 UI 组件计算成 polygons（多边形）和 textures（纹理），然后经过 OpenGL ES 处理（这个处理过程非常复杂，感兴趣的童鞋可以继续耕耘）。OpenGL ES处理完后再交给 GPU 进行栅格化渲染，渲染后 GPU 再将数据传送给屏幕，由屏幕进行绘制显示。</p>
+<p>Activity 的界面之所以可以被绘制到屏幕上其中有一个很重要的过程就是 栅格化（Resterization），栅格化简单来说就是将向量图转化为机器可以识别的位图的一个过程。其中很复杂也比较很耗时，GPU 就是用来加快栅格化的速度。了解了这个过程后，我们在来理解 VSYNC</p>
+<h4 id="关于VSYNC"><a href="#关于VSYNC" class="headerlink" title="关于VSYNC"></a>关于VSYNC</h4><p>VSYNC 这个概念出来很久了，Vertical Synchronization，就是所谓的“垂直同步”。在 Android 中也沿用了这个概念，我们也可以把它理解为“帧同步”。这个用来干嘛的呢，就是为了保证 CPU、GPU 生成帧的速度和 Display 刷新的速度保持一致。</p>
+<p>Android 系统每 16ms（更准确的是大概16.6ms） 就会发出一次 VSYNC信号触发 UI 渲染更新。大约屏幕一秒刷新60次，也就是说要求 CPU 和 GPU 每秒要有处理 60 帧的能力，一帧花费的时间在 16ms 内。</p>
+<p>这个方案的原理主要是通过 Choreographer 类设置它的 FrameCallback 函数，当每一帧被渲染时会触发回调 FrameCallback， FrameCallback 回调 void doFrame (long frameTimeNanos) 函数。一次界面渲染会回调 doFrame 方法，如果两次 doFrame 之间的间隔大于 16.6ms 说明发生了卡顿。</p>
+<p>如果你平时注意卡顿的日志信息，那么下面这个段log就不会陌生了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (skippedFrames &gt;= SKIPPED_FRAME_WARNING_LIMIT) &#123;</span><br><span class="line">     Log.i(TAG, <span class="string">&quot;Skipped &quot;</span> + skippedFrames + <span class="string">&quot; frames!  &quot;</span></span><br><span class="line">                           + <span class="string">&quot;The application may be doing too much work on its main thread.&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>SKIPPED_FRAME_WARNING_LIMIT 的默认值是 30，也就说当我们的程序卡顿大于 30 时会打印这条 log 信息<br>那么在 Android系统中，是如何利用 VSYNC 工作的呢？</p>
+<p>一句话总结：在 VSYNC 开始发出信号时，CPU和GPU已经就开始准备下一帧的数据了，赶在下个 VSYNC 信号到来时，GPU 渲染完成，及时传送数据给屏幕，Display 绘制显示完成。不出什么意外的话，每一帧都会这么井然有序进行着，在这种理想状态下，用户就会体验到如丝般顺滑的感觉了。当然你也不会看到这篇博客了，囧！</p>
+<p>上面总结的一句话，如果用更专业的术语来说就是一个名词，双缓冲机制</p>
+<h4 id="双缓冲机制"><a href="#双缓冲机制" class="headerlink" title="双缓冲机制"></a>双缓冲机制</h4><p>因为实际上帧的数据就是保存在两个 Buffer 缓冲区中，A 缓冲用来显示当前帧，那么 B 缓冲就用来缓存下一帧的数据，同理，B显示时，A就用来缓冲！这样就可以做到一边显示一边处理下一帧的数据。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606569528996.png" alt="Alt text"><br>ok，下面我们来认真分析一下为什么会出现丢帧的情况：</p>
+<p>1、当 Display 显示第 0 帧数据时，此时 CPU 和 GPU 已经开始渲染第 1 帧画面，并将数据缓存在缓冲 B 中。但是由于某些原因，就好像上面说的，导致系统处理该帧数据耗时过长或者未能及时处理该帧数据。</p>
+<p>2、当 VSYNC 信号来时，Display 向 B 缓冲要数据，这时候 B 就蓝瘦香菇了，因为缓冲 B 的数据还没准备好，B缓冲区这时候是被锁定的，Display 表示你没准备好，我咋办呢，无奈，只能继续显示之前缓冲 A 的那一帧，此时缓冲 A 的数据也不能被清空和交换数据。这种情况就是所谓的“丢帧”，也被称作“废帧”；当第 1 帧数据（即缓冲 B 数据）准备完成后，它并不会马上被显示，而是要等待下一个 VSYNC，Display 刷新后，这时用户才看到画面的更新。</p>
+<p>3、当某一处丢帧后，大概率会影响后面的绘制也出现丢帧，最后给用户感觉就是卡顿了。最严重的直接造成ANR。</p>
+<h3 id="Triple-Buffer"><a href="#Triple-Buffer" class="headerlink" title="Triple Buffer"></a>Triple Buffer</h3><p>既然丢帧的情况不可避免，Android 团队从未放弃对这块的优化处理，于是便出现了Triple Buffer（三缓冲机制）</p>
+<p>在三倍缓冲机制中，系统这个时候会创建一个缓冲 C，用来缓冲下一帧的数据。也就是说在显示完缓冲B中那一帧后，下一帧就是显示缓冲 C 中的了。这样虽然还是不能避免会出现卡顿的情况，但是 Android 系统还是尽力去弥补这种缺陷，最终尽可能给用平滑的动效体验。</p>
+<h3 id="卡顿处理"><a href="#卡顿处理" class="headerlink" title="卡顿处理"></a>卡顿处理</h3><h4 id="过于复杂的布局"><a href="#过于复杂的布局" class="headerlink" title="过于复杂的布局"></a>过于复杂的布局</h4><p>界面性能取决于 UI 渲染性能. 我们可以理解为 UI 渲染的整个过程是由 CPU 和 GPU 两个部分协同完成的。</p>
+<p>其中, CPU 负责UI布局元素的 Measure, Layout, Draw 等相关运算执行. GPU 负责栅格化(rasterization), 将UI元素绘制到屏幕上。</p>
+<p>如果我们的 UI 布局层次太深, 或是自定义控件的 onDraw 中有复杂运算, CPU 的相关运算就可能大于16ms, 导致卡顿。<br>我们需要借助 Hierarchy Viewer 这个工具来帮我们分析布局了. Hierarchy Viewer 不仅可以以图形化树状结构的形式展示出UI层级, 还对每个节点给出了三个小圆点, 以指示该元素 Measure, Layout, Draw 的耗时及性能。</p>
+<h4 id="过度绘制-Overdraw"><a href="#过度绘制-Overdraw" class="headerlink" title="过度绘制( Overdraw )"></a>过度绘制( Overdraw )</h4><h4 id="UI-线程的复杂运算"><a href="#UI-线程的复杂运算" class="headerlink" title="UI 线程的复杂运算"></a>UI 线程的复杂运算</h4><p>UI线程的复杂运算会造成UI无响应, 当然更多的是造成UI响应停滞, 卡顿。产生ANR已经是卡顿的极致了。</p>
+<p>解决方案：<br>关于运算阻塞导致的卡顿的分析, 可以使用 Traceview 这个工具。</p>
+<h4 id="频繁的-GC"><a href="#频繁的-GC" class="headerlink" title="频繁的 GC"></a>频繁的 GC</h4><p>就是执行 GC 操作的时候，任何线程的任何操作都会需要暂停，等待 GC 操作完成之后，其他操作才能够继续运行, 故而如果程序频繁 GC, 自然会导致界面卡顿。</p>
+<p>导致频繁GC有两个原因:</p>
+<p>内存抖动(Memory Churn), 即大量的对象被创建又在短时间内马上被释放。<br>瞬间产生大量的对象会严重占用 Young Generation 的内存区域, 当达到阀值, 剩余空间不够的时候, 也会触发 GC。即使每次分配的对象需要占用很少的内存，但是他们叠加在一起会增加 Heap 的压力, 从而触发更多的 GC。<br>解决方案：<br>一般来说瞬间大量产生对象一般是因为我们在代码的循环中 new 对象, 或是在 onDraw 中创建对象等。<br>还是是尽量不要在循环中大量的使用局部变量。所以说这些地方是我们尤其需要注意的。</p>
+<h2 id="绘制-渲染优化"><a href="#绘制-渲染优化" class="headerlink" title="绘制\渲染优化"></a>绘制\渲染优化</h2><h3 id="HierarchyViewer"><a href="#HierarchyViewer" class="headerlink" title="HierarchyViewer"></a>HierarchyViewer</h3><p>使用HierarchyViewer可以分析正在运行app的布局<br>LinearLayout中的layout_weight也会减慢measure的速度</p>
+<h3 id="Lint"><a href="#Lint" class="headerlink" title="Lint"></a>Lint</h3><p>Android Lint是在 ADT 16 提供的新工具，它是一个代码扫描工具，Lint已经替代了Layoutopt tool成为重要的提示工具，它具有更多更高级的功能 ，能够帮助我们识别代码结构存在的问题。Lint 包含的一些检测规则有：</p>
+<p>使用 compound drawable 替代一个包含 ImageView 和 TextView 的 LinearLayout。</p>
+<p>合并根 FrameLayout</p>
+<p>没用的子节点或父节点</p>
+<p>硬编码问题</p>
+<h3 id="过度渲染"><a href="#过度渲染" class="headerlink" title="过度渲染"></a>过度渲染</h3><p>所以，可以看出更新每一帧耗时至关重要，说道每一帧图像的更新过程不得不提到GPU和CPU。CPU负责包括Measure，Layout，Record，Execute的计算操作，GPU负责Rasterization(栅格化)操作。例如显示图片的时候，需要先经过CPU的计算加载到内存中，然后传递给GPU进行渲染。一旦GPU或者CPU的工作超过了规定事件，就会出现app卡顿现象。比如：</p>
+<p>（1）GPU耗时导致卡顿原因：通常与画面的渲染有关，比如界面存在严重的过度渲染，渲染高清大图等，与UI View的渲染方法如draw()、onDraw()、dispatchDraw()等关联。</p>
+<p>（2）CPU的耗时导致卡顿原因：主要是由于UI线程有耗时较久的操作，比如处理大图片、进行耗时的IPC通信等，自然会拖长UI线程处理的时间。UI线程通常会运行以下方法： 渲染相关方法； UI布局相关方法：</p>
+<p>onMeasure()，onLayout()；</p>
+<p>Handler： handleMessage()；</p>
+<p>post(Runnable)；</p>
+<p>Activity相关方法， 如：</p>
+<p>onCreate()，onResume()，onStar()，onStop()等。<br>google在安卓4.4系统中开发了查看过度渲染计数的入口</p>
+<h3 id="自动化测试方案"><a href="#自动化测试方案" class="headerlink" title="自动化测试方案"></a>自动化测试方案</h3><h4 id="获取页面过度渲染计数"><a href="#获取页面过度渲染计数" class="headerlink" title="获取页面过度渲染计数"></a>获取页面过度渲染计数</h4><h5 id="HOOK系统方法，读取过度渲染计数。"><a href="#HOOK系统方法，读取过度渲染计数。" class="headerlink" title="HOOK系统方法，读取过度渲染计数。"></a>HOOK系统方法，读取过度渲染计数。</h5><p>通过查看安卓4.4的源码，可以知道在Framework&#x2F;base&#x2F;core&#x2F;Java&#x2F;android&#x2F;view&#x2F;</p>
+<p>HardwareRender.java中有一个叫做GLRenderer的内部类，该类还有一个方法如下：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606574692017.png" alt="Alt text"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606574700183.png" alt="Alt text"></p>
+<p>【难点】</p>
+<p>1）如何hook内部类的方法：在外部类和内部类之间添加 $符号定位内部类；</p>
+<p>2）如何构造一个隐藏的参数类型，如上述HardWareCanvas：直接使用包名加类名定位该类型。</p>
+<p>通过hook的方法输出的过度渲染计数来源于系统调用API，所以什么时候能拿到这个值不受人为控制，使用者只能等待系统日志输出，这也是hook技术的通病，为此我们引入第二种方法。</p>
+<h5 id="反射系统过度渲染计数的类，输出过度渲染计数。"><a href="#反射系统过度渲染计数的类，输出过度渲染计数。" class="headerlink" title="反射系统过度渲染计数的类，输出过度渲染计数。"></a>反射系统过度渲染计数的类，输出过度渲染计数。</h5><p>系统在屏幕中绘制过度渲染计数时，是通过drawText绘制到屏幕上（上述（1）方法的源码截图看出），所以找到调用绘制方法的类，就可以得到过度渲染计数，同样在HardwareRenderer.java代码中debugOverdraw调用了绘制的方法，该方法也是过度渲染计数获取的方法。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606574841307.png" alt="Alt text"><br>以上方法都是通过系统函数获取过度渲染计数，所以测试时，必须打开设置中的过度渲染计数。</p>
+<h4 id="实现自动化测试"><a href="#实现自动化测试" class="headerlink" title="实现自动化测试"></a>实现自动化测试</h4><h5 id="在什么时候读取页面overdrawcounter值？"><a href="#在什么时候读取页面overdrawcounter值？" class="headerlink" title="在什么时候读取页面overdrawcounter值？"></a>在什么时候读取页面overdrawcounter值？</h5><p>页面从创建到销毁，什么时候页面才是最绘制最稳定的时候呢？我们假设页面上有需要下载的资源，需要耗时才能获取的资源等，所以只有在页面消失前一刻，我们才认为此时页面相对绘制最完整。所以跟进安卓生命周期，我们在onPause()时来读取过度渲染计数。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606574911095.png" alt="Alt text"></p>
+<h5 id="如何实现自动化呢？"><a href="#如何实现自动化呢？" class="headerlink" title="如何实现自动化呢？"></a>如何实现自动化呢？</h5><p>因为在调用onPause()时候会自动读取过度渲染值，所以我们要做的自动化仅仅是如何在被测页面之间切换，搜集各个页面的过度渲染值，输出报告，所以流程可以归纳为：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606574930833.png" alt="Alt text"></p>
+<h3 id="测试收益"><a href="#测试收益" class="headerlink" title="测试收益"></a>测试收益</h3><p>整个测试方案在手机管家7.0中运行起来，对集成包，灰度包，正式包的一二级页面进行了过度渲染测试，优化后管家正式包一二级页面平均过度渲染计数为2.4X，小于管家标准3.0X。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606574976128.png" alt="Alt text"></p>
+<h2 id="内存优化"><a href="#内存优化" class="headerlink" title="内存优化"></a>内存优化</h2><h3 id="Hierarchy-Viewer"><a href="#Hierarchy-Viewer" class="headerlink" title="Hierarchy Viewer"></a>Hierarchy Viewer</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161375">使用方式</a></p>
+<h3 id="Layout-Inspector"><a href="#Layout-Inspector" class="headerlink" title="Layout Inspector"></a>Layout Inspector</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606575295204.png" alt="Alt text"><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606575306134.png" alt="Alt text"></p>
+<ol>
+<li>View Tree：视图在布局中的层次结构。</li>
+<li>Screenshot：带每个视图可视边界的设备屏幕截图。</li>
+<li>Properties Table：选定视图的布局属性。</li>
+</ol>
+<h3 id="Android内存分析工具：Memory-Profiler"><a href="#Android内存分析工具：Memory-Profiler" class="headerlink" title="Android内存分析工具：Memory Profiler"></a>Android内存分析工具：Memory Profiler</h3><p>如果PC连接Android 7.1以下的设备时，有些关键数据可能无法被Android Profiler统计，<br>此时Android Profiler会显示如下信息：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606575577630.png" alt="Alt text"><br>这时我们需要依次点击Android Studio的Run → Edit Configurations → Profiling 按键，选中app后点击Enabled advanced profiling，<br>如下图所示：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606575587821.png" alt="Alt text"><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606575605901.png" alt="Alt text"></p>
+<p>标注1对应的按键用于强制内存回收。</p>
+<p>标注2对应的按键用于抓取进程内存的dump信息。</p>
+<p>标注3对应的按键用于记录内存的分配信息(连接Android 7.1及以下才会有此按键)。<br>初次点击时，对应统计的开始时间点；再次点击时，对应统计的结束时间点。<br>进程在两个时间点之间的内存分配信息，将被Memory Profiler记录和分析。</p>
+<p>标注4对应的区域用于缩放时间轴。</p>
+<p>标注5对应的按键用于显示实时的内存数据。</p>
+<p>标注6对应的区域用于记录事件发生的时间点及大致持续的时间(例如activity状态改变、用户操作界面等事件）。</p>
+<p>标注7对应的区域用于显示内存使用情况对应的时间轴(与标注6结合，就可以看出各事件带来的内存变化情况)。<br>需要说明的是，标注7对应区域显示的内容包括：<br>不同类型内存占用情况对应的图像；<br>分配对象数量对应的短画线；<br>内存回收事件发生的时机。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606575748438.png" alt="Alt text"></p>
+<p>Java表示Java代码或Kotlin代码分配的内存；</p>
+<p>Native表示C或C++代码分配的内存(即使App没有native层，调用framework代码时，也有可能触发分配native内存)；</p>
+<p>Graphics表示图像相关缓存队列占用的内存；</p>
+<p>Stack表示native和java占用的栈内存；</p>
+<p>Code表示代码、资源文件、库文件等占用的内存；</p>
+<p>Others表示无法明确分类的内存；</p>
+<p>Allocated表示Java或Kotlin分配对象的数量(Android8.0以下时，仅统计Memory Profiler启动后，进程再分配的对象数量；<br>8.0以上时，由于系统内置了统计工具，Memory Profiler可以得到整个app启动后分配对象的数量)。</p>
+<h4 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h4><p>Memory Profiler可以查看两个时间点之间的内存分配情况，包括：<br>对象的类型、占用内存的大小、栈信息等。<br>连接8.0以上的设备时，Memory Profiler还可以显示对象被回收的时间。</p>
+<p>PC连接8.0以上的设备时，在内存统计的时间线上，直接点击和拖动就可以选择观察区域；<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606575864557.png" alt="Alt text"><br>从图中可以看出，Memory Profiler可以显示分配对象的类名；<br>点击类后，会在Instance View显示具体的对象；<br>点击具体对象后，会在Call back区域显示调用栈。<br>点击调用栈信息后，就会跳转到具体的代码。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606575936614.png" alt="Alt text"><br>图中Alloc Count表示堆中分配对象的数量；<br>Shallow Size表示对象使用Java内存的大小，单位为byte；<br>Retained Size表示对象占用的实际内存大小，大于等于Shallow Size；<br>7.0及以上版本的设备，还会显示对象占用的Native Size。</p>
+<p>点击具体的对象时，也会显示Instance View。<br>此时，Instance View显示的信息变多了，包括：<br>Depth表示当前对象到任一GC root的最短跳数；<br>Shallow Size、Retained Size的含义与前文一致。<br>同样，7.0及以上版本的设备，还会显示对象占用的Native Size。</p>
+<p>从图中可以看出，Instance View不会显示栈信息。<br>如果想获得栈信息的话，必须先点击Record Memory allocations按键。</p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576152471.png" alt="Alt text"></p>
+<p>然后，通过操作UI初始化SDK，发现稳定后内存占用情况如下图所示：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576164922.png" alt="Alt text"></p>
+<p>比对前后两图，不考虑界面UI变化消耗的内存，<br>可以看出：内存增加的主体部分来自于Native函数，其它类型的内存变化几乎可以忽略。<br>这是因为该SDK初始化时，最主要的工作是在Native层加载底层的so文件。<br>接下来，我们在demo里调用SDK的接口，批量扫描样本，统计内存消耗情况如下图所示：</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576217482.png" alt="Alt text"><br>从图中可以看出app消耗的内存飙升到了104M，<br>与初始化后的内存相比，其中增加主要是code和native类型的内存。</p>
+<p>根据2.3小结的描述，我们知道code类型统计的是app进程需要的资源文件、库文件等，<br>因此这部分内存主要是SDK中引擎加载病毒库等消耗掉的内存；<br>而Native内存的消耗，应该也是由于引擎扫描文件导致的。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576274336.png" alt="Alt text"></p>
+<p>容易看出，在这段时间内，除去native内存外，整个app分配内存并不大，<br>且按照对象占用内存的大小排序，排在前列的都是基本数据类型。<br>因此，这段时间内app进程的内存应该是比较正常的。</p>
+<p>我们进行GC操作，内存情况如下图所示：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576334173.png" alt="Alt text"><br>发现内存几乎和扫描前一致，按照3.2小结进行dump分析，没有发现泄露对象。<br>因此，可以确认SDK不存在内存泄露的问题(dump信息含有sdk的隐私，这里就不再附图了)。</p>
+<h3 id="利用Android-Studio、MAT对Android进行内存泄漏检测"><a href="#利用Android-Studio、MAT对Android进行内存泄漏检测" class="headerlink" title="利用Android Studio、MAT对Android进行内存泄漏检测"></a>利用Android Studio、MAT对Android进行内存泄漏检测</h3><p>ndroid的内存泄漏分析工具常用有Android Studio和基于eclipse的MAT（Memory Analyzer Tool）。通过两者配合，可以发挥出奇妙的效果。Android Studio能够快速定位内存泄漏的Activity，MAT能根据已知的Activity快速找出内存泄漏的根源。</p>
+<h4 id="第一步：强制GC，生成Java-Heap文件"><a href="#第一步：强制GC，生成Java-Heap文件" class="headerlink" title="第一步：强制GC，生成Java Heap文件"></a>第一步：强制GC，生成Java Heap文件</h4><p>我们都知道Java有一个非常强大的垃圾回收机制，会帮我回收无引用的对象，这些无引用的对象不在我们内存泄漏分析的范畴，Android Studio有一个Android Monitors帮助我们进行强制GC，获取Java Heap文件。</p>
+<p>强制GC：点击Initate GC(1)按钮，建议点击后等待几秒后再次点击，尝试多次，让GC更加充分。然后点击Dump Java Heap(2)按钮，然后等到一段时间，生成有点慢。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576491666.png" alt="Alt text"><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576496288.png" alt="Alt text"></p>
+<h4 id="第二步：分析内存泄漏的Activity"><a href="#第二步：分析内存泄漏的Activity" class="headerlink" title="第二步：分析内存泄漏的Activity"></a>第二步：分析内存泄漏的Activity</h4><p>点击Analyzer Tasks的Perform Analysis(1)按钮，然后等待几秒十几秒不等，即可找出内存泄漏的Activity(2)。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576517532.png" alt="Alt text"><br>那么我们就可以知道内存泄漏的Activity，因为这个例子比较简单，其实在(3)就已经可以看到问题所在，如果比较复杂的问题Android Studio并不够直观，不够MAT方便，如果Android Studio无法解决我们的问题，就建议使用MAT来分析，所以下一步我们就生成标准的hprof文件，通过MAT来找出泄漏的根源。</p>
+<h4 id="第三步：转换成标准的hprof文件"><a href="#第三步：转换成标准的hprof文件" class="headerlink" title="第三步：转换成标准的hprof文件"></a>第三步：转换成标准的hprof文件</h4><p>刚才生成的Heap文件不是标准的Java Heap，所以MAT无法打开，我们需要转换成标准的Java Heap文件，这个工具Android Studio就有提供，叫做Captures,右击选中的hprof，Export to standard .hprof选择保存的位置，即可生成一个标准的hprof文件。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576630042.png" alt="Alt text"></p>
+<h4 id="第四步：MAT打开hprof文件"><a href="#第四步：MAT打开hprof文件" class="headerlink" title="第四步：MAT打开hprof文件"></a>第四步：MAT打开hprof文件</h4><p>MAT的<a target="_blank" rel="noopener" href="http://www.eclipse.org/mat/downloads.php">下载地址</a>，使用方式和eclipse一样，这里就不多说了，打开刚才生成的hprof文件。点击(1)按钮打开Histogram。(2)这里是支持正则表达式，我们直接输入Activity名称，点击enter键即可。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576707411.png" alt="Alt text"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576712853.png" alt="Alt text"></p>
+<p>右击搜索出来的类名，选择Merge Shortest Paths to GC Roots的exclude all phantom&#x2F;weak&#x2F;soft etc. references，来到这一步，就可以看到内存泄漏的原因，我们就需要根据内存泄漏的信息集合我们的代码去分析原因。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606576735492.png" alt="Alt text"></p>
+<h4 id="第五步：根据内存泄漏信息和代码分析原因"><a href="#第五步：根据内存泄漏信息和代码分析原因" class="headerlink" title="第五步：根据内存泄漏信息和代码分析原因"></a>第五步：根据内存泄漏信息和代码分析原因</h4><p>使用Handler案例分析，给出的信息是Thread和android.os.Message，这个Thread和Message配合通常是在Handler使用，结合代码，所以我猜测是Handler导致内存泄漏问题，查看代码，直接就在函数中定义了一个final的Handler用来定时任务，在Activity的onDestroy后，这个Handler还在不断地工作，导致Activity无法正常回收。</p>
+<h2 id="电量优化"><a href="#电量优化" class="headerlink" title="电量优化"></a>电量优化</h2><h3 id="Doze-和-StandBy模式"><a href="#Doze-和-StandBy模式" class="headerlink" title="Doze 和 StandBy模式"></a>Doze 和 StandBy模式</h3><h4 id="Doze低电耗模式"><a href="#Doze低电耗模式" class="headerlink" title="Doze低电耗模式"></a>Doze低电耗模式</h4><p>Android 6.0（API 级别 23）引入了低电耗模式，当用户设备未插接电源、处于静止状态且屏幕关闭时，该模式会推迟 CPU 和网络活动，从而延长电池寿命。而 Android 7.0 则通过在设备未插接电源且屏幕关闭状态下、但不一定要处于静止状态（例如用户外出时把手持式设备装在口袋里）时应用部分 CPU 和网络限制，进一步增强了低电耗模式。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606577142730.png" alt="Alt text"></p>
+<p>当设备处于充电状态且屏幕已关闭一定时间后，设备会进入低电耗模式并应用第一部分限制：关闭应用网络访问、推迟作业和同步。如果进入低电耗模式后设备处于静止状态达到一定时间，系统则会对 PowerManager.WakeLock、AlarmManager 闹铃、GPS 和 WLAN 扫描应用余下的低电耗模式限制。无论是应用部分还是全部低电耗模式限制，系统都会唤醒设备以提供简短的维护时间窗口，在此窗口期间，应用程序可以访问网络并执行任何被推迟的作业&#x2F;同步。</p>
+<p>1、暂停访问网络。<br>2、系统将忽略 wake locks。（Doze模式下获取WakeLock无效，白名单下可以获取PARTIAL_WAKE_LOCK）<br>3、标准 AlarmManager 闹铃（包括 setExact() 和 setWindow()）推迟到下一维护时段。 如果您需要设置在低电耗模式下触发的闹铃，请使用 setAndAllowWhileIdle() 或setExactAndAllowWhileIdle()。 一般情况下，使用 setAlarmClock() 设置的闹铃将继续触发 — 但系统会在这些闹铃触发之前不久退出低电耗模式。<br>4、系统不执行 Wi-Fi 扫描。<br>5、系统不允许运行同步适配器。<br>6、系统不允许运行 JobScheduler。</p>
+<h4 id="StandBy-待机模式"><a href="#StandBy-待机模式" class="headerlink" title="StandBy 待机模式"></a>StandBy 待机模式</h4><p>应用待机模式允许系统判定应用在用户未主动使用它时处于空闲状态。 当用户有一段时间未触摸应用时，系统便会作出此判定，以下条件均不适用：</p>
+<p>1、用户显式启动应用。<br>2、应用当前有一个进程位于前台（表现为 Activity 或前台服务形式，或被另一 Activity 或前台服务占用）。<br>3、应用生成用户可在锁屏或通知托盘中看到的通知。</p>
+<p>当用户将设备插入电源时，系统将从待机状态释放应用，从而让它们可以自由访问网络并执行任何待定作业和同步。 如果设备长时间处于空闲状态，系统将按每天大约一次的频率允许空闲应用访问网络。</p>
+<p>在低电耗模式和应用待机模式下进行测试</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell dumpsys battery unplug</span><br><span class="line">adb shell dumpsys deviceidle step</span><br></pre></td></tr></table></figure>
+<p>可能要执行第二个命令多次。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606577491596.png" alt="Alt text"><br>在应用待机模式下测试您的应用<br>通过运行以下命令强制应用进入应用待机模式：</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell dumpsys battery unplug</span><br><span class="line">adb shell am <span class="built_in">set</span>-inactive &lt;packageName&gt; true</span><br></pre></td></tr></table></figure>
+<p>使用以下命令模拟唤醒应用：</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell am <span class="built_in">set</span>-inactive &lt;packageName&gt; false</span><br><span class="line">adb shell am get-inactive &lt;packageName&gt;</span><br></pre></td></tr></table></figure>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606577554345.png" alt="Alt text"><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606577561512.png" alt="Alt text"></p>
+<h3 id="Battery-Historian-使用"><a href="#Battery-Historian-使用" class="headerlink" title="Battery Historian 使用"></a>Battery Historian 使用</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103159573">引入</a></p>
+<h3 id="JobScheduler-API的使用详细"><a href="#JobScheduler-API的使用详细" class="headerlink" title="JobScheduler API的使用详细"></a>JobScheduler API的使用详细</h3><p>JobScheduler API是在Android5.0开始有的，使用场景：在稍后的某个时间点或者当满足某个特定的条件（连接电源，网络状态变化、手机是否空闲）时需要执行一个任务。<br>开发者主要通过三个类JobService和JobScheduler、JobInfo来使用JobSchedule API</p>
+<p>而且你要知道一件事，一旦通过命令开启了任务，只要符合条件就会执行任务，除非应用程序死亡，所以比如设置周期运行任务的，会不断的启动任务</p>
+<p>JobScheduler实现了任务的调度，相关函数如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*返回值：1表示执行成功，0代表失败*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="type">int</span> <span class="title function_">schedule</span><span class="params">(JobInfo job)</span>;</span><br><span class="line"><span class="comment">/**通过指定的jobId取消Job任务*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">cancel</span><span class="params">(<span class="type">int</span> jobId)</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**取消所有的Job任务*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">cancelAll</span><span class="params">()</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**获取所有的未执行的Job任务*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="meta">@NonNull</span> List&lt;JobInfo&gt; <span class="title function_">getAllPendingJobs</span><span class="params">()</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**获取指定的Job未执行的任务*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="meta">@Nullable</span> JobInfo <span class="title function_">getPendingJob</span><span class="params">(<span class="type">int</span> jobId)</span>;</span><br></pre></td></tr></table></figure>
+<p>JobService是一个抽象类，是Service的继承类，我们需要实现两个个函数，来完成任务执行的开始和停止</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*开启任务*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="type">boolean</span> <span class="title function_">onStartJob</span><span class="params">(JobParameters params)</span>;</span><br><span class="line"><span class="comment">/*停止任务方法*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="type">boolean</span> <span class="title function_">onStopJob</span><span class="params">(JobParameters params)</span>;</span><br></pre></td></tr></table></figure>
+<p>JobInfo是为了规定任务启动的规则，通过JobScheduler的建造者模式来设置规则</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// jobId每个Job任务的id</span></span><br><span class="line"><span class="type">int</span> <span class="variable">jobId</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="comment">// 指定你需要执行的JobService</span></span><br><span class="line"><span class="type">ComponentName</span> <span class="variable">name</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ComponentName</span>(getPackageName(), MyJobService.class.getName()));</span><br><span class="line">JobInfo.<span class="type">Builder</span> <span class="variable">builder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JobInfo</span>.Bulider(jobId, name);</span><br><span class="line">builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE); <span class="comment">//设置需要的网络条件，默认NETWORK_TYPE_NONE</span></span><br><span class="line">builder.setPeriodic(<span class="number">3000</span>);<span class="comment">//设置间隔时间，不断的触发任务的启动</span></span><br><span class="line">builder.setMinimumLatency(<span class="number">3000</span>);<span class="comment">// 设置任务运行最少延迟时间，与setPeriodic相似，只是间隔时间不确定，不能与setPeriodic一起使用，</span></span><br><span class="line">builder.setOverrideDeadline(<span class="number">50000</span>);<span class="comment">// 设置deadline，若到期还没有达到规定的条件则会开始执行  </span></span><br><span class="line">builder.setRequiresCharging(<span class="literal">true</span>);<span class="comment">// 设置是否充电的条件,默认false</span></span><br><span class="line">builder.setRequiresDeviceIdle(<span class="literal">false</span>);<span class="comment">// 设置手机是否空闲的条件,默认false</span></span><br><span class="line">builder.setPersisted(<span class="literal">true</span>);<span class="comment">//设备重启之后你的任务是否还要继续执行</span></span><br><span class="line"><span class="type">JobInfo</span> <span class="variable">info</span> <span class="operator">=</span> builder.build();</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103159563">用法</a></p>
+<h3 id="WorkManager-的使用及优势"><a href="#WorkManager-的使用及优势" class="headerlink" title="WorkManager 的使用及优势"></a>WorkManager 的使用及优势</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>可以由容器来管理线程<br>可以协调多个线程共同工作<br>WorkManager - 此接口提供一组用于调度要执行工作的调度方法。<br>系统管理员可在服务器级别定义 WorkManager。WorkManager 实例通过执行 JNDI 查找来获取。受管的环境可以支持多个 WorkManager 实例。请参阅”WebLogic JNDI 编程”。您在部署期间将 WorkManager 配置为 resource-ref。。<br>Work - 通过此接口，您可以异步运行应用程序代码。通过创建实现此接口的类，您可以创建可通过调度在特定的时间或定义的间隔运行的代码块。换句话说，此为在工作管理器 API 中处理的”工作”。<br>WorkItem - 在将 Work 实例提交给 WorkManager 后，WorkManager 将返回一个 WorkItem。此 WorkItem 用于确定整个 Work 实例的状态。<br>WorkListener - WorkListener 接口是一个回调接口，它在 WorkManager 与 Work 实例中定义的调度工作之间建立通信。</p>
+<p>WorkItem item &#x3D; WorkManager.schedule(Work work, WorkListener wl);</p>
+<p>可以使用 WorkListener 确定 Work 项的当前状态。<br>注意：<br>WorkListener 实例总与通过 WorkManager 调度 Work 的初始线程在同一个 JVM 中执行。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">web.xml:</span><br><span class="line"><span class="tag">&lt;<span class="name">resource-ref</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">res-ref-name</span>&gt;</span>wm/ThreadsWorkManager<span class="tag">&lt;/<span class="name">res-ref-name</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">res-type</span>&gt;</span>commonj.work.WorkManager<span class="tag">&lt;/<span class="name">res-type</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">res-auth</span>&gt;</span>Container<span class="tag">&lt;/<span class="name">res-auth</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">res-sharing-scope</span>&gt;</span>Shareable<span class="tag">&lt;/<span class="name">res-sharing-scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resource-ref</span>&gt;</span></span><br><span class="line"></span><br><span class="line">**Java code: **</span><br><span class="line">可以在Listener 或 servlet中用以下代码来获取WorkManager。</span><br><span class="line">WorkManager wm =(WorkManager)ic.lookup(&quot;java:comp/env/wm/ThreadsWorkManager&quot;);</span><br><span class="line">wm.schedule(new OpenWOWork());</span><br><span class="line">public class OpenWOWork implements Work&#123; </span><br><span class="line">private boolean isRun = true; </span><br><span class="line">public void run() &#123; </span><br><span class="line">     while(isRun )&#123; </span><br><span class="line">     //add code </span><br><span class="line">     &#125; </span><br><span class="line">&#125; </span><br><span class="line"> </span><br><span class="line">public void release() &#123; </span><br><span class="line">    isRun = false; // </span><br><span class="line">&#125; </span><br><span class="line"> </span><br><span class="line">  public boolean isDaemon() &#123; </span><br><span class="line">     return true; </span><br><span class="line">  &#125; </span><br><span class="line"> </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<h2 id="网络传输和存储优化"><a href="#网络传输和存储优化" class="headerlink" title="网络传输和存储优化"></a>网络传输和存储优化</h2><h3 id="protobuf"><a href="#protobuf" class="headerlink" title="protobuf"></a>protobuf</h3><p>protobuf也叫protocol buffer是google 的一种数据交换的格式，它独立于语言，独立于平台。google 提供了多种语言的实现：java、c#、c++、go 和 python，每一种实现都包含了相应语言的编译器以及库文件。由于它是一种<code>二进制的格式</code>，比使用 xml 、json进行数据交换快许多。可以把它用于分布式应用之间的数据通信或者异构环境下的数据交换。作为一种效率和兼容性都很优秀的二进制数据传输格式，可以用于诸如网络传输、配置文件、数据存储等诸多领域。 protobuf在各种rpc的实现上都占据重要角色。</p>
+<h4 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h4><p> 性能好&#x2F;效率高<br>代码生成机制<br>支持“向后兼容”和“向前兼容”<br>支持多种编程语言</p>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>应用不够广(相比xml和json)<br>二进制格式导致可读性差<br>缺乏自描述</p>
+<p>github源代码下载地址：<a target="_blank" rel="noopener" href="https://github.com/google/protobuf">https://github.com/google/protobuf</a> 源码包中的src&#x2F;README.md, 有详细的安装说明<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606635489766.png" alt="Alt text"><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161361">用法</a></p>
+<h3 id="7Z压缩"><a href="#7Z压缩" class="headerlink" title="7Z压缩"></a>7Z压缩</h3><h3 id="WebP使用-图片优化"><a href="#WebP使用-图片优化" class="headerlink" title="WebP使用 图片优化"></a>WebP使用 图片优化</h3><p>WebP（发音 weppy，项目主页），是一种支持有损压缩和无损压缩的图片文件格式，派生自图像编码格式 VP8。根据 Google 的测试，无损压缩后的 WebP 比 PNG 文件少了 45％ 的文件大小，即使这些 PNG 文件经过其他压缩工具压缩之后，WebP 还是可以减少 28％的文件大小。<br>WebP的转换：WebP与其他常用的图片格式之间是可以相互转换的，webp转换工具有：XnConvet，智图，ISparta.<br>WebP的兼容性：4.2.1+ 对于webp的decode、encode是完全支持的（包含半透明的webp图）对于4.0+ 到 4.2.1 ，只支持完全不透明的decode、encode的webp图，4.0 以下，应该是默认不支持webp的（编码解码）。</p>
+<h4 id="Android下WebP的使用"><a href="#Android下WebP的使用" class="headerlink" title="Android下WebP的使用"></a>Android下WebP的使用</h4><p>添加webp的支持，加载so文件，添加libwebp.jia包<br>(1)获取so文件和libwebp.jia包：可以从<a target="_blank" rel="noopener" href="https://github.com/EverythingMe/webp-android%E4%B8%8B%E8%BD%BD%E8%A7%A3%E6%9E%90%E5%BA%93%EF%BC%8C%E7%84%B6%E5%90%8Endk-build%E5%BE%97%E5%88%B0so%E6%96%87%E4%BB%B6%E3%80%82%E5%90%8C%E6%97%B6%E4%B9%9F%E8%83%BD%E5%9C%A8%E8%A7%A3%E6%9E%90%E5%BA%93%E9%87%8C%E9%9D%A2%E5%BE%97%E5%88%B0libwebp.jia%E5%8C%85%E3%80%82">https://github.com/EverythingMe/webp-android下载解析库，然后ndk-build得到so文件。同时也能在解析库里面得到libwebp.jia包。</a></p>
+<p>(2)得到so文件和libwebp.jia后拷到项目的app的libs目录下。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606635969250.png" alt="Alt text"></p>
+<p>(3)在appbuild添加依赖。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606635983346.png" alt="Alt text"></p>
+<p>添加成功后在app目录下会生成这样的一个文件。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606635998074.png" alt="Alt text"></p>
+<p>2、第二步，添加WebpUtils文件，里面有通过so包来处理webp文件成为byte数组的方法。</p>
+<p>我们可以通过以下方法来解决兼容性问题（4.2.1以下版本也可以显示webp格式图片，包括半透明图片）。</p>
+<p>关键代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">**<span class="keyword">public</span> class **WebPDecoder &#123;</span><br><span class="line">    **<span class="keyword">private</span> <span class="keyword">static</span> **WebPDecoder *instance *= **<span class="literal">null</span>**;</span><br><span class="line"> </span><br><span class="line">    **<span class="keyword">private</span> **WebPDecoder() &#123;</span><br><span class="line">        System.*loadLibrary*(**<span class="string">&quot;webp_evme&quot;</span>**);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    **<span class="keyword">public</span> <span class="keyword">static</span> **WebPDecoder <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        **<span class="keyword">if</span> **(*instance*==**<span class="literal">null</span>**) &#123;</span><br><span class="line">            **<span class="keyword">synchronized</span> **(WebPDecoder.**class**) &#123;</span><br><span class="line">                **<span class="keyword">if</span> **(*instance*==**<span class="literal">null</span>**) &#123;</span><br><span class="line">                    *instance *= **<span class="keyword">new</span> **WebPDecoder();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        **<span class="keyword">return</span> ***instance*;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    **<span class="keyword">public</span> **BitmapdecodeWebP(**<span class="type">byte</span>**[] encoded) &#123;</span><br><span class="line">        **<span class="keyword">return</span> **decodeWebP(encoded,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    **<span class="keyword">public</span> **BitmapwebpToBitmap(InputStream is) &#123;</span><br><span class="line">        <span class="type">Bitmap</span> <span class="variable">bitmap</span> <span class="operator">=</span> **<span class="literal">null</span>**;</span><br><span class="line">        **<span class="keyword">if</span> **(Build.VERSION.***SDK_INT***&lt; Build.VERSION_CODES.***JELLY_BEAN_MR1***) &#123;</span><br><span class="line">            bitmap = WebPDecoder.*getInstance*().decodeWebP(*streamToBytes*(is));</span><br><span class="line">        &#125; **<span class="keyword">else</span> **&#123;</span><br><span class="line">            bitmap = BitmapFactory.*decodeStream*(is);</span><br><span class="line">        &#125;</span><br><span class="line">        **<span class="keyword">return</span> **bitmap;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    **<span class="keyword">private</span> <span class="keyword">static</span> <span class="type">byte</span>**[] streamToBytes(InputStream is) &#123;</span><br><span class="line">        <span class="type">ByteArrayOutputStream</span> <span class="variable">os</span> <span class="operator">=</span> **<span class="keyword">new</span> **ByteArrayOutputStream(<span class="number">1024</span>);</span><br><span class="line">        **<span class="type">byte</span>**[]buffer = **<span class="keyword">new</span> <span class="title class_">byte</span>**[<span class="number">1024</span>];</span><br><span class="line">        **<span class="type">int</span> **len;</span><br><span class="line">        **<span class="keyword">try</span> **&#123;</span><br><span class="line">            **<span class="keyword">while</span> **((len= is.read(buffer)) &gt;=<span class="number">0</span>) &#123;</span><br><span class="line">                os.write(buffer, <span class="number">0</span>, len);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; **<span class="keyword">catch</span> **(java.io.IOExceptione) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        **<span class="keyword">return</span> **os.toByteArray();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>3、项目里在需要的地方直接调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="type">ImageView</span> <span class="variable">imageView</span> <span class="operator">=</span> (ImageView) findViewById(R.id.imageView);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    imageView.setImageBitmap(WebPDecoder.getInstance().webpToBitmap(getAssets().open(<span class="string">&quot;aa.webp&quot;</span>)));</span><br><span class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">    e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="APK大小优化"><a href="#APK大小优化" class="headerlink" title="APK大小优化"></a>APK大小优化</h2><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606636413669.png" alt="Alt text"><br>lib&#x2F;：包含特定于处理器软件层的编译代码。该目录包含了每种平台的子目录，像armeabi，armeabi-v7a， arm64-v8a，x86，x86_64，和mips。大多数情况下我们可以只用一种armeabi-v7a，后面会讲到原因。<br>assets&#x2F;：包含应用可以使用AssetManager对象检索的应用资源。<br>res&#x2F;：包含未编译到的资源 resources.arsc,主要有图片资源文件。<br>META-INF&#x2F;：包含CERT.SF和 CERT.RSA签名文件以及MANIFEST.MF 清单文件。<br>resources.arsc：包含已编译的资源。该文件包含res&#x2F;values&#x2F; 文件夹所有配置中的XML内容。打包工具提取此XML内容，将其编译为二进制格式，并将内容归档。此内容包括语言字符串和样式，以及直接包含在resources.arsc文件中的内容路径 ，例如布局文件和图像。<br>classes.dex：包含以Dalvik &#x2F; ART虚拟机可理解的DEX文件格式编译的类。<br>AndroidManifest.xml：包含核心Android清单文件。该文件列出应用程序的名称，版本，访问权限和引用的库文件。该文件使用Android的二进制XML格式。</p>
+<h3 id="只留v7"><a href="#只留v7" class="headerlink" title="只留v7"></a>只留v7</h3><p>通过分析图可以知道，目前app主要是so文件占比比较大，占了31.7M,占了整个应用是38.2%。其次是assets目录，整个目录占了32M,第三就是资源文件res目录了。所以接下来我们处理步骤就是按这个顺序来处理。（简单说下图中的Raw File Size（磁盘解压后的大小）和DownLoad Size（从应用商店下载的大小），如果想了解更多关于Analyaer分析的知识，可以参考这篇文章使用APK Analyzer分析你的APK)，分析了包结构组成之后，我们可以开始瘦身操作了。<br>最后我的修改代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ndk     &#123;</span><br><span class="line">            <span class="comment">//设置支持的so库架构</span></span><br><span class="line">            abiFilters <span class="string">&quot;armeabi-v7a&quot;</span></span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>接下来说明这么做的依据：<br>看上面图分析，armeabi-v7主要不支持ARMv5(1998年诞生)和ARMv6(2001年诞生).目前这两款处理器的手机设备基本不在我公司的适配范围（市场占比太少）。<br>而许多基于 x86 的设备也可运行 armeabi-v7a 和 armeabi NDK 二进制文件。对于这些设备，主要 ABI 将是 x86，辅助 ABI 是 armeabi-v7a。<br>最后总结一点：如果适配版本高于4.1版本，可以直接像我上面这样写，当然，如果armeabi-v7a不是设备主要ABI，那么会在性能上造成一定的影响。<br>参考文章：安卓app打包的时候还需要兼容armeabi么？<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/57467260">https://www.zhihu.com/question/57467260</a></p>
+<h3 id="重新编译so文件，用更小的库代替"><a href="#重新编译so文件，用更小的库代替" class="headerlink" title="重新编译so文件，用更小的库代替"></a>重新编译so文件，用更小的库代替</h3><p>相信很多开发者都有这种苦恼，很多第三方我们导入进来只用到其中很小一部分功能，大部分功能都是我们用不上的。这时候我们找到源代码，将我们需要的那部分代码提取出来，重新编译成新的so文件，再导入到我们项目中。当然，如果之前没有编译过so文件，这部分建</p>
+<h3 id="优化res-assets文件大小"><a href="#优化res-assets文件大小" class="headerlink" title="优化res,assets文件大小"></a>优化res,assets文件大小</h3><ol>
+<li>手动lint检查，手动删除无用资源<br>在Android Studio中打开“Analyze” 然后选择”Inspect Code…”，范围选择整个项目，然后点击”OK”。配置如</li>
+</ol>
+<h4 id="使用tinypng等图片压缩工具对图片进行压缩。"><a href="#使用tinypng等图片压缩工具对图片进行压缩。" class="headerlink" title="使用tinypng等图片压缩工具对图片进行压缩。"></a>使用tinypng等图片压缩工具对图片进行压缩。</h4><p>打开网址，将大图片导入到tinypng，替换之前的图片资源。</p>
+<h4 id="大部分图片使用Webp格式代替。"><a href="#大部分图片使用Webp格式代替。" class="headerlink" title="大部分图片使用Webp格式代替。"></a>大部分图片使用Webp格式代替。</h4><p>可以给UI提要求，让他们将图片资源设置为Webp格式，这样的话图片资源会小很多。如果想了解更多关于webp,请点击这里webp，当然，如果对图片颜色通道要求不高，可以考虑转jpg,最好用webp,因为效果更佳。</p>
+<h4 id="尽量不要在项目中使用帧动画"><a href="#尽量不要在项目中使用帧动画" class="headerlink" title="尽量不要在项目中使用帧动画"></a>尽量不要在项目中使用帧动画</h4><p>一个帧动画几十张图片，再怎么压缩都还是占很大内存比重的。所以建议是让UI去搞，这里可以参考使用lottie-android，如果项目中动画效果多的话效果更加明显。当然这就要辛苦我们UI设计师大大了。</p>
+<h4 id="使用gradle开启shrinkResources"><a href="#使用gradle开启shrinkResources" class="headerlink" title="使用gradle开启shrinkResources"></a>使用gradle开启shrinkResources</h4><p>移除无用资源文件，下面是我的配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">buildTypes &#123;</span><br><span class="line">       release &#123;</span><br><span class="line">           // 不显示Log</span><br><span class="line">           buildConfigField &quot;boolean&quot;, &quot;LOG_DEBUG&quot;, &quot;false&quot;</span><br><span class="line">           //混淆</span><br><span class="line">           minifyEnabled true</span><br><span class="line">           // 移除无用的resource文件</span><br><span class="line">           shrinkResources true</span><br><span class="line">           proguardFiles getDefaultProguardFile(&#x27;proguard-android.txt&#x27;), &#x27;proguard-rules.pro&#x27;</span><br><span class="line">           signingConfig signingConfigs.release</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>一部分是将资源文件下的所有gif图放后台下载处理，第二个是和UI讨论下如何减小webp 动图的大小（我看其他平台只有100K的样子，给我的就2.7M?）</p>
+<h3 id="减少classes-dex大小"><a href="#减少classes-dex大小" class="headerlink" title="减少classes.dex大小"></a>减少classes.dex大小</h3><p>classes.dex中包含了所有的java代码，当你打包时，gradle会将所有模板里</p>
+<p>的.class文件转换成classes.dex文件，当然，如果方法数超过64K，将要新增其他文件进行存储。可以通过multidexing分多个文件，比如我这里的chasses2.dex。换句话说，就是减少代码量。我们可以通过以下方法来实现：</p>
+<p>尽量减少第三方库的引用，这个在上面我们已经做过优化了。<br>避免使用枚举，这里特别去网上查了一下，具体可以参考下这篇文章Android 中的 Enum 到底占多少内存？该如何用？，得出的结论是，可能几十个枚举的内存占有量才相当一张图片这样子，优化效果也不会特别明显。当然，如果你是个追求极致的人，我不反对你用静态常量替代枚举。<a target="_blank" rel="noopener" href="https://www.liaohuqiu.net/cn/posts/android-enum-memory-usage/">https://www.liaohuqiu.net/cn/posts/android-enum-memory-usage/</a><br>如果你的dex文件太大，检查是否引入了重复功能的第三方库（图片加载库，glide,picasso,fresco,image_loader，如果不是你一个人单独开发完成的很容易出现这种情况），尽量做到一个功能点一个库解决。</p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>删除无用的语7zip代替<br>删除翻译资源，只保留中英文<br>尝试将andorid support库彻底踢出你的项目。<br>尝试使用动态加载so库文件，插件化开发。<br>将大资源文件放到服务端，启动后自动下载使用。</p>
+<h3 id="AndResGuard"><a href="#AndResGuard" class="headerlink" title="AndResGuard"></a>AndResGuard</h3><p>微信的AndResGuard工具是用于Android资源的混淆，作用有两点：一是通过混淆资源ID长度同时利用7z深度压缩，减小了apk包大小；二是混淆后在安全性方面有一点提升，提高了逆向破解难度。本文从源码角度，来探寻AndResGuard实现原理。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606637373401.png" alt="Alt text"></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103161316">用法</a></p>
+<h2 id="屏幕适配"><a href="#屏幕适配" class="headerlink" title="屏幕适配"></a>屏幕适配</h2><p>网上关于屏幕适配的文章已经铺天盖地了，为什么我还要讲？因为网上现在基本都是使用 屏幕分辨率限定符 进行适配，即每种屏幕分辨率的设备需要定义一套 dimens.xml 文件。由于不同分辨率的设备太多了，而且有些设备还有虚拟按键（例如华为手机），这样就还需要每个有虚拟按键的设备加多一套 dimens.xml 文件，再加上平板那些你会发现 dimens.xml 文件所占的体积已经超过2M了！这绝对不是我们想要的。<br>我这里要讲的是使用 sw<N>dp限定符，即 smallestWidth（最小宽度） 限定符 来进行适配，使用这种方式只需要少量 dimens.xml 文件即可达到适配，而且根本不用考虑虚拟按键的问题。如果只适配手机，dimens.xml 文件所占的体积只有 100 多 KB，即使加上平板和 TV，也就500多KB，完全可以接收。这种方案已经在自己多个项目中应用过了，经过几十台手机测试过，基本不会出现适配有问题的情况。制作生成对应 dimens.xml 文件插件（后面会讲）的作者也说过他在待过的两家大公司实践过，所以请放心使用。<br>关于为什么要进行屏幕适配，什么是 dp、dpi 这些概念我就不去一一讲解了，网上很多文章。这里我推荐几篇讲的比较好的：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhaokaiqiang1992/article/details/45419023">Android屏幕适配全攻略(最权威的官方适配指导)</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ec5a1a30694b">Android 屏幕适配：最全面的解决方案</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/lmj623565791/article/details/45460089">Android 屏幕适配方案</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903860780138504">https://juejin.cn/post/6844903860780138504</a> </p>
+<h3 id="屏幕分辨率限定符与-smallestWidth-限定符适配原理"><a href="#屏幕分辨率限定符与-smallestWidth-限定符适配原理" class="headerlink" title="屏幕分辨率限定符与 smallestWidth 限定符适配原理"></a>屏幕分辨率限定符与 smallestWidth 限定符适配原理</h3><p>屏幕分辨率限定符适配原理<br>屏幕分辨率限定符适配需要在 res 文件夹下创建各种屏幕分辨率对应的 values-xxx 文件夹，如下图<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606639960552.png" alt="Alt text"><br>然后根据一个基准分辨率，例如基准分辨率为 1280x720，将宽度分成 720 份，取值为 1px<del>720px，将高度分成 1280 份，取值为 1px</del>1280px，生成各种分辨率对应的 dimens.xml 文件。如下分别为分辨率 1280x720 与 1920x1080 所对应的横向dimens.xml 文件<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606639982247.png" alt="Alt text"><br>假设设计图上的一个控件的宽度为 720px，那么布局中就写 android:layout_width&#x3D;”@dimen&#x2F;x720” ，当运行程序的时候，系统会根据设备的分辨率去寻找对应的 dimens.xml 文件。例如运行在分辨率为 1280x720 的设备上，系统会自动找到对应的 values-1280x720 文件夹下的 lay_x.xml 文件，由上图可知 x720 对应的值为<br>720.px，可铺满该屏幕宽度。运行在分辨率为 1920x1080 的设备上，系统会自动找到对应的 values-1920x1080 文件夹下的 lay_x.xml 文件，由上图可知 x720 对应的值为 1080.0px，可铺满该屏幕宽度。这样就达到了屏幕适配的要求！<br>获取设备最小宽度代码为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">DisplayMetrics</span> <span class="variable">dm</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DisplayMetrics</span>();</span><br><span class="line">getWindowManager().getDefaultDisplay().getMetrics(dm);</span><br><span class="line"><span class="type">int</span> <span class="variable">heightPixels</span> <span class="operator">=</span> ScreenUtils.getScreenHeight(<span class="built_in">this</span>);</span><br><span class="line"><span class="type">int</span> <span class="variable">widthPixels</span> <span class="operator">=</span> ScreenUtils.getScreenWidth(<span class="built_in">this</span>);</span><br><span class="line"><span class="type">float</span> <span class="variable">density</span> <span class="operator">=</span> dm.density;</span><br><span class="line"><span class="type">float</span> <span class="variable">heightDP</span> <span class="operator">=</span> heightPixels / density;</span><br><span class="line"><span class="type">float</span> <span class="variable">widthDP</span> <span class="operator">=</span> widthPixels / density;</span><br><span class="line"><span class="type">float</span> smallestWidthDP;</span><br><span class="line"><span class="keyword">if</span>(widthDP &lt; heightDP) &#123;</span><br><span class="line">    smallestWidthDP = widthDP;</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    smallestWidthDP = heightDP;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/wildma/ScreenAdaptation/blob/master/app/src/main/java/com/wildma/androidscreenadaptation/utils/ScreenUtils.java">ScreenUtils</a></p>
+<h3 id="为什么选择-smallestWidth-限定符适配？"><a href="#为什么选择-smallestWidth-限定符适配？" class="headerlink" title="为什么选择 smallestWidth 限定符适配？"></a>为什么选择 smallestWidth 限定符适配？</h3><p>既然原理都一样，都需要多套 dimens.xml 文件，那为什么要选择 smallestWidth 限定符适配呢？</p>
+<p>屏幕分辨率限定符适配是根据屏幕分辨率的，Android 设备分辨率一大堆，而且还要考虑虚拟键盘，这样就需要大量的 dimens.xml 文件。因为无论手机屏幕的像素多少，密度多少，90% 的手机的最小宽度都为 360dp，所以采用 smallestWidth 限定符适配只需要少量 dimens.xml 文件即可。<br>屏幕分辨率限定符适配采用的是 px 单位，而 smallestWidth 限定符适配采用的单位是 dp 和 sp，dp 和 sp 是google 推荐使用的计量单位。又由于很多应用要求字体大小随系统改变，所以字体单位使用 sp 也更灵活。<br>屏幕分辨率限定符适配需要设备分辨率与 values-xx 文件夹完全匹配才能达到适配，而 smallestWidth 限定符适配寻找 dimens.xml 文件的原理是从大往小找，例如设备的最小宽度为 360dp，就会先去找 values-360dp，发现没有则会向下找 values-320dp，如果还是没有才找默认的 values 下的 demens.xml 文件，所以即使没有完全匹配也能达到不错的适配效果。</p>
+<h3 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h3><p>1、以设计图最小宽度（单位为 dp）作为基准值，生成所有设备对应的 dimens.xml 文件<br>这些文件当然不会手动去写，网上已经有大神提供了自动生成这些文件的插件 ScreenMatch。但是这个插件还是有点问题的：</p>
+<p>默认没有适配最小宽度为 320dp 的设备。其实自己测试还是有很多设备最小宽度是 320dp 的，所以需要加上。<br>最小宽度为 392.7272 与 411.4285 的手机不能达到完全适配。原因是该插件的默认值都是取整的，即 392.7272 与 411.4285 在插件中写的是 392 与 411。<br>基于以上问题，我在该插件的源码上优化生成了新的插件 ScreenMatch，由于插件库已经有原作者的插件了，所以我就不重复造轮子上传到插件库了，你直接用本地安装的方式安装即可。</p>
+<h3 id="工具使用步骤："><a href="#工具使用步骤：" class="headerlink" title="工具使用步骤："></a>工具使用步骤：</h3><p>在 Android Studio 中安装 ScreenMatch 插件<br>下载插件 ScreenMatch 到本地，点击菜单栏上的 File -&gt; Settings -&gt; Plugins -&gt; Install plugin from disk，然后选择我们刚刚下载的插件，最后点击 “OK”，重启 Andorid Studio 即可。如下图所示：<br><a target="_blank" rel="noopener" href="https://github.com/wildma/ScreenAdaptation/blob/master/ScreenMatch.jar">github</a><br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606643768138.png" alt="Alt text"><br>在项目的默认 values 文件夹中需要一份 dimens.xml 文件<br>我在 github 源码已经提供了一份，直接复制过来即可。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606643839843.png" alt="Alt text"><br>执行生成<br>插件安装好后，在项目的任意目录或文件上右键，选择 ScreenMatch 选项。如下图：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606643849360.png" alt="Alt text"><br>然后选择在哪个 module 下执行适配。即基于哪个 module 下的 res&#x2F;values&#x2F;dimens.xml 文件作为基准 dimens.xml 文件，生成的其他尺寸 dimens.xml 文件放在哪个 module 下。例如选择 app，然后点击 OK ，出现如下界面表示生成文件成功。如下图：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606643869061.png" alt="Alt text"><br>然后再看看 res 目录下会自动生成一堆 dimens.xml 文件，如下图：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606643883901.png" alt="Alt text"><br>通过上面的步骤就已经生成了所有设备对应的 dimens.xml 文件。</p>
+<p>根据设计图填写最小宽度基准值，并填写需要适配的设备最小宽度 dp 值<br>步骤 3 是以插件默认的最小宽度基准值为 360dp，适配的设备最小宽度为<br>320,360,384,392.7272,400,410,411.4285,432,480,533,592,600,640,662,720,768,800,811,820,960,961,1024,1280,1365（包含了平板和 TV ）生成的文件，但实际情况要根据设计图和需求设置。</p>
+<p>例如设计图的最小宽度为 375dp，则需要更改最小宽度基准值为 375dp。如果项目只需要适配手机的话，适配的设备最小宽度保留 320,360,384,392.7272,400,410,411.4285,432,480 即可，若发现手机还有其他最小宽度自行加上即可，也麻烦把该最小宽度提供给我，我们一起来完善该份适配。</p>
+<p>以上修改需要在配置文件里修改，即 screenMatch.properties 文件，该配置文件是执行完上面第 3 步后自动生成在项目的跟目录下的。如下图：<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606643967210.png" alt="Alt text"><br>打开配置文件，修改下图中 1、3、4 的值即可。(图中单位均为 dp)<br>1：最小宽度基准值，填写设计图的最小宽度值即可。<br>2：插件默认适配的最小宽度值，即默认情况下会生成如下值的 dimens.xml 文件。<br>3：需要适配的最小宽度值（如果是小数，则保留4位小数。例如 392.727272…，则取 392.7272），即你想生成哪些 dimens.xml 文件。<br>4：忽略不需要适配的最小宽度值，即忽略掉插件默认生成的 dimens.xml 文件。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606643989157.png" alt="Alt text"><br>image<br>配置文件修改完成后，重新执行第 3 步，生成新的 dimens.xml 文件。</p>
+<p>当然！如果你的设计图也是标准的 360dp，那么上面的步骤你可以忽略。直接复制我 github 上你需要的 dimens.xml 文件到你的项目即可，默认的 values 文件夹下也需要一份。</p>
+<p>2、根据设计图标注，在布局写上对应的值。<br>设计图标注多少 dp，布局中就写多少 dp ，非常方便！</p>
+<p>大多数 UI 设计师提供设计图有如下几种方式：<br>上传到蓝湖：显示多少 dp 就写多少 dp。<br>psd 源文件：用像素大厨查看，显示多少 dp 就写多少 dp（注意像素大厨需要选择与设计图对应的dpi 进行显示）<br>dp 单位的设计图：标注多少 dp 就写多少 dp。<br>px 单位的设计图：叫 UI 设计师标注为 dp 单位或跟她要 psd 源文件，如果都不行，那自己算吧！</p>
+<p>举例：例如设计图上一个Button 的宽为 360dp，高为 50dp，字体大小为 15 sp，在布局中则这样使用：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">&quot;@dimen/dp_360&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">&quot;@dimen/dp_50&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:textSize</span>=<span class="string">&quot;@dimen/sp_15&quot;</span>/&gt;</span></span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>代码中动态设置 dp 或 sp：<br>如果需要在代码中动态设置 dp 或 sp，则需要通过 getDimension（）方法获取对应资源文件下的 dp 或 sp 值再设置（具体参考 github 上的 demo）。如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">float</span> <span class="variable">pxValue</span> <span class="operator">=</span> getResources().getDimension(R.dimen.sp_15);<span class="comment">//获取对应资源文件下的sp值</span></span><br><span class="line"><span class="type">int</span> <span class="variable">spValue</span> <span class="operator">=</span> ConvertUtils.px2sp(<span class="built_in">this</span>, pxValue);<span class="comment">//将px值转换成sp值</span></span><br><span class="line">mTvShowParams.setTextSize(spValue);<span class="comment">//设置文字大小</span></span><br><span class="line"> </span><br><span class="line"><span class="type">float</span> <span class="variable">pxValue2</span> <span class="operator">=</span> getResources().getDimension(R.dimen.dp_360);<span class="comment">//获取对应资源文件下的dp值</span></span><br><span class="line"><span class="type">int</span> <span class="variable">dpValue</span> <span class="operator">=</span> ConvertUtils.px2dp(<span class="built_in">this</span>, pxValue2);<span class="comment">//将px值转换成dp值</span></span><br></pre></td></tr></table></figure>
+<h3 id="使用步骤总结"><a href="#使用步骤总结" class="headerlink" title="使用步骤总结"></a>使用步骤总结</h3><p>说了这么多，其实只需要简单的 2 步：</p>
+<p>以设计图最小宽度（单位为 dp）作为基准值，利用插件生成所有设备对应的 dimens.xml 文件<br>根据设计图标注，标注多少 dp，布局中就写多少dp，格式为@dimen&#x2F;dp_XX。</p>
+<h3 id="怎么适配其他-module"><a href="#怎么适配其他-module" class="headerlink" title="怎么适配其他 module?"></a>怎么适配其他 module?</h3><p>问题：在项目的其他 module 中怎么实现适配？难道也要多套 dimens 文件？<br>解决：并不需要多套 dimens 文件，只需要在 values 文件夹下有一套与 app module 一样的 dimens 文件即可达到适配。因为经过编译，所有 module 中的 dimen 数据都会统一归类到主 module（即 app module）中的 values&#x2F;dimens.xml 文件中了，然后系统又会根据你设置的值去找对应 values-swxxxdp 文件夹下的dimens.xml 文件中的值。<br>验证：将我 github 上的 demo 分别运行在不同 widthDP 的设备上（用模拟器即可），然后观察显示的效果会发现确实是这样的。</p>
+<h3 id="常见问题汇总"><a href="#常见问题汇总" class="headerlink" title="常见问题汇总"></a>常见问题汇总</h3><p>为什么宽度适配了，高度有时候没有完全适配？<br>因为各种屏幕高宽比并不是固定的，有16:9、4:3，还有全面屏的19.5:9等等，如果强行将宽高都适配那只会导致布局变形。</p>
+<p>例如一个控件的宽高为360dp和640dp，如果将它显示在宽高为360dp和640dp的设备上是正常铺满整个屏幕的，但是显示在宽高为360dp和780dp的设备上高度则不能铺满，如果你让高度铺满，而宽度又保持不变，那就会出现变形的情况。所以这也就是为什么目前市面上的屏幕适配方案只能以宽或高一个维度去适配，另一个方向用滑动或权重的方式去适配的原因。</p>
+<p>那你为什么说高度也能适配呢？<br>这里说的高度也能适配指的是在不同分辨率和密度的手机上能达到等比缩放的适配，其他屏幕适配方案也是一样的。</p>
+<h3 id="如何同时适配横竖屏？"><a href="#如何同时适配横竖屏？" class="headerlink" title="如何同时适配横竖屏？"></a>如何同时适配横竖屏？</h3><p>方案一：（不推荐）<br>计算出设备宽度和高度的dp值，然后生成对应的宽高 dimens.xml 文件。然后去掉所有 values-swXXXdp 目录上的s，即改为 values-wXXXdp。这样设备不管横竖屏都能找到对应的 values-wXXXdp 目录下的 dimens.xml 文件了。 虽然也能达到一定程度的适配，但是这样会增加很多 dimens.xml 文件，而且使用竖屏的设计图显示出来的效果也不够好。</p>
+<p>方案二：（推荐）<br>因为横屏时宽高变化太大，想要横屏时也能完全适配，那就只能让设计师出一套横屏的设计图，然后单独写一套横屏的布局文件。</p>
+<p>注意：smallestWidth 限定符适配的效果是让不同分辨率和密度的设备上能达到以设计图等比缩放的适配，如果设备与设计图相差太大时并不能达到很好的适配效果，需要单独出图，其他屏幕适配方案也是一样的。</p>
+<h3 id="如何适配平板、TV？"><a href="#如何适配平板、TV？" class="headerlink" title="如何适配平板、TV？"></a>如何适配平板、TV？</h3><p>同横屏道理一样，平板、TV 与手机的宽高差距太大，想要平板、TV 也能完全适配，那就只能让设计师出一套平板、TV 的设计图，然后单独写一套平板、TV 的布局文件。</p>
+<p>注意：再说一遍，smallestWidth 限定符适配的效果是让不同分辨率和密度的设备上能达到以设计图等比缩放的适配，如果设备与设计图相差太大时并不能达到很好的适配效果，需要单独出图，其他屏幕适配方案也是一样的。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android/%E4%BC%98%E5%8C%96/">http://king-of-cement.gitee.io/blog/post/Android/%E4%BC%98%E5%8C%96/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/%E5%85%B6%E4%BB%96%E9%A2%86%E5%9F%9F/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/">图片处理</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/Android/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E6%A1%86%E6%9E%B6/">图片加载框架</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

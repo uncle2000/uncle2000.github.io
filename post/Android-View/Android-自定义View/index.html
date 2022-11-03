@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>Android-自定义View | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Android-自定义View</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/blog/categories/Android-View/">Android View</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Android-自定义View"><a href="#Android-自定义View" class="headerlink" title="Android-自定义View"></a>Android-自定义View</h1><p>[toc]</p>
+<h2 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">CustomView</span><span class="params">(Context context)</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>new（）</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">CustomView</span><span class="params">(Context context, AttributeSet attrs)</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>layout中使用</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">CustomView</span><span class="params">(Context context, AttributeSet attrs, <span class="type">int</span> defStyleAttr)</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>layout中的style</p>
+</blockquote>
+<h2 id="onMeasure方法"><a href="#onMeasure方法" class="headerlink" title="onMeasure方法"></a>onMeasure方法</h2><ul>
+<li>获取宽高的模式<br>int widthMode &#x3D; MeasureSpec.getMode(widthMeasureSpec); &#x2F;&#x2F; 获取前两位<br>int heightMode &#x3D; MeasureSpec.getMode(heightMeasureSpec);</li>
+<li>获取宽高的值<br>int widthSize &#x3D; MeasureSpec.getSize(widthMeasureSpec); &#x2F;&#x2F; 获取后面30位<br>int heightSize &#x3D; MeasureSpec.getSize(heightMeasureSpec);</li>
+</ul>
+<blockquote>
+<p>widthMeasureSpec : 会包含两个信息是一个32位的值：模式：2位，值：30位  </p>
+</blockquote>
+<ul>
+<li>MeasureSpec.AT_MOST : 在布局中指定了wrap_content   </li>
+<li>MeasureSpec.EXACTLY : 在不居中指定了确切的值  100dp   match_parent  </li>
+<li>MeasureSpec.UNSPECIFIED : 尽可能的大(很少能用到)ListView , ScrollView 在测量子布局的时候会用UNSPECIFIED</li>
+</ul>
+<h2 id="自定义属性"><a href="#自定义属性" class="headerlink" title="自定义属性"></a>自定义属性</h2><p>配置的在res下的values下面新建attrs.xml</p>
+<blockquote>
+<p> format 格式: string:文字,color:颜色,dimension:宽高 字体大小,integer:数字<br> reference:资源（drawable）<br> 1.声明命名空间，然后在自己的自定义View中使用<br> 2.在自定义View中获取属性</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TypedArray array=context.obtainStyledAttributes(attrs, R.styleable.TextView);</span><br></pre></td></tr></table></figure>
+<h2 id="常用文字处理"><a href="#常用文字处理" class="headerlink" title="常用文字处理"></a>常用文字处理</h2><ul>
+<li>onMeasure<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec)</span><br><span class="line">      <span class="keyword">val</span> widthMode = MeasureSpec.getMode(widthMeasureSpec)</span><br><span class="line">      <span class="keyword">val</span> heightMode = MeasureSpec.getMode(heightMeasureSpec)</span><br><span class="line">      <span class="keyword">var</span> width = MeasureSpec.getSize(widthMeasureSpec)</span><br><span class="line">      <span class="keyword">var</span> height = MeasureSpec.getSize(heightMeasureSpec)</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (widthMode == MeasureSpec.AT_MOST) &#123;</span><br><span class="line">          <span class="keyword">val</span> bounds = Rect()</span><br><span class="line">          paint.getTextBounds(mText, <span class="number">0</span>, mText.length, bounds)</span><br><span class="line">          width = bounds.width() + paddingLeft + paddingRight</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (heightMode == MeasureSpec.AT_MOST) &#123;</span><br><span class="line">          <span class="keyword">val</span> bounds = Rect()</span><br><span class="line">          paint.getTextBounds(mText, <span class="number">0</span>, mText.length, bounds)</span><br><span class="line">          height = bounds.height() + paddingTop + paddingBottom</span><br><span class="line">      &#125;</span><br><span class="line">      setMeasuredDimension(width, height)</span><br></pre></td></tr></table></figure></li>
+<li>onDraw<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">super</span>.onDraw(canvas)</span><br><span class="line"><span class="keyword">val</span> fontMetrics = paint.fontMetrics</span><br><span class="line"><span class="keyword">val</span> dy = (fontMetrics.bottom - fontMetrics.top) / <span class="number">2</span> - fontMetrics.bottom</span><br><span class="line"><span class="keyword">val</span> baseLine = height / <span class="number">2</span> + dy</span><br><span class="line"><span class="keyword">val</span> x = paddingLeft</span><br><span class="line">canvas?.drawText(mText, x.toFloat(), baseLine, paint)</span><br></pre></td></tr></table></figure></li>
+<li>转换<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">sp2px</span><span class="params">(sp: <span class="type">Int</span>)</span></span> = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,sp.toFloat(),resources.displayMetrics).toInt()</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="常用生命周期函数-x2F-常用复写函数"><a href="#常用生命周期函数-x2F-常用复写函数" class="headerlink" title="常用生命周期函数&#x2F;常用复写函数"></a>常用生命周期函数&#x2F;常用复写函数</h2><ul>
+<li>onFinishInflate</li>
+<li>onMeasure</li>
+<li>onLayout</li>
+<li>onDraw</li>
+<li>onScrollChanged</li>
+<li>onTouchEvent</li>
+<li>onInterceptTouchEvent</li>
+<li>computeScroll</li>
+</ul>
+<h2 id="监听器"><a href="#监听器" class="headerlink" title="监听器"></a>监听器</h2><ul>
+<li>ViewDragHelper.Callback()</li>
+<li></li>
+</ul>
+<h2 id="常见BUG"><a href="#常见BUG" class="headerlink" title="常见BUG"></a>常见BUG</h2><h3 id="1ScrollView-ListView-会显示不全"><a href="#1ScrollView-ListView-会显示不全" class="headerlink" title="1ScrollView + ListView 会显示不全"></a>1ScrollView + ListView 会显示不全</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ScrollView$$measureChildWithMargins(..)&#123;</span><br><span class="line"><span class="keyword">final</span> <span class="type">int</span> <span class="variable">childHeightMeasureSpec</span> <span class="operator">=</span> </span><br><span class="line">	MeasureSpec.makeSafeMeasureSpec( </span><br><span class="line">		Math.max(<span class="number">0</span>, MeasureSpec.getSize(parentHeightMeasureSpec) - usedTotal)</span><br><span class="line">	,MeasureSpec.UNSPECIFIED);</span><br><span class="line">child.measure(childWidthMeasureSpec, childHeightMeasureSpec);</span><br><span class="line">&#125;</span><br><span class="line">child.measure()-&gt;ListView$$nMeasure()&#123;</span><br><span class="line"> <span class="keyword">if</span> (heightMode == MeasureSpec.UNSPECIFIED) &#123;</span><br><span class="line">       heightSize = mListPadding.top + mListPadding.bottom + childHeight + getVerticalFadingEdgeLength() * <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">If(...)&#123;</span><br><span class="line">   ...measureHeightOfChildren()...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">onMeasure()&#123;</span><br><span class="line">	HeghtMeasureSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE&gt;&gt;<span class="number">2</span>,MeasureSpec.AT_MOST):</span><br><span class="line">Super(...)</span><br><span class="line">&#123;</span><br></pre></td></tr></table></figure>
+<h4 id="为什么用Integer-MAX-VALUE-gt-gt-2"><a href="#为什么用Integer-MAX-VALUE-gt-gt-2" class="headerlink" title="为什么用Integer.MAX_VALUE&gt;&gt;2"></a>为什么用Integer.MAX_VALUE&gt;&gt;2</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ListView$$measureHeightOfChildren()&#123;</span><br><span class="line"><span class="keyword">if</span> (returnedHeight &gt;= maxHeight) &#123;<span class="keyword">return</span>&#125;<span class="comment">//不然会走这一步</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="一般套路"><a href="#一般套路" class="headerlink" title="一般套路"></a>一般套路</h2><h3 id="自定义View"><a href="#自定义View" class="headerlink" title="自定义View"></a>自定义View</h3><ol>
+<li>自定义属性，获取自定义属性（达到配置的效果）</li>
+<li>onMeasure()方法用于测量计算自己的宽高，前提是继承自View，如果是继承自系统已有的 TextView , Button ,已经给你计算好了宽高</li>
+<li>onDraw() 用于绘制自己的显示 </li>
+<li>onTouch() 用于与用户交互</li>
+</ol>
+<h3 id="自定义ViewGroup"><a href="#自定义ViewGroup" class="headerlink" title="自定义ViewGroup"></a>自定义ViewGroup</h3><ol>
+<li>自定义属性，获取自定义属性（达到配置的效果）很少有</li>
+<li>onMeasure() 方法，for循环测量子View，根据子View的宽高来计算自己的宽高</li>
+<li>onDraw() 一般不需要，默认情况下是不会调用，如果你要绘制需要实现dispatchDraw()方法</li>
+<li>onLayout() 用来摆放子View，前提是不是GONE的情况</li>
+<li>在很多情况下不会继承自ViewGroup ，往往是继承 系统已经提供好的ViewGroup 如 ViewPager ScrollView  RelativeLayout</li>
+</ol>
+<h2 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h2><h3 id="measure流程"><a href="#measure流程" class="headerlink" title="measure流程"></a>measure流程</h3><ul>
+<li>outerView-&gt;…传递MeasureMode…-&gt;innerView（最内层）</li>
+<li>outerView&lt;-…传递子View的宽高…&lt;-innerView最内层计算自己的宽高</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ViewGroup的实现类&#123;</span><br><span class="line">Measure()&#123;</span><br><span class="line">...getChildMeasureSpec()...传入自己的mode</span><br><span class="line">...child.measure(childWidthMeasureSpec, childHeightMeasureSpec)...</span><br><span class="line">...<span class="comment">//用子View的宽高计算自己的宽高再传出去</span></span><br><span class="line">&#125;&#125;   </span><br><span class="line">View的实现类</span><br><span class="line">Measure()&#123;</span><br><span class="line">计算自己的宽高</span><br><span class="line">setMeasuredDimension(width, height)<span class="comment">//传出自己的宽高</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>performLayout ：View -&gt; layout() -&gt; onLayout()<br>摆放子布局 for循环所有子View, 前提不是GONE，调用child.layout()<br>performDraw() : View -&gt; draw() -&gt;<br>drawBackground();&#x2F;&#x2F;画背景<br>onDraw(canvas);&#x2F;&#x2F; 画自己 ViewGroup 默认情况下不会调用<br>dispatchDraw(canvas);&#x2F;&#x2F; 画子View 不断的循环调用子View的 draw()</p>
+<h3 id="View的绘制流程"><a href="#View的绘制流程" class="headerlink" title="View的绘制流程"></a>View的绘制流程</h3><ol>
+<li>performMeasure()：用于指定和测量layout中所有控件的宽高，对于ViewGroup,先去测量里面的子孩子，根据子孩子的宽高再来计算和指定自己的宽高，对于View,它的宽高是由自己和父布局决定的。</li>
+<li>performLayout(): 用于摆放子布局,for循环所有子View,用child.layout()摆放ChildView</li>
+<li>performDraw(): 用于绘制自己还有子View , 对于ViewGroup首先绘制自己的背景,for循环绘制子View调用子View的draw()方法, 对于View绘制自己的背景，绘制自己显示的内容（TextView）</li>
+</ol>
+<h4 id="入口1-setContentView"><a href="#入口1-setContentView" class="headerlink" title="入口1 setContentView()"></a>入口1 setContentView()</h4><h5 id="源码追踪"><a href="#源码追踪" class="headerlink" title="源码追踪"></a>源码追踪</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Activiyty$$setContentView()&#123;</span><br><span class="line">	getWindow().setContentView(layoutResID);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">PhoneWindow$$setContentView()&#123;</span><br><span class="line"><span class="keyword">if</span> (mContentParent == <span class="literal">null</span>) &#123;</span><br><span class="line">           installDecor();</span><br><span class="line">       &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</span><br><span class="line">           mContentParent.removeAllViews();</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</span><br><span class="line">           <span class="keyword">final</span> <span class="type">Scene</span> <span class="variable">newScene</span> <span class="operator">=</span> Scene.getSceneForLayout(mContentParent, layoutResID,</span><br><span class="line">                   getContext());</span><br><span class="line">           transitionTo(newScene);</span><br><span class="line">       &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">           mLayoutInflater.inflate(layoutResID, mContentParent);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PhoneWindow$$installDecor()&#123;</span><br><span class="line">	<span class="keyword">if</span> (mDecor == <span class="literal">null</span>) &#123;</span><br><span class="line">            mDecor = generateDecor(-<span class="number">1</span>);</span><br><span class="line">            ...</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            mDecor.setWindow(<span class="built_in">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (mContentParent == <span class="literal">null</span>) &#123;</span><br><span class="line">            mContentParent = generateLayout(mDecor);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PhoneWindow$$generateLayout()&#123;</span><br><span class="line">		...</span><br><span class="line">        mDecor.onResourcesLoaded(mLayoutInflater, layoutResource);</span><br><span class="line">        <span class="type">ViewGroup</span> <span class="variable">contentParent</span> <span class="operator">=</span> (ViewGroup)findViewById(ID_ANDROID_CONTENT);</span><br><span class="line">        ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//root = mContentParent</span></span><br><span class="line"><span class="comment">//attachToRoot = true</span></span><br><span class="line">LayoutInflater$$inflate()&#123;</span><br><span class="line">		...</span><br><span class="line">        <span class="type">View</span> <span class="variable">result</span> <span class="operator">=</span> root;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">final</span> <span class="type">View</span> <span class="variable">temp</span> <span class="operator">=</span> createViewFromTag(root, name, inflaterContext, attrs);</span><br><span class="line">        ViewGroup.<span class="type">LayoutParams</span> <span class="variable">params</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (root != <span class="literal">null</span>) &#123;</span><br><span class="line">	        params = root.generateLayoutParams(attrs);</span><br><span class="line">	        <span class="comment">//不走</span></span><br><span class="line">            <span class="keyword">if</span> (!attachToRoot) &#123;</span><br><span class="line">	            temp.setLayoutParams(params);</span><br><span class="line">            &#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//必走</span></span><br><span class="line">		<span class="keyword">if</span> (root != <span class="literal">null</span> &amp;&amp; attachToRoot) &#123;</span><br><span class="line">			root.addView(temp, params);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//不走</span></span><br><span class="line">		<span class="keyword">if</span> (root == <span class="literal">null</span> || !attachToRoot) &#123;</span><br><span class="line">			result = temp;</span><br><span class="line">		&#125;</span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>只要root&#x3D;&#x3D;null，无视attachToRoot的值，创建temp对象，返回temp。<br>当root!&#x3D;null时，分两种情况。<br>一，attachToRoot&#x3D;&#x3D;true，将temp添加到root中，并使用布局参数params，返回root。<br>二，attachToRoot&#x3D;&#x3D;false，为temp设置布局参数params，返回temp。<br><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/.1606139250770.png" alt="Alt text"></p>
+</blockquote>
+<h5 id="窗口的层级"><a href="#窗口的层级" class="headerlink" title="窗口的层级"></a>窗口的层级</h5><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/.1606140584983.png" alt="Alt text"></p>
+<h4 id="入口2View-post"><a href="#入口2View-post" class="headerlink" title="入口2View$$post()"></a>入口2View$$post()</h4><blockquote>
+<p>在绘制结束之后调用</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">View$$post()&#123;</span><br><span class="line">	getRunQueue().post(action);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">View$$dispatchAttachedToWindow(...)&#123;</span><br><span class="line">	mRunQueue.executeActions(info.mHandler)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">MessageQueue$$enqueueMessage(...)&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/.1606141771820.png" alt="Alt text"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android-View/Android-%E8%87%AA%E5%AE%9A%E4%B9%89View/">http://king-of-cement.gitee.io/blog/post/Android-View/Android-%E8%87%AA%E5%AE%9A%E4%B9%89View/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/blog/post/Android/Android%20%E8%BF%9B%E7%A8%8B%20or%20%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1/">Android 进程\线程间的通信</a>
+            
+            
+            <a class="next" rel="next" href="/blog/post/Android/Android%20VM/">Android VM</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

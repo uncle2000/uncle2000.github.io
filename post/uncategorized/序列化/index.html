@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/blog/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/blog/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/blog/js/script.js"></script>
+    
+    <script src="/blog/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/blog/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/blog/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/blog/archives">Posts</a>
+                
+                    <a class="menu-item" href="/blog/category">Categories</a>
+                
+                    <a class="menu-item" href="/blog/tag">Tags</a>
+                
+                    <a class="menu-item" href="/blog/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title"></h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 3, 2022&nbsp;&nbsp;19:34:02</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AndroidAlvin/article/details/103159625">引入</a></p>
+<p>[toc]</p>
+<h2 id="Serializable原理"><a href="#Serializable原理" class="headerlink" title="Serializable原理"></a>Serializable原理</h2><p>1.概念</p>
+<ul>
+<li>序列化：把Java对象转换为字节序列的过程。</li>
+<li>反序列化：把字节序列恢复为Java对象的过程。</li>
+</ul>
+<p>2.用途 对象的序列化主要有两种用途：</p>
+<ul>
+<li><p>1）把对象的字节序列永久地保存到硬盘上，通常存放在一个文件中。</p>
+</li>
+<li><p>2）在网络上传送对象的字节序列。</p>
+</li>
+<li><p>也可以用管道来传输到系统的其他程序中。这样子极大的简化了类的设计。只要设计一个保存一个读取功能就能解决上面说得所有问题。</p>
+</li>
+<li><p>java的”对象序列化”能让你将一个实现了Serializable接口的对象转换成一组byte，这样日后要用这个对象时候，你就能把这些byte数据恢复出来，并据此重新构建那个对象了。</p>
+</li>
+<li><p>java对象序列化机制就是把内存中的Java对象（User之类的JavaBean）<code>转换成二进制流</code>。java对象序列化后可以很方便的存储或者在网络中传输。</p>
+</li>
+<li><p>Java的序列化机制是通过运行时判断类的序列化ID（serialVersionUID）来判定版本的一致性。</p>
+</li>
+<li><p>在反序列化时，java虚拟机会通过二进制流中的serialVersionUID与本地的对应的实体类进行比较，如果相同就认为是一致的，可以进行反序列化，正确获得信息，否则抛出序列化版本不一致的异常。</p>
+</li>
+<li><p>所有涉及到数据传输或者存储的类，严格意义上来说都要加上序列化ID，这也是一种良好的编程习惯。</p>
+</li>
+</ul>
+<h2 id="Parcelable"><a href="#Parcelable" class="headerlink" title="Parcelable"></a>Parcelable</h2><p>通过源码中的介绍 可以知道,Parcelable接口的实现类是可以通过Parcel写入和恢复数据的,并且必须要有一个非空的静态变量 CREATOR,而且还给了一个例子,这样我们写起来就比较简单了,但是简单的使用并不是我们的最终目的,通过查看Android源码中Parcelable可以看出,Parcelable实现过程主要分为序列化,反序列化,描述三个过程,下面分别介绍下这三个过程。</p>
+<h3 id="Parcel的简介"><a href="#Parcel的简介" class="headerlink" title="Parcel的简介"></a>Parcel的简介</h3><p>在介绍之前我们需要先了解Parcel是什么?Parcel翻译过来是打包的意思,其实就是包装了我们需要传输的数据,然后在Binder中传输,也就是用于跨进程传输数据</p>
+<p>简单来说，Parcel提供了一套机制，可以将序列化之后的数据写入到一个共享内存中，其他进程通过Parcel可以从这块共享内存中读出字节流，并反序列化成对象,下图是这个过程的模型。<br><img src="/blog/.1606301484987.png" alt="Alt text"><br>Parcel可以包含原始数据类型（用各种对应的方法写入，比如writeInt(),writeFloat()等)，可以包含Parcelable对象，它还包含了一个活动的IBinder对象的引用，这个引用导致另一端接收到一个指向这个IBinder的代理IBinder。<br>Parcelable通过Parcel实现了read和write的方法,从而实现序列化和反序列化</p>
+<h3 id="Parcelable中的三大过程介绍-序列化-反序列化-描述"><a href="#Parcelable中的三大过程介绍-序列化-反序列化-描述" class="headerlink" title="Parcelable中的三大过程介绍(序列化,反序列化,描述)"></a>Parcelable中的三大过程介绍(序列化,反序列化,描述)</h3><h4 id="序列化-1"><a href="#序列化-1" class="headerlink" title="序列化"></a>序列化</h4><p>序列化，表示将一个对象转换成可存储或可传输的状态。序列化后的对象可以在网络上进行传输，也可以存储到本地。</p>
+<h4 id="Parcelable中对象和集合的处理"><a href="#Parcelable中对象和集合的处理" class="headerlink" title="Parcelable中对象和集合的处理"></a>Parcelable中对象和集合的处理</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> android.os.Parcel;</span><br><span class="line"><span class="keyword">import</span> android.os.Parcelable;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by fengxing on 2018/3/28.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ParcelDemo</span> <span class="keyword">implements</span> <span class="title class_">Parcelable</span> &#123;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> count;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> ArrayList&lt;String&gt; tags;</span><br><span class="line">    <span class="keyword">private</span> Book book;</span><br><span class="line">    <span class="comment">// ***** 注意: 这里如果是集合 ,一定要初始化 *****</span></span><br><span class="line">    <span class="keyword">private</span> ArrayList&lt;Book&gt; books = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 序列化</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> in</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="title function_">ParcelDemo</span><span class="params">(Parcel in)</span> &#123;</span><br><span class="line">        count = in.readInt();</span><br><span class="line">        name = in.readString();</span><br><span class="line">        tags = in.createStringArrayList();</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// 读取对象需要提供一个类加载器去读取,因为写入的时候写入了类的相关信息</span></span><br><span class="line">        book = in.readParcelable(Book.class.getClassLoader());</span><br><span class="line"> </span><br><span class="line">        <span class="comment">//读取集合也分为两类,对应写入的两类</span></span><br><span class="line"> </span><br><span class="line">        <span class="comment">//这一类需要用相应的类加载器去获取</span></span><br><span class="line">        in.readList(books, Book.class.getClassLoader());<span class="comment">// 对应writeList</span></span><br><span class="line"> </span><br><span class="line">        <span class="comment">//这一类需要使用类的CREATOR去获取</span></span><br><span class="line">        in.readTypedList(books, Book.CREATOR); <span class="comment">//对应writeTypeList</span></span><br><span class="line"> </span><br><span class="line">        <span class="comment">//books = in.createTypedArrayList(Book.CREATOR); //对应writeTypeList</span></span><br><span class="line"> </span><br><span class="line">        <span class="comment">//这里获取类加载器主要有几种方式</span></span><br><span class="line">        getClass().getClassLoader();</span><br><span class="line">        Thread.currentThread().getContextClassLoader();</span><br><span class="line">        Book.class.getClassLoader();</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Creator&lt;ParcelDemo&gt; CREATOR = <span class="keyword">new</span> <span class="title class_">Creator</span>&lt;ParcelDemo&gt;() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> ParcelDemo <span class="title function_">createFromParcel</span><span class="params">(Parcel in)</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ParcelDemo</span>(in);</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> ParcelDemo[] newArray(<span class="type">int</span> size) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ParcelDemo</span>[size];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 描述</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">describeContents</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 反序列化</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dest</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> flags</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">writeToParcel</span><span class="params">(Parcel dest, <span class="type">int</span> flags)</span> &#123;</span><br><span class="line">        dest.writeInt(count);</span><br><span class="line">        dest.writeString(name);</span><br><span class="line">        <span class="comment">//序列化一个String的集合</span></span><br><span class="line">        dest.writeStringList(tags);</span><br><span class="line">        <span class="comment">// 序列化对象的时候传入要序列化的对象和一个flag,</span></span><br><span class="line">        <span class="comment">// 这里的flag几乎都是0,除非标识当前对象需要作为返回值返回,不能立即释放资源</span></span><br><span class="line">        dest.writeParcelable(book, <span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// 序列化一个对象的集合有两种方式,以下两种方式都可以</span></span><br><span class="line"> </span><br><span class="line">        <span class="comment">//这些方法们把类的信息和数据都写入Parcel，以使将来能使用合适的类装载器重新构造类的实例.所以效率不高</span></span><br><span class="line">        dest.writeList(books);</span><br><span class="line"> </span><br><span class="line">        <span class="comment">//这些方法不会写入类的信息，取而代之的是：读取时必须能知道数据属于哪个类并传入正确的Parcelable.Creator来创建对象</span></span><br><span class="line">        <span class="comment">// 而不是直接构造新对象。（更加高效的读写单个Parcelable对象的方法是：</span></span><br><span class="line">        <span class="comment">// 直接调用Parcelable.writeToParcel()和Parcelable.Creator.createFromParcel()）</span></span><br><span class="line">        dest.writeTypedList(books);</span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>写入和读取集合有两种方式,<br>一种是写入类的相关信息,然后通过类加载器去读取, –&gt; writeList | readList<br>二是不用类相关信息,创建时传入相关类的CREATOR来创建 –&gt; writeTypeList | readTypeList | createTypedArrayList<br>第二种效率高一些<br>一定要注意如果有集合定义的时候一定要初始化</p>
+<h2 id="Parcelable和Serializable的区别和比较"><a href="#Parcelable和Serializable的区别和比较" class="headerlink" title="Parcelable和Serializable的区别和比较"></a>Parcelable和Serializable的区别和比较</h2><p>Parcelable和Serializable都是实现序列化并且都可以用于Intent间传递数据,Serializable是Java的实现方式,可能会频繁的IO操作,所以消耗比较大,但是实现方式简单 Parcelable是Android提供的方式,效率比较高,但是实现起来复杂一些 , 二者的选取规则是:内存序列化上选择Parcelable, 存储到设备或者网络传输上选择Serializable(当然Parcelable也可以但是稍显复杂)</p>
+<h3 id="选择序列化方法的原则"><a href="#选择序列化方法的原则" class="headerlink" title="选择序列化方法的原则"></a>选择序列化方法的原则</h3><p>1）在使用内存的时候，Parcelable比Serializable性能高，所以推荐使用Parcelable。<br>2）Serializable在序列化的时候会产生大量的临时变量，从而引起频繁的GC。<br>3）Parcelable不能使用在要将数据存储在磁盘上的情况，因为Parcelable不能很好的保证数据的持续性在外界有变化的情况下。尽管Serializable效率低点，但此时还是建议使用Serializable 。</p>
+<h1 id="Json"><a href="#Json" class="headerlink" title="Json"></a>Json</h1><blockquote>
+<p>一种数据传输格式,与开发语言无关,轻量级。<br>一开始是javaScript的,但是后面比较流传,几乎所有语言都有相应的使用API。</p>
+</blockquote>
+<p>Object—对象<br>　　使用花括号{}包含的键值对结构<br>　　Key必须是String类型,value为任何基本类型或者数据结构(对象,或者数组)<br>Array—数组<br>　　使用中括号[]来起始,并用逗号,来分隔元素<br>基本类型:<br>　　　string number true false null</p>
+<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//java对象变成json对象</span></span><br><span class="line">JSONObject jsonObject=JSONObject.fromObject(params);</span><br><span class="line"> </span><br><span class="line"><span class="comment">//json对象转换成json字符串</span></span><br><span class="line">String jsonStr=jsonObject.toString();</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"><span class="comment">//java对象转换成json对象</span></span><br><span class="line">JSONObject jsonObject=JSONObject.fromObject(user);</span><br><span class="line"> </span><br><span class="line"><span class="comment">//json对象转换成json字符串</span></span><br><span class="line">String jsonStr=jsonObject.toString();</span><br><span class="line"><span class="comment">//前端传递过来的是json字符串,那么我们对这个字符串需要进行获取并且处理</span></span><br><span class="line"><span class="comment">//json字符串-----json对象------java对象</span></span><br><span class="line"><span class="type">JSONObject</span> <span class="variable">jsonobject</span> <span class="operator">=</span> JSONObject.fromObject(jsonStr);</span><br><span class="line">User user=(User)JSONObject.toBean(jsonobject,User.class);</span><br><span class="line"></span><br><span class="line"><span class="type">JSONObject</span> <span class="variable">jsonobject</span> <span class="operator">=</span> JSONObject.fromObject(jsonStr);</span><br><span class="line">Map params=(Map) jsonObject;</span><br><span class="line"><span class="comment">//然后就可以通过map来操作了</span></span><br><span class="line"><span class="comment">//判断是否有username字段和username字段</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://king-of-cement.gitee.io/blog/post/uncategorized/%E5%BA%8F%E5%88%97%E5%8C%96/">http://king-of-cement.gitee.io/blog/post/uncategorized/%E5%BA%8F%E5%88%97%E5%8C%96/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/blog/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/blog/post/uncategorized/%5B%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%5DbindService%E7%9A%84%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"></a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
