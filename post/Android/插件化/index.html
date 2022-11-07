@@ -280,7 +280,7 @@
 <p>在ActivityThread对象中，使用HashMap&lt;ResourcesKey,WeakReference<Resources>&gt; mActiveResources保存该应用程序所有的Resources对象，并且这些Resources都是以一个弱引用保存起来的，这样在内存紧张时可以释放Resources所占的内存。</p>
 <p>在mActiveResources中，使用ResourcesKey映射Resources类，ResourcesKey仅仅是一个数据类，其创建方式如下所示：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ResourcesKey</span> <span class="variable">key</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ResourcesKey</span>(resDir,compInfo.applicatioScale);</span><br></pre></td></tr></table></figure>
-<p>resDir变量代表资源文件所在路径，实际是指APK程序所在路径，例如 &#x2F;data&#x2F;app&#x2F;xxx.apk。该APK会对应&#x2F;data&#x2F;dalvik-cache目录下的data@<a href="mailto:&#97;&#x70;&#x70;&#64;&#x78;&#120;&#x78;&#46;&#x61;&#112;&#x6b;">&#97;&#x70;&#x70;&#64;&#x78;&#120;&#x78;&#46;&#x61;&#112;&#x6b;</a>@classes.dex文件，这两个文件也是应用程序安装后自动生成的文件。</p>
+<p>resDir变量代表资源文件所在路径，实际是指APK程序所在路径，例如 &#x2F;data&#x2F;app&#x2F;xxx.apk。该APK会对应&#x2F;data&#x2F;dalvik-cache目录下的data@<a href="mailto:&#x61;&#112;&#112;&#64;&#x78;&#120;&#120;&#46;&#x61;&#x70;&#x6b;">&#x61;&#112;&#112;&#64;&#x78;&#120;&#120;&#46;&#x61;&#x70;&#x6b;</a>@classes.dex文件，这两个文件也是应用程序安装后自动生成的文件。</p>
 <p>如果一个应用程序没有访问该应用程序以外的资源，那么mActivieResources变量中就仅有一个Resources对象。当应用程序想要访问其他应用程序的资源则需要构建不同的ResourcesKey，也就是需要不同的resDir，毕竟每一个ResourcesKey对应一个Resources对象，这样该应用程序就可以访问其他应用程序中的资源。</p>
 <p>如果mActiveResources中还没有包含所要的Resources对象，那就需要重新创建一个：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">AssetManager</span> <span class="variable">assets</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AssetManager</span>();</span><br><span class="line"><span class="keyword">if</span>(assets.addAssetPath(resDir) == <span class="number">0</span>)&#123;  </span><br><span class="line"><span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">DisplayMetrics</span> <span class="variable">metrics</span> <span class="operator">=</span> getDisplayMetricsLocked(<span class="literal">false</span>);</span><br><span class="line">r = <span class="keyword">new</span> <span class="title class_">Resources</span>(assets,metrics,getConfiguration(),compInfo);</span><br></pre></td></tr></table></figure>
@@ -621,7 +621,7 @@
 </li>
 <li><p>PathClassLoader：用于加载Android系统类和开发编写应用的类，只能加载已经安装应用的 dex 或 apk 文件，也是getSystemClassLoader的返回对象</p>
 </li>
-<li><p>DexClassLoader：可以用于加载任意路径的zip,jar或者apk文件，也是进行安卓动态加载的基础<br>Android中ClassLoader的继承关系<br><img src="/.https:/uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830779965.png" alt="Alt text"></p>
+<li><p>DexClassLoader：可以用于加载任意路径的zip,jar或者apk文件，也是进行安卓动态加载的基础<br>Android中ClassLoader的继承关系<br><img src="/blog/.https:/uncle2000-blog.oss-cn-chengdu.aliyuncs.com/android/.1606830779965.png" alt="Alt text"></p>
 </li>
 </ul>
 <h3 id="ClassLoader的执行过程"><a href="#ClassLoader的执行过程" class="headerlink" title="ClassLoader的执行过程"></a>ClassLoader的执行过程</h3><ul>
@@ -677,7 +677,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android/%E6%8F%92%E4%BB%B6%E5%8C%96/">http://king-of-cement.gitee.io/blog/post/Android/%E6%8F%92%E4%BB%B6%E5%8C%96/</a></span>
+                        <span><a href="https://uncle2000.github.io/post/Android/%E6%8F%92%E4%BB%B6%E5%8C%96/">https://uncle2000.github.io/post/Android/%E6%8F%92%E4%BB%B6%E5%8C%96/</a></span>
                     </p>
                 
                 
@@ -710,10 +710,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/blog/post/%E5%85%B6%E4%BB%96/%E5%BE%85%E5%A4%84%E7%90%86/">待处理</a>
+                <a class="prev" rel="prev" href="/blog/post/%E6%A8%A1%E6%9D%BF/%E7%BA%A6%E6%9D%9F%E8%8C%83%E5%9B%B4/">MD read me</a>
             
             
-            <a class="next" rel="next" href="/blog/post/%E5%9F%BA%E7%A1%80/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+            <a class="next" rel="next" href="/blog/post/%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
             
         </section>
 

@@ -293,7 +293,7 @@
 <h4 id="RxJava-x2F-RxAndroid"><a href="#RxJava-x2F-RxAndroid" class="headerlink" title="RxJava&#x2F;RxAndroid"></a>RxJava&#x2F;RxAndroid</h4><h3 id="子线程和UI线程之间通信"><a href="#子线程和UI线程之间通信" class="headerlink" title="子线程和UI线程之间通信"></a>子线程和UI线程之间通信</h3><h4 id="Android中AsyncTask"><a href="#Android中AsyncTask" class="headerlink" title="Android中AsyncTask"></a>Android中AsyncTask</h4><p>AsyncTask为什么只执行一次，因为内部有一个标志位：Running，Finished</p>
 <p>一般分别在Thread和Handler中编写代码逻辑，为了使得代码更加统一，我们可以使用AsyncTask类。<br>它对Thread和Handler进行了封装，方便我们使用。Android之所以提供AsyncTask这个类，就是为了方便我们在后台线程中执行操作，然后将结果发送给主线程，从而在主线程中进行UI更新等操作。在使用AsyncTask时，我们无需关注Thread和Handler，AsyncTask内部会对其进行管理，这样我们就只需要关注于我们的业务逻辑即可。</p>
 <blockquote>
-<p>四个回调 onPreExecute、doInBackground, onProgressUpdate 和 onPostExecute<br><img src="/./1606298078267.png" alt="Alt text"></p>
+<p>四个回调 onPreExecute、doInBackground, onProgressUpdate 和 onPostExecute<br><img src="/blog/./1606298078267.png" alt="Alt text"></p>
 <ul>
 <li>Params表示用于AsyncTask执行任务的参数的类型</li>
 <li>Progress表示在后台线程处理的过程中，可以阶段性地发布结果的数据类型</li>
@@ -395,7 +395,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://king-of-cement.gitee.io/blog/post/Android/Android%20%E8%BF%9B%E7%A8%8B%20or%20%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1/">http://king-of-cement.gitee.io/blog/post/Android/Android%20%E8%BF%9B%E7%A8%8B%20or%20%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1/</a></span>
+                        <span><a href="https://uncle2000.github.io/post/Android/Android%20%E8%BF%9B%E7%A8%8B%20or%20%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1/">https://uncle2000.github.io/post/Android/Android%20%E8%BF%9B%E7%A8%8B%20or%20%E7%BA%BF%E7%A8%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1/</a></span>
                     </p>
                 
                 
@@ -428,10 +428,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/blog/post/Android-View/Android-%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android-自定义View</a>
+                <a class="prev" rel="prev" href="/blog/post/Android/Android%20VM%20apk%20or%20dex%20%E4%BF%AE%E6%94%B9/">Android VM apk\dex 修改</a>
             
             
-            <a class="next" rel="next" href="/blog/post/Android/Android%20VM%20apk%20or%20dex%20%E4%BF%AE%E6%94%B9/">Android VM apk\dex 修改</a>
+            <a class="next" rel="next" href="/blog/post/Android-View/Android-%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android-自定义View</a>
             
         </section>
 
