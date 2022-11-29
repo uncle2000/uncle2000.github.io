@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>Http的原理和工作机制 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Http的原理和工作机制</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E7%BD%91%E7%BB%9C/">网络</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Http的原理和工作机制"><a href="#Http的原理和工作机制" class="headerlink" title="Http的原理和工作机制"></a>Http的原理和工作机制</h1><blockquote>
+<p>Http:HyperText Transfer Protocol 超文本传输协议 Hyper:拓展的</p>
+<ul>
+<li>超文本：在电脑中显示的，含有可以指向其他文本的链接文本——HTML，现在也包括Web API的数据</li>
+</ul>
+</blockquote>
+<h1 id="URL-gt-HTTP报文"><a href="#URL-gt-HTTP报文" class="headerlink" title="URL-&gt; HTTP报文"></a>URL-&gt; HTTP报文</h1><ul>
+<li><p>示例：http(协议类型):&#x2F;&#x2F;<a target="_blank" rel="noopener" href="http://www.baidu.com/(%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%9C%B0%E5%9D%80)users?gender=mela(%E8%B7%AF%E5%BE%84path)">www.baidu.com/(服务器地址)users?gender=mela(路径path)</a></p>
+</li>
+<li><p>处理后：GET &#x2F;user?gender&#x3D;nela HTTP&#x2F;1.1</p>
+</li>
+</ul>
+<p>  ​                Host:<a target="_blank" rel="noopener" href="http://www.baidu.com/">www.baidu.com</a></p>
+<h1 id="报文格式：Request"><a href="#报文格式：Request" class="headerlink" title="报文格式：Request"></a>报文格式：Request</h1><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E7%BD%91%E7%BB%9C/image-20221002211839231.png" alt="image-20221002211839231"></p>
+<h1 id="报文格式：Response"><a href="#报文格式：Response" class="headerlink" title="报文格式：Response"></a>报文格式：Response</h1><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E7%BD%91%E7%BB%9C/image-20221002212205122.png" alt="image-20221002212205122"></p>
+<h2 id="Request-method"><a href="#Request-method" class="headerlink" title="Request method"></a>Request method</h2><h3 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h3><ul>
+<li>获取资源；没有body</li>
+<li>幂等（执行一次和多次是一致的）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GET /users/<span class="number">1</span> HTTP/<span class="number">1.1</span> </span><br><span class="line">Host: api.github.com</span><br><span class="line">    </span><br><span class="line"><span class="meta">@GET(&quot;/users/&#123;id&#125;&quot;)</span></span><br><span class="line">Call&lt;User&gt; <span class="title function_">getUser</span><span class="params">(<span class="meta">@Path(&quot;id&quot;)</span> String id, <span class="meta">@Query(&quot;gender&quot;)</span> String gender)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="POST"><a href="#POST" class="headerlink" title="POST"></a>POST</h3><ul>
+<li>增加或者修改资源；有body</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">POST /users HTTP/<span class="number">1.1</span></span><br><span class="line">Host: api.github.com</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: <span class="number">13</span></span><br><span class="line">name=rengwuxian&amp;gender=male</span><br><span class="line"></span><br><span class="line"><span class="meta">@FormUrlEncoded</span></span><br><span class="line"><span class="meta">@POST(&quot;/users&quot;)</span></span><br><span class="line">Call&lt;User&gt; <span class="title function_">addUser</span><span class="params">(<span class="meta">@Field(&quot;name&quot;)</span> String name, <span class="meta">@Field(&quot;gender&quot;)</span> String</span></span><br><span class="line"><span class="params">gender)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a>PUT</h3><ul>
+<li>修改资源；有Body</li>
+<li><font color=red>不能增加</font></li>
+<li>幂等</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">PUT /users/<span class="number">1</span> HTTP/<span class="number">1.1</span></span><br><span class="line">Host: api.github.com</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: <span class="number">13</span></span><br><span class="line">gender=female</span><br><span class="line">    </span><br><span class="line"><span class="meta">@FormUrlEncoded</span></span><br><span class="line"><span class="meta">@PUT(&quot;/users/&#123;id&#125;&quot;)</span></span><br><span class="line">Call&lt;User&gt; <span class="title function_">updateGender</span><span class="params">(<span class="meta">@Path(&quot;id&quot;)</span> String id, <span class="meta">@Field(&quot;gender&quot;)</span> String</span></span><br><span class="line"><span class="params">gender)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h3><ul>
+<li>删除资源；没有Body</li>
+<li>幂等</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">DELETE /users/<span class="number">1</span> HTTP/<span class="number">1.1</span></span><br><span class="line">Host: api.github.com</span><br><span class="line">    </span><br><span class="line"><span class="meta">@DELETE(&quot;/users/&#123;id&#125;&quot;)</span></span><br><span class="line">Call&lt;User&gt; <span class="title function_">getUser</span><span class="params">(<span class="meta">@Path(&quot;id&quot;)</span> String id, <span class="meta">@Query(&quot;gender&quot;)</span> String gender)</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="HEAD"><a href="#HEAD" class="headerlink" title="HEAD"></a>HEAD</h3><ul>
+<li>和GET几乎一样</li>
+<li>不返回Body</li>
+</ul>
+<h2 id="Resonse-status-code"><a href="#Resonse-status-code" class="headerlink" title="Resonse status code"></a>Resonse status code</h2><p>作用：对结果做出类型化的描述</p>
+<ul>
+<li>1xx：临时性消息。如：100 （继续发送）、101（正在切换协议）</li>
+<li>2xx：成功。最典型的是 200（OK）、201（创建成功）。</li>
+<li>3xx：重定向。如 301（永久移动）、302（暂时移动）、304（内容未改变&#x2F;缓存）。</li>
+<li>4xx：客户端错误。如 400（客户端请求错误）、401（认证失败）、403（被禁⽌）、404（找 不到内容）。</li>
+<li>5xx：服务器错误</li>
+</ul>
+<h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><blockquote>
+<p>作用：HTTP消息的元数据（metadata）（数据的数据&#x2F;数据的属性）</p>
+</blockquote>
+<ul>
+<li><p>Host：服务器主机地址</p>
+</li>
+<li><p>Content-Length：内容的长度（字节）（<font color=red>因为内容是二进制的时候，没法定义结束符</font>）</p>
+</li>
+<li><p>Content-Type：</p>
+<ul>
+<li><p>text&#x2F;html：html文本，用于浏览器页面响应</p>
+</li>
+<li><p>application&#x2F;x-www-form-urlencoded：普通<font color=red >表单</font>，encoded URL格式（<font color=red>不能传二进制数据</font>）</p>
+<blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FormUrlEncoded</span></span><br><span class="line"><span class="meta">@POST(&quot;/users&quot;)</span></span><br><span class="line">Call&lt;User&gt; <span class="title function_">addUser</span><span class="params">(<span class="meta">@Field(&quot;name&quot;)</span> String name, <span class="meta">@Field(&quot;gender&quot;)</span> String gender)</span>;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>multipart&#x2F;form-data：多部分形式,一般用于传输包含二进制内容的多项内容</p>
+<blockquote>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E7%BD%91%E7%BB%9C/image-20221002215538054.png" alt="image-20221002215538054"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Multipart</span></span><br><span class="line"><span class="meta">@POST(&quot;/users&quot;)</span></span><br><span class="line">Call&lt;User&gt; <span class="title function_">addUser</span><span class="params">(<span class="meta">@Part(&quot;name&quot;)</span> RequestBody name, <span class="meta">@Part(&quot;avatar&quot;)</span> RequestBody avatar)</span>;</span><br><span class="line">...</span><br><span class="line"><span class="type">RequestBody</span> <span class="variable">namePart</span> <span class="operator">=</span> RequestBody.create(MediaType.parse(<span class="string">&quot;text/plain&quot;</span>), nameStr);</span><br><span class="line"><span class="type">RequestBody</span> <span class="variable">avatarPart</span> <span class="operator">=</span> RequestBody.create(MediaType.parse(<span class="string">&quot;image/jpeg&quot;</span>), avatarFile);</span><br><span class="line">api.addUser(namePart, avatarPart);</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>application&#x2F;json：json形式，用于web Api的响应或POST&#x2F;PUT请求</p>
+<blockquote>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E7%BD%91%E7%BB%9C/image-20221002220125992.png" alt="image-20221002220125992"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@POST(&quot;/users&quot;)</span></span><br><span class="line">Call&lt;User&gt; <span class="title function_">addUser</span><span class="params">(<span class="meta">@Body(&quot;user&quot;)</span> User user)</span>;</span><br><span class="line">...</span><br><span class="line"><span class="comment">// 需要使⽤ JSON 相关的 Converter</span></span><br><span class="line">api.addUser(user);</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p>image&#x2F;jpeg   application&#x2F;zip…：单文件，没用Web Api响应或POST&#x2F;PUT请求</p>
+<blockquote>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E7%BD%91%E7%BB%9C/image-20221002220618170.png" alt="image-20221002220618170"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;@POST(&quot;users/&#123;id&#125;/avatar&quot;)</span><br><span class="line">&gt;Call&lt;User&gt; updateAvatar(@Path(&quot;id&quot;) String id, @Body RequestBody avatar);</span><br><span class="line">&gt;...</span><br><span class="line">&gt;RequestBody avatarBody = RequestBody.create(MediaType.parse(&quot;image/jpeg&quot;), avatarFile);</span><br><span class="line">&gt;api.updateAvatar(id, avatarBody)</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ul>
+</li>
+<li><p>Location：重定向的目标URL</p>
+</li>
+<li><p>User-Agent：用户代理</p>
+</li>
+</ul>
+<blockquote>
+<p>Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;106.0.0.0 Safari&#x2F;537.36</p>
+</blockquote>
+<ul>
+<li><p>Range&#x2F;Accept-Range：指定Body的内容范围</p>
+<blockquote>
+<p>Accept-Range： bytes 响应报文中出现，表示服务器支持按字节来取范围数据，</p>
+<p>Range: bytes&#x3D;- 请求报⽂中出现，表示要取哪段数据</p>
+<p>Content-Range:-&#x2F;total 响应报⽂中出现，表示发送的是哪段数据</p>
+<p>作用：分段加载 ，<font color=red>断点续传，分段下载</font></p>
+</blockquote>
+</li>
+<li><p>Cookie&#x2F;Set-Cookie：发送Cookie&#x2F;设置Cookie</p>
+</li>
+<li><p>Authorization：授权信息</p>
+</li>
+</ul>
+<h3 id="Chunked-Transfer-Encoding"><a href="#Chunked-Transfer-Encoding" class="headerlink" title="Chunked Transfer Encoding"></a>Chunked Transfer Encoding</h3><ul>
+<li>Transfer-Encoding：chunked</li>
+<li>表示Body的长度无法确定，Content-Length不能用</li>
+<li>Body格式</li>
+</ul>
+<blockquote>
+<length1>
+
+<data1>
+
+<length2>
+
+<data2>
+
+<p>0</p>
+<p>（最后传输0表示内容结束）</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E7%BD%91%E7%BB%9C/image-20221002221103788.png" alt="image-20221002221103788"></p>
+</blockquote>
+<h3 id="其他Header"><a href="#其他Header" class="headerlink" title="其他Header"></a>其他Header</h3><ul>
+<li>Accept：客户端能接受的数据类型，如text&#x2F;html</li>
+<li>Accept-Charset：客户端接收的字符集，如utf-8</li>
+<li>Accept-Encoding：客户端接受的额压缩编码类型，如gzip</li>
+<li>Content-Encoding：压缩类型，如gzip</li>
+</ul>
+<h2 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h2><ul>
+<li>Cache和Buffer的区别：Cache（用过的，过会可能还要用），Buffer（针对工作流，上游多生产些，给下游用）。Cache（待会可能会用到），Buffer（待会一定会用到）</li>
+<li>Cache-Control：no-cache（可以缓存，请求时询问），no-store（不许缓存），max-age（失效日期之前不用问，可以用）</li>
+<li>Last-Modified：最后更改日期<ul>
+<li>if-Modified-Since：是否在xx之前改动了</li>
+</ul>
+</li>
+<li>Etag:<ul>
+<li>if-None-Match：</li>
+</ul>
+</li>
+<li>Cache-Control：private&#x2F;public：中间节点是否需要帮助我缓存</li>
+</ul>
+<h2 id="REST"><a href="#REST" class="headerlink" title="REST"></a>REST</h2><blockquote>
+<p>一种架构风格</p>
+</blockquote>
+<ul>
+<li>什么是REST：an architectural style that defines a set of constraints and properties based on HTTP</li>
+<li>Server-Client architecture：CS架构</li>
+<li>statelessness：无状态</li>
+<li>Cacheability：可缓存</li>
+<li>Layered system：对客户端透明</li>
+<li>Code on demand：允许可执行代码</li>
+<li>Uniform interface：</li>
+</ul>
+<h1 id="Body"><a href="#Body" class="headerlink" title="Body"></a>Body</h1>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://uncle2000.github.io/post/%E7%BD%91%E7%BB%9C/Http%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6/">https://uncle2000.github.io/post/%E7%BD%91%E7%BB%9C/Http%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/post/%E7%BD%91%E7%BB%9C/HTTPS%20%E5%92%8C%20TCP_IP/">HTTPS 和 TCP_IP</a>
+            
+            
+            <a class="next" rel="next" href="/post/Android-View/Android-%E8%87%AA%E5%AE%9A%E4%B9%89View/">Android-自定义View</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

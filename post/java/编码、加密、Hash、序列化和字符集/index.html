@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>编码、加密、Hash、序列化和字符集 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">编码、加密、Hash、序列化和字符集</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/java/">java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="加密解密-Encryption-amp-Decryption"><a href="#加密解密-Encryption-amp-Decryption" class="headerlink" title="加密解密 Encryption &amp; Decryption"></a>加密解密 Encryption &amp; Decryption</h1><h2 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h2><blockquote>
+<p> 通信双⽅使⽤同⼀个密钥，使⽤加密算法配合上密钥来加密，解密时使⽤加密过程的完全逆过程配合 密钥来进⾏解密。</p>
+</blockquote>
+<p>DES（56 位密钥，密钥太短⽽逐渐被弃⽤）、AES（128 位、192 位、256 位密钥，现在最流⾏）</p>
+<h3 id="破解思路"><a href="#破解思路" class="headerlink" title="破解思路"></a>破解思路</h3><ul>
+<li>拿到⼀组或多组原⽂-密⽂对 </li>
+<li>设法找到⼀个密钥，这个密钥可以将这些原⽂-密⽂对中的原⽂加密为密⽂，以及将密⽂解密为 原⽂的组合，即为成功破解</li>
+</ul>
+<h3 id="反破解"><a href="#反破解" class="headerlink" title="反破解"></a>反破解</h3><p>⼀种优秀的对称加密算法的标准是，让破解者找不到⽐穷举法（暴⼒破解法）更有效的破解⼿段，并 且穷举法的破解时间⾜够⻓（例如数千年）。</p>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><p>密钥泄露：不能在不安全⽹络上传输密钥，⼀旦密钥泄露则加密通信失败。</p>
+<h2 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h2><p>使⽤公钥对数据进⾏加密得到密⽂；使⽤私钥对数据进⾏解密得到原数据。 ⾮对称加密使⽤的是复杂的数学技巧，</p>
+<p><font color=red>公钥加密，私钥解密，我接受到数据，我用私钥解密</font></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%8A%A0%E5%AF%86/image-20221003150415643.png" alt="image-20221003150415643"></p>
+<p>使⽤⾮对称加密通信，可以在不可信⽹络上将双⽅的公钥传给对⽅，然后在发消息前分别对消息使⽤ 对⽅的公钥来加密和使⽤⾃⼰的私钥来签名，做到不可信⽹络上的可靠密钥传播及加密通信。</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%8A%A0%E5%AF%86/image-20221003150359049.png" alt="image-20221003150359049"></p>
+<p>由于私钥和公钥互相可解，因此⾮对称加密还可以应⽤于数字签名技术。</p>
+<p><font color=red>私钥签名，公钥验证，我发出签名数据，大家来验证是不是我</font></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%8A%A0%E5%AF%86/image-20221003150231243.png" alt="image-20221003150231243"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%8A%A0%E5%AF%86/image-20221003151642297.png" alt="image-20221003151642297"></p>
+<p>通常会对原数据 hash 以后对 hash 签名，然后附加在原数据的后⾯作为签名。这是为了让数据更⼩。</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%8A%A0%E5%AF%86/image-20221003151853448.png" alt="image-20221003151853448"></p>
+<p>RSA（可⽤于加密和签名）、DSA（仅⽤于签名，但速度更快）</p>
+<ul>
+<li><p>优点：可以在不安全⽹络上传输密钥</p>
+</li>
+<li><p>缺点：计算复杂，因此性能相⽐对称加密差很多</p>
+</li>
+</ul>
+<h3 id="破解"><a href="#破解" class="headerlink" title="破解"></a>破解</h3><ul>
+<li>和对称加密不同之处在于，⾮对称加密的公钥很容易获得，因此制造原⽂-密⽂对是没有困难的事 </li>
+<li>所以，⾮对称加密的关键只在于，如何找到⼀个正确的私钥，可以解密所有经过公钥加密过的密⽂。找到这样的私钥即为成功破解 </li>
+<li>由于⾮对称加密的⾃身特性，怎样通过公钥来推断出私钥通常是⼀种思路（例如 RSA），但往往 最佳⼿段依然是穷举法，只是和对称加密破解的区别在于，对称加密破解是不断尝试⾃⼰的新密钥是否可以将⾃⼰拿到的原⽂-密⽂对进⾏加密和解密，⽽⾮对称加密时不断尝试⾃⼰的新私钥 是否和公钥互相可解。</li>
+</ul>
+<h3 id="反破解-1"><a href="#反破解-1" class="headerlink" title="反破解"></a>反破解</h3><p>和对称加密⼀样，⾮对称加密算法优秀的标准同样在于，让破解者找不到⽐穷举法更有效的破解⼿ 段，并且穷举法的破解时间⾜够⻓。</p>
+<h2 id="密码学密钥和登录密码"><a href="#密码学密钥和登录密码" class="headerlink" title="密码学密钥和登录密码"></a>密码学密钥和登录密码</h2><ul>
+<li>密钥（key）<br>- 场景：⽤于加密和解密<br>- ⽬的：保证数据被盗时不会被⼈读懂内容<br>- 焦点：数据 </li>
+<li>登录密码（password）<br>- 场景：⽤户进⼊⽹站或游戏前的身份验证<br>- ⽬的：数据提供⽅或应⽤服务⽅对账户拥有者数据的保护，保证「你是你」的时候才提供 权限<br>- 焦点：身份</li>
+</ul>
+<h2 id="Base64"><a href="#Base64" class="headerlink" title="Base64"></a>Base64</h2><p>将⼆进制数据转换成由 64 个字符组成的字符串的编码算法</p>
+<blockquote>
+<p>将原数据每 6 位对应成 Base 64 索引表中的⼀个字符编排成⼀个字符串（每个字符 8 位）。 Base64 索引表：</p>
+</blockquote>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%8A%A0%E5%AF%86/image-20221003152641174.png" alt="image-20221003152641174"></p>
+<p>编码示例：把「Man」进⾏ Base64 编码</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%8A%A0%E5%AF%86/image-20221003152718257.png" alt="image-20221003152718257"></p>
+<p>编码示例：Base64 的末尾补⾜</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E5%8A%A0%E5%AF%86/image-20221003152913493.png" alt="image-20221003152913493"></p>
+<h3 id="Base64-的⽤途"><a href="#Base64-的⽤途" class="headerlink" title="Base64 的⽤途"></a>Base64 的⽤途</h3><ol>
+<li>将⼆进制数据扩充了储存和传输途径（例如可以把数据保存到⽂本⽂件、可以通过聊天对话框或 短信形式发送⼆进制数据、可以在 URL 中加⼊简单的⼆进制数据） </li>
+<li>普通的字符串在经过 Base64 编码后的结果会变得⾁眼不可读，因此可以适⽤于⼀定条件下的防 偷窥（较少⽤）</li>
+</ol>
+<h3 id="Base64-的缺点"><a href="#Base64-的缺点" class="headerlink" title="Base64 的缺点"></a>Base64 的缺点</h3><p>因为⾃身的原理（6 位变 8 位），因此每次 Base64 编码之后，数据都会增⼤约 1&#x2F;3，所以会影响存 储和传输性能。</p>
+<h3 id="「Base64-加密图⽚传输更安全和⾼效」？？？"><a href="#「Base64-加密图⽚传输更安全和⾼效」？？？" class="headerlink" title="「Base64 加密图⽚传输更安全和⾼效」？？？"></a>「Base64 加密图⽚传输更安全和⾼效」？？？</h3><p>不。⾸先，<font color=red>Base64 并不是加密</font>；另外，<font color=red>Base64 会导致数据增⼤ 1&#x2F;3</font>，降低⽹络性能，增⼤⽤户流量 开销，是画蛇添⾜的⼿段。（最好不要拿来 diss 你们公司的后端哟，友善） </p>
+<p>Base64 对图⽚进⾏编码的⽤于在于，__有时需要使⽤⽂本形式来传输图⽚__。除此之外，完全没必要使 ⽤ Base64 对图⽚进⾏额外处理。</p>
+<h3 id="变种：Base58"><a href="#变种：Base58" class="headerlink" title="变种：Base58"></a>变种：Base58</h3><p>⽐特币使⽤的编码⽅式，去掉了 Base64 中的数字 “0”，字⺟⼤写 “O”，字⺟⼤写 “I”，和字⺟⼩写 “l”，以及 “+” 和 “&#x2F;“ 符号，⽤于⽐特币地址的表示。 Base58 对于 Base64 的改动，主要⽬的在于⽤户的便捷性。由于去掉了难以区分的字符，使得 Base58 对于「⼈⼯抄写」更加⽅便。另外，去掉了 “+” “&#x2F;“ 号后也让⼤多数的软件可以⽅便双击选 取</p>
+<h2 id="URL-使⽤的百分号编码"><a href="#URL-使⽤的百分号编码" class="headerlink" title="URL 使⽤的百分号编码"></a>URL 使⽤的百分号编码</h2><p>在 URL 的字符串中，对⼀些不⽤于特殊⽤途的保留字符，使⽤百分号 “%” 为前缀进⾏单独编码，以避免出现解析错误。 </p>
+<p>例如，要在 <a target="_blank" rel="noopener" href="http://hencoder.com/users">http://hencoder.com/users</a> 后⾯添加查询字符串，查询 name 为「隐匿&amp;伟⼤」的⽤ 户，如果直接写成 <a target="_blank" rel="noopener" href="http://hencoder.com/user/?name=%E9%9A%90%E5%8C%BF&amp;%E4%BC%9F%E2%BC%A4">http://hencoder.com/user/?name=隐匿&amp;伟⼤</a> ，”&amp;” 符号就会被解析为分隔符 号，因此需要对它进⾏转码，转码后的 URL 为 <a target="_blank" rel="noopener" href="http://hencoder.com/user/?name=%E9%9A%90%E5%8C%BF&%E4%BC%9F%E2%BC%A4">http://hencoder.com/user/?name=隐匿%26伟⼤</a> 。这种编码仅⽤于 URL，<font color=red>⽬的是避免解析错误的出现</font>。</p>
+<h1 id="压缩与解压缩-Compression-amp-Decompression"><a href="#压缩与解压缩-Compression-amp-Decompression" class="headerlink" title="压缩与解压缩 Compression &amp; Decompression"></a>压缩与解压缩 Compression &amp; Decompression</h1><ul>
+<li>压缩：将数据使⽤更具有存储优势的编码算法进⾏编码。 </li>
+<li>解压缩：将压缩数据解码还原成原来的形式</li>
+</ul>
+<h2 id="压缩是编码吗？"><a href="#压缩是编码吗？" class="headerlink" title="压缩是编码吗？"></a>压缩是编码吗？</h2><p>是。<font color=red>所谓编码，即把数据从⼀种形式转换为另⼀种形式</font>。压缩过程属于编码过程，解压缩过程属于解 码过程。</p>
+<h2 id="常⻅压缩算法"><a href="#常⻅压缩算法" class="headerlink" title="常⻅压缩算法"></a>常⻅压缩算法</h2><p>DEFLATE、JPEG、MP3</p>
+<h1 id="图⽚与⾳频、视频编解码"><a href="#图⽚与⾳频、视频编解码" class="headerlink" title="图⽚与⾳频、视频编解码"></a>图⽚与⾳频、视频编解码</h1><blockquote>
+<p>将图像、⾳频、视频数据通过编码来转换成存档形式（编码），以及从存档形式转换回来（解码）。</p>
+<p>存储和压缩媒体数据（⼤多数媒体编码算法会压缩数据，但不是全部）。</p>
+</blockquote>
+<h1 id="序列化-Serialization"><a href="#序列化-Serialization" class="headerlink" title="序列化 Serialization"></a>序列化 Serialization</h1><blockquote>
+<p>把数据对象（⼀般是内存中的，例如 JVM 中的对象）转换成字节序列的过程。对象在程序内存⾥的存 放形式是散乱的（存放在不同的内存区域、并且由引⽤进⾏连接），通过序列化可以把内存中的对象 转换成⼀个字节序列，从⽽使⽤ byte[] 等形式进⾏本地存储或⽹络传输，在需要的时候重新组装（反 序列化）来使⽤。</p>
+</blockquote>
+<h2 id="⽬的"><a href="#⽬的" class="headerlink" title="⽬的"></a>⽬的</h2><p>让内存中的对象可以被储存和传输。</p>
+<h2 id="序列化是编码吗？"><a href="#序列化是编码吗？" class="headerlink" title="序列化是编码吗？"></a>序列化是编码吗？</h2><p>不是</p>
+<h2 id="和编码的区别"><a href="#和编码的区别" class="headerlink" title="和编码的区别"></a>和编码的区别</h2><p>编码是把数据由⼀种数据格式转换成另⼀种数据格式；⽽序列化是把数据由内存中的对象（⽽不是某 种具体的格式）转换成字节序列。</p>
+<h1 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>把任意数据转换成指定⼤⼩范围（通常很⼩，例如 256 字节以内）的数据。 </p>
+<h2 id="作⽤"><a href="#作⽤" class="headerlink" title="作⽤"></a>作⽤</h2><p>相当于从数据中提出摘要信息，因此最主要⽤途是数字指纹。 </p>
+<h2 id="Hash-的实际⽤途：唯⼀性验证"><a href="#Hash-的实际⽤途：唯⼀性验证" class="headerlink" title="Hash 的实际⽤途：唯⼀性验证"></a>Hash 的实际⽤途：唯⼀性验证</h2><p>例如 Java 中的 hashCode() ⽅法。 </p>
+<p>怎么重写 hashCode ⽅法？ </p>
+<p>把 equals() ⽅法中的每个⽤于判断相等的变量都放进 hashCode() 中，⼀起⽣成⼀个尽量不会碰撞的 整数即可 </p>
+<blockquote>
+<p>为什么每次重写 equals() ⽅法都需要？因为你要把新的判断条件放进 hashCode() 啊。 </p>
+</blockquote>
+<h2 id="Hash-的实际⽤途：数据完整性验证"><a href="#Hash-的实际⽤途：数据完整性验证" class="headerlink" title="Hash 的实际⽤途：数据完整性验证"></a>Hash 的实际⽤途：数据完整性验证</h2><p>从⽹络上下载⽂件后，通过⽐对⽂件的 Hash 值（例如 MD5、SHA1），可以确认下载的⽂件是否有 损坏。如果下载的⽂件 Hash 值和⽂件提供⽅给出的 Hash 值⼀致，则证明下载的⽂件是完好⽆损 的。 </p>
+<h2 id="Hash-的实际⽤途：快速查找"><a href="#Hash-的实际⽤途：快速查找" class="headerlink" title="Hash 的实际⽤途：快速查找"></a>Hash 的实际⽤途：快速查找</h2><p>HashMap </p>
+<h2 id="Hash-的实际⽤途：隐私保护"><a href="#Hash-的实际⽤途：隐私保护" class="headerlink" title="Hash 的实际⽤途：隐私保护"></a>Hash 的实际⽤途：隐私保护</h2><p>当重要数据必须暴露的时候，有时可以选择暴露它的 Hash 值（例如 MD5），以保障原数据的安全。 例如⽹站登录时，可以只保存⽤户密码的 Hash 值，在每次登录验证时只需要将输⼊的密码的 Hash 值和数据库中保存的 Hash 值作⽐对就好，⽹站⽆需知道⽤户的密码。这样，当⽹站数据失窃时，⽤ 户不会因为⾃⼰的密码被盗导致其他⽹站的安全也受到威胁。 </p>
+<blockquote>
+<p>注意：这不属于加密。 </p>
+</blockquote>
+<h2 id="Hash-是编码吗？"><a href="#Hash-是编码吗？" class="headerlink" title="Hash 是编码吗？"></a>Hash 是编码吗？</h2><p>不是。 Hash 是单向过程，往往是不可逆的，⽆法进⾏逆向恢复操作，因此 Hash 不属于编码。 </p>
+<h2 id="Hash-是加密吗？"><a href="#Hash-是加密吗？" class="headerlink" title="Hash 是加密吗？"></a>Hash 是加密吗？</h2><p>不是。Hash 是单向过程，⽆法进⾏逆向回复操作，因此 Hash 不属于加密。（记住，MD5 不是加 密！）</p>
+<h1 id="字符集"><a href="#字符集" class="headerlink" title="字符集"></a>字符集</h1><h2 id="含义："><a href="#含义：" class="headerlink" title="含义："></a>含义：</h2><p>⼀个由整数向现实世界中的⽂字符号的<font color=red>映射</font></p>
+<h2 id="分⽀："><a href="#分⽀：" class="headerlink" title="分⽀："></a>分⽀：</h2><ul>
+<li><p>ASCII：128 个字符，1 字节 </p>
+</li>
+<li><p>ISO-8859-1：对 ASCII 进⾏扩充，1 字节 </p>
+</li>
+<li><p>Unicode：13 万个字符，多字节 </p>
+<ul>
+<li>UTF-8：Unicode 的编码分⽀ </li>
+<li>UTF-16 ：Unicode 的编码分⽀</li>
+</ul>
+</li>
+<li><p>GBK &#x2F; GB2312 &#x2F; GB18030：中国⾃研标准，多字节，字符集 + 编码</p>
+</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://uncle2000.github.io/post/java/%E7%BC%96%E7%A0%81%E3%80%81%E5%8A%A0%E5%AF%86%E3%80%81Hash%E3%80%81%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%AD%97%E7%AC%A6%E9%9B%86/">https://uncle2000.github.io/post/java/%E7%BC%96%E7%A0%81%E3%80%81%E5%8A%A0%E5%AF%86%E3%80%81Hash%E3%80%81%E5%BA%8F%E5%88%97%E5%8C%96%E5%92%8C%E5%AD%97%E7%AC%A6%E9%9B%86/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/post/%E5%85%B6%E4%BB%96%E9%A2%86%E5%9F%9F/%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86/">视频处理</a>
+            
+            
+            <a class="next" rel="next" href="/post/Android-View/%E8%A7%A6%E6%91%B8%E5%8F%8D%E9%A6%88/">触摸反馈</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>view | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">view</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Android-View/">Android View</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="常用"><a href="#常用" class="headerlink" title="常用"></a>常用</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">dp2px</span><span class="params">(dp: <span class="type">Float</span>)</span></span> = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().displayMetrics)<span class="comment">//不需要额外的传入context</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//kotlin</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="built_in">Float</span>.<span class="title">dp2px</span><span class="params">()</span></span> = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, <span class="keyword">this</span>, Resources.getSystem().displayMetrics)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> paint = Paint(Paint.ANTI_ALIAS_FLAG)<span class="comment">//反锯齿</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="抗锯齿"><a href="#抗锯齿" class="headerlink" title="抗锯齿"></a>抗锯齿</h1><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221006190741661.png" alt="image-20221006190741661"></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> paint = Paint(Paint.ANTI_ALIAS_FLAG)<span class="comment">//反锯齿</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="onSizechanged"><a href="#onSizechanged" class="headerlink" title="onSizechanged()"></a>onSizechanged()</h1><p>layout()之后，实际尺寸改变了会被调用一次，尺寸不变不会调用？？</p>
+<p>好处：</p>
+<p>1.尺寸变了保证重置</p>
+<p>2.不会被过多的调用</p>
+<h1 id="invalidate"><a href="#invalidate" class="headerlink" title="invalidate()"></a>invalidate()</h1><blockquote>
+<p>失效：界面已经失效，请重新绘制</p>
+</blockquote>
+<h1 id="Xfermode"><a href="#Xfermode" class="headerlink" title="Xfermode"></a>Xfermode</h1><p>…</p>
+<h1 id="Path"><a href="#Path" class="headerlink" title="Path"></a>Path</h1><h2 id="Path-Direction-CCW-x2F-CW"><a href="#Path-Direction-CCW-x2F-CW" class="headerlink" title="Path.Direction.CCW&#x2F;CW"></a>Path.Direction.CCW&#x2F;CW</h2><blockquote>
+<p>相关概念 video07:00:37:00</p>
+</blockquote>
+<p>path.setFillType()</p>
+<ul>
+<li>WINDING</li>
+<li>EVEN_ODD</li>
+<li>INVERSE_WINDING</li>
+<li>INVERSE_EVEN_ODD</li>
+</ul>
+<h2 id="PathMeasure"><a href="#PathMeasure" class="headerlink" title="PathMeasure"></a>PathMeasure</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> pathMeasure = PathMeasure(path, <span class="literal">false</span>)<span class="comment">// forceClosed:是否闭合 </span></span><br><span class="line">pathMeasure.length<span class="comment">//整个路径的长度(周长)</span></span><br><span class="line">pathMeasure.getPosTan()<span class="comment">//某个长度处，点的坐标和角度</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="文字"><a href="#文字" class="headerlink" title="文字"></a>文字</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">paint.typeface = Typeface.createFromAsset(...)<span class="comment">//字体</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="文字的垂直居中"><a href="#文字的垂直居中" class="headerlink" title="文字的垂直居中"></a>文字的垂直居中</h3><p><img src="https://img-blog.csdnimg.cn/5c25bab28d15496493c32d95e2131538.png" alt="img"></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//画文字方式一： 适合不变的文字</span></span><br><span class="line"><span class="keyword">val</span> offset = paint.getTextBounds(<span class="string">&quot;abab&quot;</span>, <span class="number">0</span>, <span class="string">&quot;abab&quot;</span>.length, rect)</span><br><span class="line">canvas.drawText(<span class="string">&quot;abab&quot;</span>, width / <span class="number">2</span>, height / <span class="number">2</span> - offset, paint)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//画文字方式二： 适合变动的文字，不会跳动</span></span><br><span class="line"><span class="keyword">val</span> fontMetrics = FontMetrics()</span><br><span class="line">paint.getFontMetrics(fontMetrics)</span><br><span class="line"><span class="keyword">val</span> offset = (fontMetrics.ascent + fontMetrics.descent) / <span class="number">2</span></span><br><span class="line">canvas.drawText(<span class="string">&quot;abab&quot;</span>, width / <span class="number">2</span>, height / <span class="number">2</span> - offset, paint)</span><br></pre></td></tr></table></figure>
+
+<h3 id="文字的居左"><a href="#文字的居左" class="headerlink" title="文字的居左"></a>文字的居左</h3> <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.drawText(<span class="string">&quot;abab&quot;</span>, -rect.left, y, paint)</span><br></pre></td></tr></table></figure>
+
+<h3 id="多行文字"><a href="#多行文字" class="headerlink" title="多行文字"></a>多行文字</h3><p>StaticLayout</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">StaticLayout(<span class="string">&quot;xxx...&quot;</span>,textPaint,width,Layout.Alignment.ALIGN_NORMAL,<span class="number">1</span>,<span class="number">0</span>,<span class="literal">false</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>ImageTextView</p>
+<h1 id="Canvas的范围裁切"><a href="#Canvas的范围裁切" class="headerlink" title="Canvas的范围裁切"></a>Canvas的范围裁切</h1><ul>
+<li>clipRect()</li>
+<li>clipPath()</li>
+<li>clipOutRect()&#x2F;clipOutPath()</li>
+</ul>
+<h1 id="Canvas的几何变换"><a href="#Canvas的几何变换" class="headerlink" title="Canvas的几何变换"></a>Canvas的几何变换</h1><blockquote>
+<p>双坐标系</p>
+</blockquote>
+<ul>
+<li>translate(x,y)</li>
+<li>roate(degree)</li>
+<li>scale(x,y)</li>
+<li>skew(x,y) 错切</li>
+</ul>
+<h1 id="Matrix的几何变换"><a href="#Matrix的几何变换" class="headerlink" title="Matrix的几何变换"></a>Matrix的几何变换</h1><ul>
+<li>preTranslate(x,y)&#x2F;postTranslate(x,y)</li>
+<li>preRotate(degree)&#x2F;postRotate(degree)</li>
+<li>preScale(x,y)&#x2F;postScale(x,y)</li>
+<li>preSkew(x,y)&#x2F;postSkew(x,y)</li>
+</ul>
+<p>pre双坐标系，post单坐标系</p>
+<h1 id="Camera"><a href="#Camera" class="headerlink" title="Camera"></a>Camera</h1><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221006190605794.png" alt="image-20221006190605794"></p>
+<blockquote>
+<p>单坐标系</p>
+</blockquote>
+<ul>
+<li>rotate()&#x2F;rotateX()&#x2F;rotateY()&#x2F;rotateZ()</li>
+<li>translate()</li>
+<li><font color=red>setLocation()</font> 焦点越往后，映射越大</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//适配 -8=-8*72 个像素</span></span><br><span class="line">camera.setLoaction(<span class="number">0</span>,<span class="number">0</span>,-<span class="number">8</span>*getResource().getDisplayMetrics().density)</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="布局过程"><a href="#布局过程" class="headerlink" title="布局过程"></a>布局过程</h1><p>View的位置和尺寸</p>
+<p><font color=red>onMeasure从子向父要期望的宽高，onlayout由父向子给实际分配的宽高</font></p>
+<p><font color=red>layout后就知道自己的宽高和位置了</font></p>
+<p>layout是具体做事的，onlayout对子View布局</p>
+<ul>
+<li><p>从整体来看</p>
+<ul>
+<li>测量流程 从根View递归调用每一级子View的measure()方法，对它们进行测量。</li>
+<li>布局流程 从根View递归调用每一级子View的layout()方法，把测量过程得出的子View的位置和尺寸传给子View，子View保存</li>
+</ul>
+</li>
+<li><p>从个体看，对于每个View</p>
+<ol>
+<li>运行前，开发在xml文件历写入对View的布局要求layout_xxx</li>
+<li>父View在字节的onMeasure()中，根据开发者在xml中写的对子View的要求，和自己的可用空间，得出对子View的具体尺寸要求</li>
+<li>子View在自己的onMeasure()中，根据自己的特性算出字节的期望尺寸，如果是ViewGroup，还会在这里调用每个子View的Measure()进行测量。</li>
+<li>父View在子View计算出期望尺寸后，得出子view的实际尺寸和位置，如果是ViewGroup，还会在onLayout()里调用每个子View的layout()把他们的尺寸位置传给它们</li>
+</ol>
+</li>
+</ul>
+<h2 id="resolvSize-resolvSizeAndState"><a href="#resolvSize-resolvSizeAndState" class="headerlink" title="resolvSize  resolvSizeAndState"></a>resolvSize  resolvSizeAndState</h2><blockquote>
+<p>不需要每次计算尺寸</p>
+</blockquote>
+<p>getMeasuredState() $ MEASURED_STATE_TOO_SMALL &#x3D;&#x3D; 0 代表给的尺寸比期望的小</p>
+<h1 id="动画"><a href="#动画" class="headerlink" title="动画"></a>动画</h1><h2 id="属性动画"><a href="#属性动画" class="headerlink" title="属性动画"></a>属性动画</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// radius 是反射的方式</span></span><br><span class="line"><span class="type">ObjectAnimator</span> <span class="variable">animator</span> <span class="operator">=</span> ObjectAnimator.ofFloat(view,propertyName=<span class="string">&quot;radius&quot;</span>,<span class="number">150</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="AnimatorSet"><a href="#AnimatorSet" class="headerlink" title="AnimatorSet"></a>AnimatorSet</h2><h2 id="PropertyValuesHolder"><a href="#PropertyValuesHolder" class="headerlink" title="PropertyValuesHolder"></a>PropertyValuesHolder</h2><p>多个Animator可以只用一个Animator</p>
+<h2 id="Keyframe"><a href="#Keyframe" class="headerlink" title="Keyframe"></a>Keyframe</h2><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> keyframe1 = Keyframe.ofFloat(<span class="number">0f</span>, <span class="number">0f</span>)</span><br><span class="line"><span class="keyword">val</span> keyframe2 = Keyframe.ofFloat(<span class="number">0.2f</span>, <span class="number">0.4f</span>)</span><br><span class="line"><span class="keyword">val</span> keyframe3 = Keyframe.ofFloat(<span class="number">0.8f</span>, <span class="number">0.6f</span>)</span><br><span class="line"><span class="keyword">val</span> keyframe4 = Keyframe.ofFloat(<span class="number">1f</span>, <span class="number">1f</span>)</span><br><span class="line"><span class="keyword">val</span> viewHolder = PropertyValuesHolder.ofKeyframe(<span class="string">&quot;translationX&quot;</span>, keyframe1, keyframe2, keyframe3, keyframe4)</span><br><span class="line"><span class="keyword">val</span> animator = ObjectAnimator.ofPropertyValuesHolder(view, viewHolder)</span><br><span class="line">animator.startDelay = <span class="number">1000</span></span><br><span class="line">animator.duration = <span class="number">2000</span></span><br><span class="line">animator.start()</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h1 id="硬件加速"><a href="#硬件加速" class="headerlink" title="硬件加速"></a>硬件加速</h1><blockquote>
+<p>用GPU绘制，分开工作，效率更高。在绘制上比CPU更快</p>
+<p>GPU绘制到屏幕上之前，会有轻量的一个中间结果，改起来方便</p>
+</blockquote>
+<h1 id="离屏缓冲"><a href="#离屏缓冲" class="headerlink" title="离屏缓冲"></a>离屏缓冲</h1><blockquote>
+<p>view的绘制，其颜色会被父view影响，为了实现透明度的样式，单独用一块区域去绘制</p>
+</blockquote>
+<p>saveLayer() <font color=red>代码重</font></p>
+<blockquote>
+<p>除了 canvas.save() 操作，还会把东西拿到离屏缓冲中去，store()的时候再拿回来</p>
+</blockquote>
+<p>setLayerType(LAYER_TYPE_SOFTWARE,null)&#x2F;&#x2F;要离屏缓冲，</p>
+<p>setLayerType(LAYER_TYPE_HARDWARE,null)&#x2F;&#x2F;要离屏缓冲，损耗额外的性能</p>
+<p>setLayerType(LAYER_TYPE_NONE,null)&#x2F;&#x2F;一次的绘制过程中不能改变</p>
+<p><del>以上功能，只针对系统的view，对自定义view无效？？</del></p>
+<h1 id="R-styleable-xx"><a href="#R-styleable-xx" class="headerlink" title="R.styleable.xx"></a>R.styleable.xx</h1><p>R.attr.pro</p>
+<p>R.styleable.view_pro</p>
+<h1 id="RecyclerView"><a href="#RecyclerView" class="headerlink" title="RecyclerView"></a>RecyclerView</h1><ul>
+<li><p>默认支持Linear,Grid,Staggered Grid 三种布局</p>
+</li>
+<li><p>友好的ItemAnimator动画API</p>
+</li>
+<li><p>强制实行ViewHolder</p>
+</li>
+<li><p>解耦的架构设计</p>
+</li>
+<li><p>相比ListView更好的性能</p>
+</li>
+<li><p>Layout Manager：布局摆放</p>
+</li>
+<li><p>Item Animator:做动画</p>
+</li>
+<li><p>Adapter:提供View</p>
+</li>
+</ul>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024212618038.png" alt="image-20221024212618038"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024212650466.png" alt="image-20221024212650466"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024213238246.png" alt="image-20221024213238246"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024213512812.png" alt="image-20221024213512812"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024213634082.png" alt="image-20221024213634082"></p>
+<p>RecyclerView缓存的是ViewHolder而不像ListView缓存的是itemView</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024213917411.png" alt="image-20221024213917411"></p>
+<h2 id="ViewCacheExtension-Example"><a href="#ViewCacheExtension-Example" class="headerlink" title="ViewCacheExtension Example"></a>ViewCacheExtension Example</h2><ul>
+<li>广告卡片</li>
+<li>每次划入一个广告卡片，一般情况下都需要重新绑定</li>
+<li>chache值关心position 不关心view type</li>
+<li>RecycledViewPool之关心view type都需要重新绑定</li>
+<li>在ViewCacheExtample里保持3个广告Card缓存</li>
+</ul>
+<p>广告统计</p>
+<ul>
+<li>listView通过getView统计</li>
+<li>RecyclerView通过onbindViewHolder&#x2F;&#x2F;可能错误</li>
+<li>通过onViewAttachedToWindow统计</li>
+</ul>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>onBindViewHolder，里设置点击监听器会导致重复创建对象。</p>
+<p>LinearLayoutManager.setInitialPrefetchItemCount()</p>
+<ul>
+<li>用户滑动到横向滑动的item RecyclerView的时候，由于需要创建更复杂的RecyclerView及多个子View，可能会导致卡顿</li>
+<li>由于RenderThread的存在，RcyclerView会进行perfetch</li>
+<li>LinearLayoutManager.setInitialPrefetchItemCount()&#x2F;&#x2F;横向列表初次显示时可见的item个数<ul>
+<li>只有LinearLayoutManager有这个API</li>
+<li>只有嵌套在内部的RecyclerView才会生效</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024230930302.png" alt="image-20221024230930302"></p>
+<p>RecyclerViewPool，多个可以共享一个</p>
+<h2 id="数据太多"><a href="#数据太多" class="headerlink" title="数据太多"></a>数据太多</h2><p>DiffUtil</p>
+<ul>
+<li>局部更新notifyItemXXX() 不会适用所有情况</li>
+<li>notifyDataSetChange()会导致整个布局重绘，重新绑定所有ViewHolder，而且会失去可能的动画效果</li>
+<li>DiffUtill使用与整个页面的刷新，但是有部分数据可能相同的情况</li>
+</ul>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024231654198.png" alt="image-20221024231654198"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024231815382.png" alt="image-20221024231815382"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024232100636.png" alt="image-20221024232100636"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024232608127.png" alt="image-20221024232608127"></p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221024232636271.png" alt="image-20221024232636271"></p>
+<p>  自动增量更新（刷所有）</p>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221025000837280.png" alt="image-20221025000837280"></p>
+<p>刷部分</p>
+<ul>
+<li>在列表很大的时候异步计算diff<ul>
+<li>使用Thread&#x2F;Handler将DiffResult发到主线程</li>
+<li>使用Rxjava将calculateDiff</li>
+<li>使用google提供的AsyncListDiffer（Executor）&#x2F;ListAdapter</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221025001307848.png" alt="image-20221025001307848"></p>
+<h2 id="分割线"><a href="#分割线" class="headerlink" title="分割线"></a>分割线</h2><p>画itemView的上下左右前后</p>
+<h3 id="教程"><a href="#教程" class="headerlink" title="教程"></a>教程</h3><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221025002836397.png" alt="image-20221025002836397"></p>
+<h1 id="自定义View"><a href="#自定义View" class="headerlink" title="自定义View"></a>自定义View</h1><h2 id="Dashboard"><a href="#Dashboard" class="headerlink" title="Dashboard"></a>Dashboard</h2><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221006154241696.png" alt="image-20221006154241696"></p>
+<h2 id="PieChart"><a href="#PieChart" class="headerlink" title="PieChart"></a>PieChart</h2><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221006165613969.png" alt="image-20221006165613969"></p>
+<h2 id="AvatarView"><a href="#AvatarView" class="headerlink" title="AvatarView"></a>AvatarView</h2><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221006171421556.png" alt="image-20221006171421556"></p>
+<h2 id="ImageTextView"><a href="#ImageTextView" class="headerlink" title="ImageTextView"></a>ImageTextView</h2><p><img src="https://uncle2000-blog.oss-cn-chengdu.aliyuncs.com/%E8%87%AA%E5%AE%9A%E4%B9%89View/image-20221006185130915.png" alt="image-20221006185130915"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://uncle2000.github.io/post/Android-View/view/">https://uncle2000.github.io/post/Android-View/view/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/post/Android/JetPack/">JetPack</a>
+            
+            
+            <a class="next" rel="next" href="/post/%E5%85%B6%E4%BB%96/%E5%90%84%E7%A7%8D%E8%AF%AD%E8%A8%80&%E5%90%84%E7%A7%8D%E5%B9%B3%E5%8F%B0/">各种语言&各种平台</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

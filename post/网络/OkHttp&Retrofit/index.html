@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>OkHttp&amp;Retrofit | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">OkHttp&amp;Retrofit</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E7%BD%91%E7%BB%9C/">网络</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="OKHTTP"><a href="#OKHTTP" class="headerlink" title="OKHTTP"></a>OKHTTP</h1><p><a target="_blank" rel="noopener" href="https://square.github.io/okhttp/">https://square.github.io/okhttp/</a></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> okhttp3.*</span><br><span class="line"><span class="keyword">val</span> client = OkHttpClient()</span><br><span class="line"><span class="keyword">val</span> req = Request.Builder()</span><br><span class="line">    .url(<span class="string">&quot;http://api.github.com/users/rengwuxian/repo&quot;</span>)</span><br><span class="line">    .build()</span><br><span class="line">client.newCall(req).enqueue(<span class="keyword">object</span> : Callback &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onFailure</span><span class="params">(call: <span class="type">Call</span>, e: <span class="type">IOException</span>)</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;=================&quot;</span> + call)</span><br><span class="line">        println(<span class="string">&quot;=================&quot;</span> + e.printStackTrace())</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onResponse</span><span class="params">(call: <span class="type">Call</span>, response: <span class="type">Response</span>)</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;=================&quot;</span> + call)</span><br><span class="line">        println(<span class="string">&quot;=================&quot;</span> + response)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">implementation <span class="string">&#x27;com.squareup.okhttp3:okhttp:4.10.0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p><font color=red>newCall()</font></p>
+<p><font color=red>enqueue(),Dispather,Executor,AsyncCall,getResponseWithInterceptorChain()</font></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dispatcher: Dispatcher = Dispatcher()<span class="comment">//线程调度器</span></span><br><span class="line"><span class="keyword">var</span> connectionPool: ConnectionPool = ConnectionPool()<span class="comment">//连接池</span></span><br><span class="line"><span class="keyword">val</span> interceptors: MutableList&lt;Interceptor&gt; = mutableListOf()<span class="comment">//拦截器</span></span><br><span class="line"><span class="keyword">val</span> networkInterceptors: MutableList&lt;Interceptor&gt; = mutableListOf()<span class="comment">//拦截器</span></span><br><span class="line"><span class="keyword">var</span> eventListenerFactory: EventListener.Factory = EventListener.NONE.asFactory()<span class="comment">//做记录的</span></span><br><span class="line"><span class="keyword">var</span> retryOnConnectionFailure = <span class="literal">true</span><span class="comment">//链接意外是否重试（不包括404等）</span></span><br><span class="line"><span class="keyword">var</span> authenticator: Authenticator = Authenticator.NONE<span class="comment">//权限不足则报错</span></span><br><span class="line"><span class="keyword">var</span> followRedirects = <span class="literal">true</span><span class="comment">//遇到链接跳转，是否跳转</span></span><br><span class="line"><span class="keyword">var</span> followSslRedirects = <span class="literal">true</span><span class="comment">//如果HTTPS和HTTP互相跳，是否跳</span></span><br><span class="line"><span class="keyword">var</span> cookieJar: CookieJar = CookieJar.NO_COOKIES<span class="comment">//饼干罐，自定义存取cookie</span></span><br><span class="line"><span class="keyword">var</span> cache: Cache? = <span class="literal">null</span><span class="comment">//HTTP的缓存</span></span><br><span class="line"><span class="keyword">var</span> dns: Dns = Dns.SYSTEM<span class="comment">//DNS 根据域名拿到IP列表</span></span><br><span class="line"><span class="keyword">var</span> proxy: Proxy? = <span class="literal">null</span><span class="comment">//代理服务器</span></span><br><span class="line"><span class="keyword">var</span> proxySelector: ProxySelector? = <span class="literal">null</span></span><br><span class="line"><span class="keyword">var</span> proxyAuthenticator: Authenticator = Authenticator.NONE<span class="comment">//权限不足则报错</span></span><br><span class="line"><span class="keyword">var</span> socketFactory: SocketFactory = SocketFactory.getDefault()<span class="comment">//创建端口（HTTP没有端口，TCP有）</span></span><br><span class="line"><span class="keyword">var</span> sslSocketFactoryOrNull: SSLSocketFactory? = <span class="literal">null</span><span class="comment">//SSL链接的</span></span><br><span class="line"><span class="keyword">var</span> x509TrustManagerOrNull: X509TrustManager? = <span class="literal">null</span></span><br><span class="line"><span class="keyword">var</span> connectionSpecs: List&lt;ConnectionSpec&gt; = DEFAULT_CONNECTION_SPECS<span class="comment">//如果使用HTTPS的话，可支持的TLS版本</span></span><br><span class="line"><span class="keyword">var</span> protocols: List&lt;Protocol&gt; = DEFAULT_PROTOCOLS<span class="comment">//支持的HTTP的版本</span></span><br><span class="line"><span class="keyword">var</span> hostnameVerifier: HostnameVerifier = OkHostnameVerifier<span class="comment">//HOST验证器（HTTPS）</span></span><br><span class="line"><span class="keyword">var</span> certificatePinner: CertificatePinner = CertificatePinner.DEFAULT<span class="comment">//自签名</span></span><br><span class="line"><span class="keyword">var</span> certificateChainCleaner: CertificateChainCleaner? = <span class="literal">null</span><span class="comment">//服务器证书链</span></span><br><span class="line"><span class="keyword">var</span> callTimeout = <span class="number">0</span></span><br><span class="line"><span class="keyword">var</span> connectTimeout = <span class="number">10_000</span><span class="comment">//链接超时时间</span></span><br><span class="line"><span class="keyword">var</span> readTimeout = <span class="number">10_000</span><span class="comment">//下载响应超时时间</span></span><br><span class="line"><span class="keyword">var</span> writeTimeout = <span class="number">10_000</span><span class="comment">//写入请求的超时时间</span></span><br><span class="line"><span class="keyword">var</span> pingInterval = <span class="number">0</span><span class="comment">//心跳间隔</span></span><br><span class="line"><span class="keyword">var</span> minWebSocketMessageToCompress = RealWebSocket.DEFAULT_MINIMUM_DEFLATE_SIZE</span><br><span class="line"><span class="keyword">var</span> routeDatabase: RouteDatabase? = <span class="literal">null</span></span><br></pre></td></tr></table></figure>
+
+<p><font color=red>自签名的使用，注解</font></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> client = OkHttpClient.Builder()</span><br><span class="line">client.certificatePinner(certificatePinner)<span class="comment">//自签名</span></span><br><span class="line">client.authenticator(<span class="keyword">object</span> : Authenticator &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">authenticate</span><span class="params">(route: <span class="type">Route</span>?, response: <span class="type">Response</span>)</span></span>: Request? &#123;</span><br><span class="line">        <span class="comment">//权限</span></span><br><span class="line">    &#125;       </span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><font color=red>client.interceptors</font><br><font color=red>RetryAndFollowUpInterceptor(client)</font><br><font color=red>BridgeInterceptor(client.cookieJar)</font><br><font color=red>CacheInterceptor(client.cache)</font><br><font color=red>ConnectInterceptor</font><br><font color=red>CallServerInterceptor(forWebSocket)</font></p>
+<p><font color=red>proceed(request: Request): Response {}</font></p>
+<p>证书是用来证明“他是他”，而不是是否合法。</p>
+<p>发证书的核心目的是发公钥。</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/5ee027c51af0">SSL在哪一层</a></p>
+<h1 id="Retrofix"><a href="#Retrofix" class="headerlink" title="Retrofix"></a>Retrofix</h1><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> retrofit = Retrofit.Builder()</span><br><span class="line">    .baseUrl(<span class="string">&quot;https://api.github.com/&quot;</span>)</span><br><span class="line">    .build()</span><br><span class="line"><span class="keyword">val</span> api = retrofit.create(GitHubService::<span class="keyword">class</span>.java)?<span class="comment">//创建接口的核心 </span></span><br><span class="line">api.getRepos().enqueue(<span class="keyword">object</span> : Callback&lt;ResponseBody&gt; &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onResponse</span><span class="params">(call: <span class="type">Call</span>&lt;<span class="type">ResponseBody</span>&gt;, response: <span class="type">Response</span>&lt;<span class="type">ResponseBody</span>&gt;)</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;=================&quot;</span> + call)</span><br><span class="line">        println(<span class="string">&quot;=================&quot;</span> + response)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onFailure</span><span class="params">(call: <span class="type">Call</span>&lt;<span class="type">ResponseBody</span>&gt;, t: <span class="type">Throwable</span>)</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;=================&quot;</span> + call)</span><br><span class="line">        println(<span class="string">&quot;=================&quot;</span> + t.printStackTrace())</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">GitHubService</span> &#123;</span><br><span class="line">    <span class="meta">@GET(<span class="string">&quot;user/rengwuxian/repo&quot;</span>)</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">getRepos</span><span class="params">()</span></span>: Call&lt;ResponseBody&gt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">implementation <span class="string">&#x27;com.squareup.retrofit2:retrofit:2.9.0&#x27;</span></span><br><span class="line">implementation <span class="string">&#x27;com.squareup.retrofit2:converter-gson:2.9.0&#x27;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><font color=red>create()</font></p>
+<p><font color=red>Proxy.newProxyInstance(service.getClassLoader(), new Class&lt;?&gt;[] {service}, new InvocationHandler() {…}</font></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//是已有的方法(toString())还是自定义的方法</span></span><br><span class="line"><span class="keyword">if</span> (method.getDeclaringClass() == Object.class) &#123;</span><br><span class="line">	<span class="keyword">return</span> method.invoke(<span class="built_in">this</span>, args);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.isDefaultMethod(method)<span class="comment">//java8起 是否是接口的默认方法，接口有的方法有实现，有的没有实现</span></span><br></pre></td></tr></table></figure>
+
+<p><font color=red>defaultCallbackExecutor</font></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://uncle2000.github.io/post/%E7%BD%91%E7%BB%9C/OkHttp&Retrofit/">https://uncle2000.github.io/post/%E7%BD%91%E7%BB%9C/OkHttp&Retrofit/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/post/RxJava/RxJava/">RxJava</a>
+            
+            
+            <a class="next" rel="next" href="/post/Android/IPC%20Binder/">IPC Binder</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

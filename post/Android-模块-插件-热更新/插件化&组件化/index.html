@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>插件化&amp;组件化 | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">插件化&amp;组件化</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Android-%E6%A8%A1%E5%9D%97-%E6%8F%92%E4%BB%B6-%E7%83%AD%E6%9B%B4%E6%96%B0/">Android 模块/插件/热更新</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>组件化：把项目拆成多个组件去开发，比如我们现在的拆成很多moudle开发</p>
+<blockquote>
+<p>模块化就是组件化</p>
+</blockquote>
+<p>插件化：不以传统方式打包进APK里，而是以另外一种方式加入到包里，动态的加载。动态部署，除此以外没什么特别的</p>
+<blockquote>
+<p>插件化没有规定以哪种方式加入</p>
+</blockquote>
+<p>Android App Bundles(AAB):拆着发布，和插件化不一样</p>
+<p>dex:普通dex</p>
+<p>odex：optimized Dex</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> AssetManager <span class="title function_">getAssets</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">assetManagerClass</span> <span class="operator">=</span> AssetManager.class;</span><br><span class="line">        <span class="type">AssetManager</span> <span class="variable">assetManager</span> <span class="operator">=</span> (AssetManager) assetManagerClass.newInstance();</span><br><span class="line">        <span class="type">Method</span> <span class="variable">adAssetPath</span> <span class="operator">=</span> assetManagerClass.getDeclaredMethod(<span class="string">&quot;adAssetPath&quot;</span>, String.class);</span><br><span class="line">        adAssetPath.invoke(assetManager, <span class="string">&quot;apkPath&quot;</span>);<span class="comment">//存放apk的目录</span></span><br><span class="line">        <span class="keyword">return</span> assetManager;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">super</span>.getAssets();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Resources <span class="title function_">getResources</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Resources</span>(getAssets(), getResources().getDisplayMetrics(), getResources().getConfiguration());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">        <span class="type">File</span> <span class="variable">f</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(getCacheDir() + <span class="string">&quot;xxx.apk&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (!f.exists()) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="type">InputStream</span> <span class="variable">is</span> <span class="operator">=</span> getAssets().open(<span class="string">&quot;&quot;</span>);</span><br><span class="line">                <span class="type">int</span> <span class="variable">size</span> <span class="operator">=</span> is.available();</span><br><span class="line">                <span class="type">byte</span>[] buffer = <span class="keyword">new</span> <span class="title class_">byte</span>[size];</span><br><span class="line">                is.read(buffer);</span><br><span class="line">                is.close();</span><br><span class="line"></span><br><span class="line">                <span class="type">FileOutputStream</span> <span class="variable">fos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(f);</span><br><span class="line">                fos.write(buffer);</span><br><span class="line">                fos.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">DexClassLoader</span> <span class="variable">classLoader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DexClassLoader</span>(f.getPath(), getCacheDir().getPath(), <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line">            <span class="type">Class</span> <span class="variable">pluginUtilsClass</span> <span class="operator">=</span> classLoader.loadClass(<span class="string">&quot;xxxxxx&quot;</span>);</span><br><span class="line">            <span class="type">Constructor</span> <span class="variable">utilConstructor</span> <span class="operator">=</span> pluginUtilsClass.getDeclaredConstructors()[<span class="number">0</span>];</span><br><span class="line"><span class="comment">//            utilConstructor.setAccessible(true);</span></span><br><span class="line">            <span class="type">Object</span> <span class="variable">utils</span> <span class="operator">=</span> utilConstructor.newInstance();</span><br><span class="line">            <span class="type">Method</span> <span class="variable">shoutMethod</span> <span class="operator">=</span> pluginUtilsClass.getDeclaredMethod(<span class="string">&quot;shout&quot;</span>);</span><br><span class="line"><span class="comment">//            shoutMethod.setAccessible(true);</span></span><br><span class="line">            shoutMethod.invoke(utils);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://uncle2000.github.io/post/Android-%E6%A8%A1%E5%9D%97-%E6%8F%92%E4%BB%B6-%E7%83%AD%E6%9B%B4%E6%96%B0/%E6%8F%92%E4%BB%B6%E5%8C%96&%E7%BB%84%E4%BB%B6%E5%8C%96/">https://uncle2000.github.io/post/Android-%E6%A8%A1%E5%9D%97-%E6%8F%92%E4%BB%B6-%E7%83%AD%E6%9B%B4%E6%96%B0/%E6%8F%92%E4%BB%B6%E5%8C%96&%E7%BB%84%E4%BB%B6%E5%8C%96/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/post/%E5%85%B6%E4%BB%96%E9%A2%86%E5%9F%9F/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/">图片处理</a>
+            
+            
+            <a class="next" rel="next" href="/post/Android/%E5%9B%BE%E7%89%87%E5%8A%A0%E8%BD%BD%E6%A1%86%E6%9E%B6/">图片加载框架</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

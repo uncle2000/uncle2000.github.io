@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>java_io&amp;ok_io | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">java_io&amp;ok_io</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/java/">java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>输入：从外部（文件&#x2F;网络）读到内存里</p>
+<p>输出：从内存写到外部（文件&#x2F;网络）</p>
+<p>javaIO基于流</p>
+<p>与流交互，流就相当与一个代理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//一个字节一个字节写</span></span><br><span class="line"><span class="type">OutputStream</span> <span class="variable">outputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line">outputStream.write(<span class="string">&#x27;a&#x27;</span>);</span><br><span class="line">outputStream.write(<span class="string">&#x27;b&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//一个字节一个字节读</span></span><br><span class="line"><span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line">System.out.println((<span class="type">char</span>) inputStream.read());<span class="comment">//read()返回Int，类似seek</span></span><br><span class="line">System.out.println((<span class="type">char</span>) inputStream.read());</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;xxx&quot;</span>);<span class="comment">//可以读一个字节</span></span><br><span class="line"><span class="type">Reader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InputStreamReader</span>(inputStream);<span class="comment">//可以读一个字符</span></span><br><span class="line"><span class="type">BufferedReader</span> <span class="variable">bufferedReader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedReader</span>(reader);<span class="comment">//bufferedReader可以读一行</span></span><br><span class="line">System.out.println(bufferedReader.readLine());</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">OutputStream</span> <span class="variable">outputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line"><span class="type">Writer</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">OutputStreamWriter</span>(outputStream);</span><br><span class="line"><span class="type">BufferedWriter</span> <span class="variable">bufferedWriter</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedWriter</span>(writer);</span><br><span class="line">bufferedWriter.write(<span class="string">&#x27;a&#x27;</span>);</span><br><span class="line">bufferedWriter.write(<span class="string">&#x27;b&#x27;</span>);</span><br><span class="line">bufferedWriter.flush();</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;xxx&quot;</span>);</span><br><span class="line"><span class="type">OutputStream</span> <span class="variable">outputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;xxx_copy&quot;</span>);</span><br><span class="line"><span class="type">byte</span>[] data = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">1024</span>];</span><br><span class="line"><span class="type">int</span> read;</span><br><span class="line"><span class="keyword">while</span> ((read = inputStream.read(data)) != -<span class="number">1</span>) &#123;</span><br><span class="line">    outputStream.write(data, <span class="number">0</span>, read);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 向服务器读写</span></span><br><span class="line"><span class="type">ServerSocket</span> <span class="variable">serverSocket</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ServerSocket</span>(<span class="number">8080</span>);</span><br><span class="line"><span class="type">Socket</span> <span class="variable">socket</span> <span class="operator">=</span> serverScocket.accept();<span class="comment">//阻塞方法</span></span><br><span class="line"><span class="type">BufferedReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BuffterReader</span>(<span class="keyword">new</span> <span class="title class_">InputStreamReader</span>(socket.getInputStream()));</span><br><span class="line"><span class="type">BufferedWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BuffterWriter</span>(<span class="keyword">new</span> <span class="title class_">outputStreamReader</span>(socket.getoutputStream()));</span><br><span class="line">String data;</span><br><span class="line"><span class="keyword">while</span>((data==reader.readLine())!=<span class="literal">null</span>)&#123;</span><br><span class="line">    writer.writer(data);</span><br><span class="line">    writer.writer(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    writer.flush();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="NIO"><a href="#NIO" class="headerlink" title="NIO"></a>NIO</h1><p>传统IO插管道用string，读或写</p>
+<p>nio用的是插管道，用的channel，可以同时读写，强制使用bufferd，不好用。支持非阻塞（网络支持，文件不支持） </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">RandomAccessFile</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RandomAccessFile</span>(<span class="string">&quot;xxx&quot;</span>,<span class="string">&quot;r&quot;</span>);</span><br><span class="line"><span class="type">FileChannel</span> <span class="variable">channel</span> <span class="operator">=</span> file.getChannel();</span><br><span class="line"><span class="type">ByteBuffer</span> <span class="variable">byterBuffer</span> <span class="operator">=</span> ByterBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line">channel.read(byteBuffer);</span><br><span class="line">byteBuffer.flip();<span class="comment">//翻页</span></span><br><span class="line">socketChannel.write(byteBuffer);</span><br><span class="line">byteBuffer.clear();</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ServerSocketChannel</span> <span class="variable">serverSocketChannel</span> <span class="operator">=</span> ServerSocketChannel.open();</span><br><span class="line">serverSocketChannel.bind(<span class="keyword">new</span> <span class="title class_">InetSocketAddress</span>(<span class="number">8080</span>));</span><br><span class="line">serverSocketChannel.configureBlocking(<span class="literal">false</span>);<span class="comment">//网络非阻塞式的</span></span><br><span class="line"><span class="type">Selector</span> <span class="variable">selector</span> <span class="operator">=</span> Selector.open();</span><br><span class="line">serverSocketChannel.register(selector,SelectionKey.OP_ACCEPT);</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line"><span class="type">SocketChannel</span> <span class="variable">socketChannel</span> <span class="operator">=</span> serverSocketchannel.accpet();</span><br><span class="line"><span class="type">ByteBuffer</span> <span class="variable">byteBuffer</span> <span class="operator">=</span> ByteBuffer.allocate(<span class="number">1024</span>);</span><br><span class="line"><span class="keyword">while</span>(socketChannel.read(byteBuffer)!=-<span class="number">1</span>)&#123;</span><br><span class="line">    byteBuffer.flip();<span class="comment">//翻页</span></span><br><span class="line">    socketChannel.write(byteBuffer);</span><br><span class="line">    byteBuffer.clear();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="OKIO"><a href="#OKIO" class="headerlink" title="OKIO"></a>OKIO</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Source</span> <span class="variable">source</span> <span class="operator">=</span> Okio.source(<span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;xxx&quot;</span>));</span><br><span class="line"><span class="comment">// Source source = Okio.buffer(Okio.source(new File(&quot;xxx&quot;)))//转成buffer</span></span><br><span class="line"><span class="comment">// Sink sink = Okio.sink(Okio.source(new File(&quot;xxx&quot;)))//写</span></span><br><span class="line"><span class="type">Buffer</span> <span class="variable">buffer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Buffer</span>();</span><br><span class="line">source.read(buffer,<span class="number">1024</span>); </span><br><span class="line">System.out.println(buffer.readUtf8());<span class="comment">//全读</span></span><br><span class="line">System.out.println(buffer.readUtf8Line());<span class="comment">//读一行</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//以上的buffer作为缓存存在</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Buffer</span> <span class="variable">buffer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Buffer</span>()</span><br><span class="line"><span class="comment">//ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(&quot;xxx&quot;));//写到文件里</span></span><br><span class="line"><span class="type">ObjectOutputStream</span> <span class="variable">objectOutputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(buffer.outputStream());<span class="comment">//写到buffer里</span></span><br><span class="line">objectOutputStream.writeUTF(<span class="string">&quot;abc&quot;</span>);</span><br><span class="line">objectOutputStream.writeBoolean(<span class="literal">true</span>);</span><br><span class="line">objectOutputStream.writeChar(<span class="string">&#x27;0&#x27;</span>);</span><br><span class="line">objectOutputStream.flush();<span class="comment">//手动flush()把存下的数据全部写到buffer里去</span></span><br><span class="line"><span class="type">ObjectInputStream</span> <span class="variable">objectInputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(buffer.inputStream());</span><br><span class="line">System.out.pritln(objectInputStream.readUTF());</span><br><span class="line">System.out.pritln(objectInputStream.readBoolean());</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line"><span class="comment">// 以上buffer作为一个外部对象存在</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://uncle2000.github.io/post/java/java_io&ok_io/">https://uncle2000.github.io/post/java/java_io&ok_io/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/post/java/inner_class/">inner_class</a>
+            
+            
+            <a class="next" rel="next" href="/post/%E5%9F%BA%E7%A1%80/%5B%E5%9F%BA%E7%A1%80%5D%E5%90%84%E7%A7%8D%E5%8E%9F%E5%88%99&%E7%90%86%E8%AE%BA/">各种原则&理论</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

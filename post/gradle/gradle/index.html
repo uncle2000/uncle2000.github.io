@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="王水泥">
+
+
+    <meta name="subtitle" content="技术，etc">
+
+
+    <meta name="description" content="不要传播">
+
+
+
+<title>gradle | 王水泥个人博客</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">王水泥的博客</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">王水泥的博客</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">gradle</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">王水泥</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 1, 2022&nbsp;&nbsp;16:23:33</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/gradle/">gradle</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>闭包：可以被传递的代码块</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    classpath <span class="string">&#x27;com.x.x:x.x.x&#x27;</span></span><br><span class="line">    add(<span class="string">&#x27;classpath&#x27;</span>,<span class="string">&#x27;com.x.x:x.x.x&#x27;</span>)<span class="comment">//与上同</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/kevinyang0906/gradle/blob/master/subprojects/core/src/main/groovy/org/gradle/api/internal/artifacts/dsl/dependencies/DefaultDependencyHandler.groovy">DefaultDependencyHandler.groovy</a></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object methodMissing(String name, Object args) &#123;</span><br><span class="line">        Configuration configuration = configurationContainer.findByName(name)</span><br><span class="line">        <span class="keyword">if</span> (configuration == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!getMetaClass().respondsTo(<span class="variable language_">this</span>, name, args.size())) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> MissingMethodException(name, <span class="variable language_">this</span>.getClass(), args);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Object[] normalizedArgs = GUtil.collectionize(args)</span><br><span class="line">        <span class="keyword">if</span> (normalizedArgs.length == <span class="number">2</span> &amp;&amp; normalizedArgs[<span class="number">1</span>] <span class="keyword">instanceof</span> Closure) &#123;</span><br><span class="line">            <span class="keyword">return</span> doAdd(configuration, normalizedArgs[<span class="number">0</span>], (Closure) normalizedArgs[<span class="number">1</span>])</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (normalizedArgs.length == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> doAdd(configuration, normalizedArgs[<span class="number">0</span>], (Closure) <span class="literal">null</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        normalizedArgs.each &#123;notation -&gt;</span><br><span class="line">            doAdd(configuration, notation, <span class="literal">null</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Dependency doAdd(Configuration configuration, Object dependencyNotation, Closure configureClosure) &#123;</span><br><span class="line">    <span class="keyword">if</span> (dependencyNotation <span class="keyword">instanceof</span> Configuration) &#123;</span><br><span class="line">        Configuration other = (Configuration) dependencyNotation;</span><br><span class="line">        <span class="keyword">if</span> (!configurationContainer.contains(other)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;Currently you can only declare dependencies on configurations from the same project.&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        configuration.extendsFrom(other)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> dependency = create(dependencyNotation, configureClosure)</span><br><span class="line">    configuration.dependencies &lt;&lt; dependency</span><br><span class="line">    dependency</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        google()</span><br><span class="line">        jcenter()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//与上同</span></span><br><span class="line">allprojects(<span class="keyword">new</span> Action&lt;Project&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="type">void</span> execute(Project project) &#123;</span><br><span class="line">        repositories &#123;</span><br><span class="line">            google()</span><br><span class="line">            jcenter()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">task xx(<span class="attr">type:</span> Delete) &#123;</span><br><span class="line">    <span class="comment">//配置阶段</span></span><br><span class="line">    println <span class="string">&quot;before!!!&quot;</span></span><br><span class="line">    delete rootProject.buildDir<span class="comment">//看起来是 ---&gt;./gradlew xx 会执行这行。如果是 ./gradlew 则不会执行 其实delete是个关键字 其会将后面的参数加入容器中，（仅仅是做了配置的事情）直到，真正的执行阶段（task被调用）才做事情</span></span><br><span class="line">    println <span class="string">&quot;after!!!&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//执行阶段</span></span><br><span class="line">    doLast &#123;</span><br><span class="line">        println <span class="string">&quot;last!!!&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//版本号+1</span></span><br><span class="line">task bumpVersion() &#123;</span><br><span class="line">    doLast &#123;</span><br><span class="line">        <span class="keyword">def</span> versionPropsFile = file(<span class="string">&#x27;version.properties&#x27;</span>)</span><br><span class="line">        <span class="keyword">def</span> versionProps = <span class="keyword">new</span> Properties()</span><br><span class="line">        versionProps.load(<span class="keyword">new</span> FileInputStream(versionPropsFile))</span><br><span class="line">        <span class="keyword">def</span> codeBumped = versionProps[<span class="string">&#x27;VERSION_CODE&#x27;</span>].toInteger() + <span class="number">1</span></span><br><span class="line">        versionProps[<span class="string">&#x27;VERSION_CODE&#x27;</span>] = codeBumped.toString()</span><br><span class="line">        versionProps.store(versionPropsFile.newWriter(), <span class="literal">null</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>doFirst:getActions().add(0,xx)</p>
+<p>doLast:getActions().add(xx)</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>王水泥</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://uncle2000.github.io/post/gradle/gradle/">https://uncle2000.github.io/post/gradle/gradle/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/post/git/git/">git</a>
+            
+            
+            <a class="next" rel="next" href="/post/java/inner_class/">inner_class</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© 王水泥 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
